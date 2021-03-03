@@ -7,12 +7,13 @@
     <template
       v-if="isCurrentUser"
     >
-      <router-link 
-       to="#"
+      <button
        class="edit-btn"
+       type="button"
+       data-toggle="modal" data-target="#exampleModal"
       >
        編輯個人資料
-     </router-link>  
+      </button>
     </template>
 
     <template
@@ -64,24 +65,21 @@
       <h1 class="user-name">
         John Doe
       </h1>
-      <router-link 
-        to="#"
-        class="user-account"
-      >
+      <p class="user-account">
         @heyjohn
-      </router-link>
+      </p>
       <p class="user-introduction">
         Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.
       </p>
       <div class="d-flex">
         <router-link
-          to="#" 
+          to="/user/self/following" 
           class="user-following"
         >
           <strong>34個</strong>跟隨中
         </router-link>
         <router-link 
-          to="#" 
+          to="/user/self/follower" 
           class="user-follower"
         >
           <strong>59位</strong>跟隨者
@@ -120,7 +118,6 @@ export default {
 
 <style scoped>
 .card-container {
-  outline: 1px solid red;
   position: relative;
   width: 100%
 }
@@ -142,19 +139,6 @@ export default {
   width: 140px;
   height: 140px;
   border-radius: 50%;
-}
-
-.edit-btn {
-  position: absolute;
-  top: 210px;
-  right: 15px;
-  padding: 5px 16px;
-  border: 1px solid #ff6600;
-  border-radius: 100px;
-  font-weight: 700;
-  font-size: 15px;
-  color: #ff6600;
-  text-decoration: none;
 }
 
 .profile-txt {
@@ -199,11 +183,33 @@ export default {
   color: #000000;
 }
 
+.edit-btn,
 .other-btn {
-  /* outline: 1px solid red; */
   position: absolute;
   top: 210px;
   right: 15px;
+  background-color: transparent;
+}
+
+.edit-btn,
+.follow-btn {
+  padding: 5px 16px;
+  border: 1px solid #ff6600;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 15px;
+  color: #ff6600;
+  text-decoration: none;
+}
+
+.follow {
+  background: transparent;
+  color: #ff6600;
+}
+
+.following {
+  background: #ff6600;
+  color: #fff;
 }
 
 .mail {
@@ -229,23 +235,5 @@ export default {
   border-radius: 50%;
   width: 30px;
   height: 30px;
-}
-
-.follow-btn {
-  border: 1px solid #ff6600;
-  border-radius: 100px;
-  padding: 2px 16px;
-  font-weight: 700;
-  font-size: 15px;
-}
-  
-.follow {
-  background: transparent;
-  color: #ff6600;
-}
-
-.following {
-  background: #ff6600;
-  color: #fff;
 }
 </style>

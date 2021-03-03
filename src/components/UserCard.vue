@@ -1,20 +1,22 @@
 <template>
   <div class="card-container d-flex">
-    <img 
-      class="user-avatar"
-      src="https://picsum.photos/300/200"
+    <router-link 
+      to="/user/self"
     >
+      <img 
+        class="user-avatar"
+        src="https://picsum.photos/300/200"
+      >
+    </router-link>
+    
 
     <div>
       <h1 class="user-name">
          Devon Lanne
       </h1>
-      <router-link 
-        class="user-account ml-2"
-        to="#"
-      >
+      <p class="user-account ml-2">
         @DL
-      </router-link>
+      </p>
 
       <template
         v-if="isFollow"
@@ -36,6 +38,7 @@
       </p>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -58,7 +61,7 @@ export default {
   .card-container {
     outline: 1px solid gray;
     position: relative;
-    padding: 15px 15px 0 15px;
+    padding: 15px;
     border-top: 1px solid #e6ecf0;
   }
 
@@ -77,6 +80,7 @@ export default {
   }
 
   .user-account {
+    /* outline: 1px solid red; */
     position: relative;
     left: -10px;
     font-weight: 500;
@@ -85,7 +89,10 @@ export default {
   }
 
   .post-txt {
-    margin-bottom: 0;
+    /* outline: 1px solid red; */
+    position: relative;
+    top: -10px;
+    margin: 0;
     font-weight: 500;
     font-size: 15px;
     line-height: 22px;

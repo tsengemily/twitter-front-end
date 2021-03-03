@@ -1,10 +1,10 @@
 <template>
   <div class="header d-flex align-items-center">
-    <router-link 
-      to="#"
+    <div
+      @click="$router.back()"
     >
       <img src="../assets/arrow.png" class="back-arrow">
-    </router-link>
+    </div>
     <div>
       <h1 class="header-name">John Doe</h1>
       <p class="header-post-counts">25推文</p>
@@ -12,11 +12,20 @@
   </div>
 </template>
 
+
+<script>
+export default {
+}
+</script>
+
+
+
 <style scoped>
  .back-arrow {
     width: 20px;
     height: 20px;
     margin-right: 45px;
+    cursor: pointer;
   }
 
   .header-name {

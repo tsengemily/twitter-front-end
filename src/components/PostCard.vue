@@ -1,21 +1,27 @@
 <template>
   <div class="card-container d-flex">
-    <img 
-      class="user-avatar"
-      src="https://picsum.photos/300/200"
+    <router-link 
+        to="/user/self/follower"
+        class="post-link"
+    ></router-link>
+    <router-link 
+      to="/user/self"
+      class="user-link"
     >
+      <img 
+        class="user-avatar"
+        src="https://picsum.photos/300/200"
+      >
+    </router-link>
 
     <div>
       <div class="d-flex">
         <h1 class="user-name">
           Devon Lanne
         </h1>
-        <router-link 
-          class="user-account ml-2"
-          to="#"
-        >
+        <span class="user-account ml-2">
           @DL
-        </router-link> ．
+        </span> ．
         <span class="post-time">
           3小時
         </span>
@@ -30,16 +36,25 @@
 
 <style scoped>
   .card-container {
-    outline: 1px solid gray;
+    /* outline: 1px solid gray; */
     padding: 15px 15px 0 15px;
     border-top: 1px solid #e6ecf0;
+    position: relative;
   }
 
+  .user-link,
   .user-avatar {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     margin-right: 10px;
+  }
+
+  .post-link {
+    position: absolute;
+    left: 70px;
+    width: calc(100% - 80px);
+    height: calc(100% - 10px);
   }
 
   .user-name {

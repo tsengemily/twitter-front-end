@@ -8,15 +8,39 @@
       13
     </router-link>
     <div class="like">
-      <img src="../assets/like.png">
+      <template 
+        v-if="isLiked"
+      >
+        <img src="../assets/addlike.png">
+      </template>
+      <template
+        v-else
+      >
+        <img src="../assets/like.png">
+      </template>
       76
     </div>
   </div>
 </template>
 
+<script>
+export default {
+  props: {
+    initialIsLiked: {
+      type: Boolean,
+      required: true
+    }
+  },
+  data() {
+    return {
+      isLiked: this.initialIsLiked
+    }
+  },
+}
+</script>
+
 <style scoped>
   .container {
-    outline: 1px solid blue;
     margin-top: 5px;
   }
 
