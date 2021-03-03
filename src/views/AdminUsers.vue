@@ -1,0 +1,292 @@
+<template>
+  <div class="AdminUsers-container">
+    <div class="row">
+      <!-- Navbar -->
+      <AdminNavbar v-bind:TweetList="TweetList" v-bind:UserList="UserList" />
+      <!-- 中間主畫面 -->
+      <div class="AdminUsers-main">
+        <div class="AdminUsers-header">使用者列表</div>
+        <div class="AdminUsers-cards">
+          <div class="AdminUsers-card">
+            <img
+              class="AdminUsers-cards-BGphoto"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+            <div class="AdminUsers-cards-info">
+              <div class="AdminUsers-cards-info-name">Jackson</div>
+              <div class="AdminUsers-cards-info-app">@Jackson</div>
+              <div class="AdminUsers-cards-info-icon">
+                <i class="far fa-comment" style="font-size: 20px"></i> 1.5K
+                <i class="far fa-heart" style="font-size: 20px"></i> 20K
+              </div>
+              <div class="AdminUsers-cards-info-follow">
+                34 個<span class="AdminUsers-cards-info-follow-style"
+                  >跟隨中</span
+                >
+                59 位<span class="AdminUsers-cards-info-follow-style"
+                  >跟隨者</span
+                >
+              </div>
+            </div>
+            <img
+              class="AdminUsers-cards-userPhote"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+          </div>
+          <div class="AdminUsers-card">
+            <img
+              class="AdminUsers-cards-BGphoto"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+            <div class="AdminUsers-cards-info">
+              <div class="AdminUsers-cards-info-name">Jackson</div>
+              <div class="AdminUsers-cards-info-app">@Jackson</div>
+              <div class="AdminUsers-cards-info-icon">
+                <i class="far fa-comment" style="font-size: 20px"></i> 1.5K
+                <i class="far fa-heart" style="font-size: 20px"></i> 20K
+              </div>
+              <div class="AdminUsers-cards-info-follow">
+                34 個<span class="AdminUsers-cards-info-follow-style"
+                  >跟隨中</span
+                >
+                59 位<span class="AdminUsers-cards-info-follow-style"
+                  >跟隨者</span
+                >
+              </div>
+            </div>
+            <img
+              class="AdminUsers-cards-userPhote"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+          </div>
+          <div class="AdminUsers-card">
+            <img
+              class="AdminUsers-cards-BGphoto"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+            <div class="AdminUsers-cards-info">
+              <div class="AdminUsers-cards-info-name">Jackson</div>
+              <div class="AdminUsers-cards-info-app">@Jackson</div>
+              <div class="AdminUsers-cards-info-icon">
+                <i class="far fa-comment" style="font-size: 20px"></i> 1.5K
+                <i class="far fa-heart" style="font-size: 20px"></i> 20K
+              </div>
+              <div class="AdminUsers-cards-info-follow">
+                34 個<span class="AdminUsers-cards-info-follow-style"
+                  >跟隨中</span
+                >
+                59 位<span class="AdminUsers-cards-info-follow-style"
+                  >跟隨者</span
+                >
+              </div>
+            </div>
+            <img
+              class="AdminUsers-cards-userPhote"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+          </div>
+          <div class="AdminUsers-card">
+            <img
+              class="AdminUsers-cards-BGphoto"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+            <div class="AdminUsers-cards-info">
+              <div class="AdminUsers-cards-info-name">Jackson</div>
+              <div class="AdminUsers-cards-info-app">@Jackson</div>
+              <div class="AdminUsers-cards-info-icon">
+                <i class="far fa-comment" style="font-size: 20px"></i> 1.5K
+                <i class="far fa-heart" style="font-size: 20px"></i> 20K
+              </div>
+              <div class="AdminUsers-cards-info-follow">
+                34 個<span class="AdminUsers-cards-info-follow-style"
+                  >跟隨中</span
+                >
+                59 位<span class="AdminUsers-cards-info-follow-style"
+                  >跟隨者</span
+                >
+              </div>
+            </div>
+            <img
+              class="AdminUsers-cards-userPhote"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+          </div>
+          <div class="AdminUsers-card">
+            <img
+              class="AdminUsers-cards-BGphoto"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+            <div class="AdminUsers-cards-info">
+              <div class="AdminUsers-cards-info-name">Jackson</div>
+              <div class="AdminUsers-cards-info-app">@Jackson</div>
+              <div class="AdminUsers-cards-info-icon">
+                <i class="far fa-comment" style="font-size: 20px"></i> 1.5K
+                <i class="far fa-heart" style="font-size: 20px"></i> 20K
+              </div>
+              <div class="AdminUsers-cards-info-follow">
+                34 個<span class="AdminUsers-cards-info-follow-style"
+                  >跟隨中</span
+                >
+                59 位<span class="AdminUsers-cards-info-follow-style"
+                  >跟隨者</span
+                >
+              </div>
+            </div>
+            <img
+              class="AdminUsers-cards-userPhote"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+          </div>
+          <div class="AdminUsers-card">
+            <img
+              class="AdminUsers-cards-BGphoto"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+            <div class="AdminUsers-cards-info">
+              <div class="AdminUsers-cards-info-name">Jackson</div>
+              <div class="AdminUsers-cards-info-app">@Jackson</div>
+              <div class="AdminUsers-cards-info-icon">
+                <i class="far fa-comment" style="font-size: 20px"></i> 1.5K
+                <i class="far fa-heart" style="font-size: 20px"></i> 20K
+              </div>
+              <div class="AdminUsers-cards-info-follow">
+                34 個<span class="AdminUsers-cards-info-follow-style"
+                  >跟隨中</span
+                >
+                59 位<span class="AdminUsers-cards-info-follow-style"
+                  >跟隨者</span
+                >
+              </div>
+            </div>
+            <img
+              class="AdminUsers-cards-userPhote"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import AdminNavbar from "./../components/Admin-Navbar";
+export default {
+  name: "AdminUsers",
+  components: {
+    AdminNavbar,
+  },
+  data() {
+    return {
+      TweetList: false,
+      UserList: false,
+    };
+  },
+  created() {
+    const currentPath = this.$router.history.current.name;
+    if (currentPath === "AdminUsers") {
+      this.UserList = true;
+    }
+  },
+};
+</script>
+
+<style scoped>
+.AdminUsers-container {
+  margin: 0 auto;
+  width: 960px;
+  height: 50px;
+}
+.row {
+  margin: 0;
+}
+/* 以下為中間頁面設定 */
+.AdminUsers-main {
+  width: 75%;
+}
+.AdminUsers-header {
+  height: 55px;
+  font-size: 25px;
+  line-height: 55px;
+  font-weight: 900;
+  margin-bottom: 20px;
+}
+.AdminUsers-cards {
+  display: flex;
+  flex-wrap: wrap;
+}
+.AdminUsers-card {
+  width: 220px;
+  height: 280px;
+  margin-right: 15px;
+  border-radius: 10px;
+  position: relative;
+}
+.AdminUsers-cards-BGphoto {
+  width: 220px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+}
+.AdminUsers-cards-info {
+  width: 220px;
+  height: calc(280px - 110px);
+  background-color: rgb(246, 247, 248);
+  border-radius: 0 0 10px 10px;
+}
+.AdminUsers-cards-info-name {
+  padding-top: 30px;
+  font-size: 15px;
+  font-weight: 900;
+  text-align: center;
+}
+.AdminUsers-cards-info-app {
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  color: rgba(101, 119, 134, 1);
+}
+.AdminUsers-cards-userPhote {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 5px solid white;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50px, 0);
+  top: 68px;
+}
+.AdminUsers-cards-info-icon {
+  margin-top: 15px;
+  font-weight: 500;
+  height: 25px;
+  line-height: 15px;
+  font-size: 15px;
+  text-align: center;
+}
+.far {
+  color: rgba(101, 119, 134, 1);
+  margin-left: 10px;
+}
+.AdminUsers-cards-info-follow {
+  text-align: center;
+  font-weight: 500;
+  margin-top: 15px;
+}
+.AdminUsers-cards-info-follow-style {
+  color: rgba(101, 119, 134, 1);
+}
+</style>
