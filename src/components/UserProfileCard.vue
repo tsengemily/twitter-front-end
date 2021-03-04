@@ -10,10 +10,12 @@
       <button
        class="edit-btn"
        type="button"
-       data-toggle="modal" data-target="#exampleModal"
+       data-toggle="modal" 
+       data-target="#user-edit"
       >
        編輯個人資料
       </button>
+      <UserEdit />
     </template>
 
     <template
@@ -91,7 +93,12 @@
 
 
 <script>
+import UserEdit from '../components/UserEdit'
+
 export default {
+  components: {
+    UserEdit
+  },
   props: {
     isCurrentUser: {
       type: Boolean,
@@ -139,6 +146,7 @@ export default {
   width: 140px;
   height: 140px;
   border-radius: 50%;
+  border: 4px solid #fff;
 }
 
 .profile-txt {

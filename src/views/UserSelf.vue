@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="page-container">
     <div class="row">
       <!-- 導覽列 -->
       <div class="left">
@@ -104,31 +104,34 @@ export default {
 
 
 <style scoped>
-  .container {
+/* page共用 */
+  .page-container {
     outline: 1px solid red;
     width: 960px;
     margin: 0 auto;
   }
-/* 
-  .row {
+
+  .row { 
     margin: 0;
-  } */
+  } 
 
   .left {
-    outline: 5px solid green;
+    /* outline: 5px solid green; */
     width: 25%;
   }
 
   .main {
     width: 50%;
-    outline: 5px solid red;
+    /* outline: 5px solid red; */
   }
 
   .right {
-    outline: 5px solid blue;
+    /* outline: 5px solid blue; */
     width: 25%;
   }
 
+
+/* 當頁 */
   .nav {
     border-bottom: 1px solid #e6ecf0;
   }

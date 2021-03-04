@@ -1,39 +1,55 @@
 <template>
-<div class="container-fluid">
-  <UserHeader />
-  <UserProfileCard 
-    :isCurrentUser="currentUser"
-    :initialIsInfo="info"
-    :initialIsFollow="isFollow"
-  />
-  <ul class="nav">
-    <li
-      class="nav-item"
-      :class="{active: isPostActive}"
-      @click="postActive"
-    >
-      推文
-    </li>
-    <li
-      class="nav-item"
-      :class="{active: isPostAndRecommentActive}"
-      @click="postAndRecommentActive"
-    >
-      推文與回覆
-    </li>
-    <li
-      class="nav-item"
-      :class="{active: isLikeActive}"
-      @click="likeActive"
-    >
-      喜歡的內容
-    </li>
-  </ul>
-  <PostCard />
-  <CommentAndLike
-    :initialIsLiked="isLiked"
-  />
-</div>
+  <div class="page-container">
+    <div class="row">
+      <!-- 導覽列 -->
+      <div class="left">
+
+      </div>
+
+      <!-- 主要內容 -->
+      <div class="main">
+        <UserHeader />
+        <UserProfileCard 
+          :isCurrentUser="currentUser"
+          :initialIsInfo="info"
+          :initialIsFollow="isFollow"
+        />
+        <ul class="nav">
+          <li
+            class="nav-item"
+            :class="{active: isPostActive}"
+            @click="postActive"
+          >
+            推文
+          </li>
+          <li
+            class="nav-item"
+            :class="{active: isPostAndRecommentActive}"
+            @click="postAndRecommentActive"
+          >
+            推文與回覆
+          </li>
+          <li
+            class="nav-item"
+            :class="{active: isLikeActive}"
+            @click="likeActive"
+          >
+            喜歡的內容
+          </li>
+        </ul>
+        <PostCard />
+        <CommentAndLike
+          :initialIsLiked="isLiked"
+        />
+      </div>
+      <!-- 跟隨誰 -->
+      <div class="right">
+        <Top10User 
+          :initialIsFollow="isFollow"
+        />
+      </div>  
+    </div>  
+  </div>
 </template>
 
 
@@ -43,6 +59,7 @@ import UserHeader from '../components/UserHeader'
 import UserProfileCard from '../components/UserProfileCard'
 import PostCard from '../components/PostCard'
 import CommentAndLike from '../components/CommentAndLike'
+import Top10User from '../components/Top10User'
 
 export default {
   name: 'User Other',
@@ -50,7 +67,8 @@ export default {
     UserHeader,
     UserProfileCard,
     PostCard,
-    CommentAndLike 
+    CommentAndLike,
+    Top10User
   },
   data() {
     return {
@@ -88,11 +106,34 @@ export default {
 
 
 <style scoped>
-  .container-fluid {
+/* page共用 */
+  .page-container {
     outline: 1px solid red;
-    width: 480px;
+    width: 960px;
+    margin: 0 auto;
   }
 
+  .row { 
+    margin: 0;
+  } 
+
+  .left {
+    /* outline: 5px solid green; */
+    width: 25%;
+  }
+
+  .main {
+    width: 50%;
+    /* outline: 5px solid red; */
+  }
+
+  .right {
+    /* outline: 5px solid blue; */
+    width: 25%;
+  }
+
+
+/* 當頁 */
   .nav {
     border-bottom: 1px solid #e6ecf0;
   }

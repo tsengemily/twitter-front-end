@@ -1,35 +1,42 @@
 <template>
-  <div class="container">
-    <div class="nav">
+  <div class="page-container">
+    <div class="row">
+      <!-- 導覽列 -->
+      <div class="left">
 
-    </div>
-    <div class="main">
-      <UserHeader />
-      <ul class="nav">
-        <li
-          class="nav-item"
-        >
-          <router-link 
-            to="/user/self/follower"
-            class="link-btn"
-          ></router-link>
-          跟隨者
-        </li>
-        <li
-          class="nav-item active"
-        >
-          正在跟隨
-        </li>
-      </ul>
-      <UserCard 
-        :initialIsFollow="isFollow"
-      />
-    </div>
-    <div class="right">
-      <Top10User 
-        :initialIsFollow="isFollow"
-      />
-    </div>
+      </div>
+
+      <!-- 主要內容 -->
+      <div class="main">
+        <UserHeader />
+        <ul class="nav">
+          <li
+            class="nav-item"
+          >
+            <router-link 
+              to="/user/self/follower"
+              class="link-btn"
+            ></router-link>
+            跟隨者
+          </li>
+          <li
+            class="nav-item active"
+          >
+            正在跟隨
+          </li>
+        </ul>
+        <UserCard 
+          :initialIsFollow="isFollow"
+        />
+      </div>
+    
+      <!-- 跟隨誰 -->
+      <div class="right">
+        <Top10User 
+          :initialIsFollow="isFollow"
+        />
+      </div>
+    </div>  
   </div>
 </template>
 
@@ -54,26 +61,33 @@ export default {
 </script>
 
 <style scoped>
-  .container {
-    /* outline: 1px solid red; */
-    /* width: 960px; */
-    position: relative;
-  }
-
-  .main {
-    /* outline: 3px solid purple; */
-    width: 480px;
+  .page-container {
+    outline: 1px solid red;
+    width: 960px;
     margin: 0 auto;
   }
 
-  .right {
-    /* outline: 3px solid pink; */
-    width: 240px;
-    position: absolute;
-    top: 15px;
-    right: 50px;
+  .row { 
+    margin: 0;
+  } 
+
+  .left {
+    /* outline: 5px solid green; */
+    width: 25%;
   }
 
+  .main {
+    width: 50%;
+    /* outline: 5px solid red; */
+  }
+
+  .right {
+    /* outline: 5px solid blue; */
+    width: 25%;
+  }
+
+
+/* 當頁 */
   .nav {
     border-bottom: 1px solid #e6ecf0;
   }
