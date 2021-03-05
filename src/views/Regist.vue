@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <img class="ac-logo" src="./../pic/AC_Logo.jpg" alt="" />
-    <h2 class="row justify-content-center">建立你的帳號</h2>
+    <h2 class="justify-content-center">建立你的帳號</h2>
     <form>
       <div class="form-group">
         <label for="account"></label>

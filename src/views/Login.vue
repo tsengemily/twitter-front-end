@@ -23,15 +23,19 @@
           required
         />
       </div>
-      <router-link to="/mainpage" style="text-decoration: none">
+      <router-link class="router-link" to="/mainpage">
         <button type="button" class="btn btn-primary btn-lg btn-block">
           登入
         </button>
       </router-link>
     </form>
     <div class="foot-container">
-      <router-link class="btn-link" to="/regist">註冊Alphitter</router-link>
-      <router-link class="btn-link" to="/admin">後台登入</router-link>
+      <router-link class="foot-container-btn-link" to="/regist"
+        >註冊Alphitter</router-link
+      >
+      <router-link class="foot-container-btn-link" to="/admin"
+        >後台登入</router-link
+      >
     </div>
   </div>
 </template>
@@ -61,17 +65,23 @@ h2 {
   border-color: rgb(255, 145, 0) !important;
   box-shadow: 2px 2px 2px 0px rgb(255, 145, 0) !important;
 }
-a {
+.router-link {
   font-weight: 900;
   font-size: 20px;
   text-align: center;
   margin-top: 5px;
+  text-decoration: none;
 }
 .foot-container {
   display: flex;
   justify-content: flex-end;
 }
-.btn-link {
+.foot-container-btn-link {
+  font-weight: 900;
+  font-size: 20px;
+  text-align: center;
+  margin-top: 5px;
+  text-decoration: none;
   margin-left: 50px;
 }
 </style>

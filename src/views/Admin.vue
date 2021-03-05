@@ -64,17 +64,12 @@ h2 {
   border-color: rgb(255, 145, 0) !important;
   box-shadow: 2px 2px 2px 0px rgb(255, 145, 0) !important;
 }
-a {
-  font-weight: 900;
-  font-size: 20px;
-  text-align: center;
-  margin-top: 5px;
-}
 .foot-container {
   display: flex;
   justify-content: flex-end;
 }
 .btn-link {
   margin-left: 50px;
+  margin-top: 5px;
 }
 </style>

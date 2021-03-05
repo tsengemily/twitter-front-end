@@ -8,42 +8,52 @@
         <div class="AdminMain-header">推文清單</div>
         <div class="AdminMain-tweet">
           <img
-            class="folling-user-photo"
+            class="AdminMain-tweet-userPhoto"
             src="https://picsum.photos/300/300"
             alt=""
           />
           <div class="AdminMain-tweet-msg">
-            <div class="name">
-              Apple<span class="name-app"> @apple．3小時</span>
+            <div class="AdminMain-tweet-msg-name">
+              Apple<span class="AdminMain-tweet-msg-name-app">
+                @apple．3小時</span
+              >
             </div>
-            <div class="msg">
+            <div class="AdminMain-tweet-msg-name-msg">
               Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
               ullamco cillum dolor. Voluptate exercitation incididunt aliquip
               deserunt reprehenderit elit laborum.
             </div>
           </div>
-          <div class="delete">
-            <i class="far fa-trash-alt" style="font-size: 20px"></i>
+          <div class="AdminMain-tweet-delete">
+            <i
+              class="far fa-trash-alt AdminMain-tweet-delete-icon"
+              style="font-size: 20px"
+            ></i>
           </div>
         </div>
         <div class="AdminMain-tweet">
           <img
-            class="folling-user-photo"
+            class="AdminMain-tweet-userPhoto"
             src="https://picsum.photos/300/300"
             alt=""
           />
           <div class="AdminMain-tweet-msg">
-            <div class="name">
-              Apple<span class="name-app"> @apple．3小時</span>
+            <div class="AdminMain-tweet-msg-name">
+              Apple<span class="AdminMain-tweet-msg-name-app">
+                @apple．3小時</span
+              >
             </div>
-            <div class="msg">
+            <div class="AdminMain-tweet-msg-name-msg">
               Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
               ullamco cillum dolor. Voluptate exercitation incididunt aliquip
               deserunt reprehenderit elit laborum.
             </div>
           </div>
-          <div class="delete">
-            <i class="far fa-trash-alt" style="font-size: 20px"></i>
+          <div class="AdminMain-tweet-delete">
+            <i
+              class="far fa-trash-alt AdminMain-tweet-delete-icon"
+              style="font-size: 20px"
+            ></i>
           </div>
         </div>
       </div>
@@ -98,7 +108,7 @@ export default {
   height: 90px;
   display: flex;
 }
-.folling-user-photo {
+.AdminMain-tweet-userPhoto {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -106,24 +116,24 @@ export default {
 .AdminMain-tweet-msg {
   margin-left: 10px;
 }
-.name {
+.AdminMain-tweet-msg-name {
   font-size: 15px;
   font-weight: 700;
   color: black;
 }
-.name-app {
+.AdminMain-tweet-msg-name-app {
   color: rgba(101, 119, 134, 1);
 }
-.msg {
+.AdminMain-tweet-msg-name-msg {
   font-size: 15px;
   font-weight: 700;
   line-height: 22px;
   color: black;
 }
-.far {
+.AdminMain-tweet-delete-icon {
   color: rgba(101, 119, 134, 1);
 }
-.far:hover {
+.AdminMain-tweet-delete-icon:hover {
   cursor: pointer;
 }
 </style>

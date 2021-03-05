@@ -7,89 +7,108 @@
       <div class="main-main">
         <div class="main-header">首頁</div>
         <div class="main-tweet">
-          <img class="user-photo" src="https://picsum.photos/300/300" alt="" />
-          <form class="tweet-textarea" action="">
+          <img
+            class="main-tweet-userPhoto"
+            src="https://picsum.photos/300/300"
+            alt=""
+          />
+          <form class="main-tweet-textarea" action="">
             <textarea
-              class="form-control msg-board"
+              class="form-control main-tweet-msg-board"
               placeholder="有什麼新鮮事?"
             ></textarea>
             <button type="button" class="btn btn-primary">推文</button>
           </form>
         </div>
-        <div class="space"></div>
+        <div class="main-space"></div>
         <router-link
-          class="link-stlye"
+          class="main-link-stlye"
           v-bind:to="{ name: 'ReplyList', params: { id: 1 } }"
         >
-          <div class="main-following-tweet">
+          <div class="main-following">
             <img
-              class="folling-user-photo"
+              class="main-following-photo"
               src="https://picsum.photos/300/300"
               alt=""
             />
-            <div class="main-following-tweet-msg">
-              <div class="name">
-                Apple<span class="name-app"> @apple．3小時</span>
+            <div class="main-following-tweet">
+              <div class="main-following-name">
+                Apple<span class="main-following-namename-app">
+                  @apple．3小時</span
+                >
               </div>
-              <div class="msg">
+              <div class="main-following-msg">
                 Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
                 ullamco cillum dolor. Voluptate exercitation incididunt aliquip
                 deserunt reprehenderit elit laborum.
               </div>
-              <div class="remind">
-                <i class="far fa-comment" style="font-size: 13px"> 13 </i>
+              <div class="main-following-remind">
+                <i class="far fa-comment main-following-remind-style"> 13 </i>
 
-                <i class="far fa-heart" style="font-size: 13px"> 76 </i>
+                <i class="far fa-heart main-following-remind-style"> 76 </i>
               </div>
             </div>
           </div>
         </router-link>
-        <div class="main-following-tweet">
-          <img
-            class="folling-user-photo"
-            src="https://picsum.photos/300/300"
-            alt=""
-          />
-          <div class="main-following-tweet-msg">
-            <div class="name">
-              Apple<span class="name-app"> @apple．3小時</span>
-            </div>
-            <div class="msg">
-              Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-              ullamco cillum dolor. Voluptate exercitation incididunt aliquip
-              deserunt reprehenderit elit laborum.
-            </div>
-            <div class="remind">
-              <i class="far fa-comment" style="font-size: 13px"> 13 </i>
+        <router-link
+          class="main-link-stlye"
+          v-bind:to="{ name: 'ReplyList', params: { id: 1 } }"
+        >
+          <div class="main-following">
+            <img
+              class="main-following-photo"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+            <div class="main-following-tweet">
+              <div class="main-following-name">
+                Apple<span class="main-following-namename-app">
+                  @apple．3小時</span
+                >
+              </div>
+              <div class="main-following-msg">
+                Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
+                ullamco cillum dolor. Voluptate exercitation incididunt aliquip
+                deserunt reprehenderit elit laborum.
+              </div>
+              <div class="main-following-remind">
+                <i class="far fa-comment main-following-remind-style"> 13 </i>
 
-              <i class="far fa-heart" style="font-size: 13px"> 76 </i>
+                <i class="far fa-heart main-following-remind-style"> 76 </i>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="main-following-tweet">
-          <img
-            class="folling-user-photo"
-            src="https://picsum.photos/300/300"
-            alt=""
-          />
-          <div class="main-following-tweet-msg">
-            <div class="name">
-              Apple<span class="name-app"> @apple．3小時</span>
-            </div>
-            <div class="msg">
-              Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-              ullamco cillum dolor. Voluptate exercitation incididunt aliquip
-              deserunt reprehenderit elit laborum.
-            </div>
-            <div class="remind">
-              <i class="far fa-comment" style="font-size: 13px"> 13 </i>
+        </router-link>
+        <router-link
+          class="main-link-stlye"
+          v-bind:to="{ name: 'ReplyList', params: { id: 1 } }"
+        >
+          <div class="main-following">
+            <img
+              class="main-following-photo"
+              src="https://picsum.photos/300/300"
+              alt=""
+            />
+            <div class="main-following-tweet">
+              <div class="main-following-name">
+                Apple<span class="main-following-namename-app">
+                  @apple．3小時</span
+                >
+              </div>
+              <div class="main-following-msg">
+                Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
+                ullamco cillum dolor. Voluptate exercitation incididunt aliquip
+                deserunt reprehenderit elit laborum.
+              </div>
+              <div class="main-following-remind">
+                <i class="far fa-comment main-following-remind-style"> 13 </i>
 
-              <i class="far fa-heart" style="font-size: 13px"> 76 </i>
+                <i class="far fa-heart main-following-remind-style"> 76 </i>
+              </div>
             </div>
           </div>
-        </div>
+        </router-link>
       </div>
-      
     </div>
   </div>
 </template>
@@ -139,15 +158,15 @@ export default {
   height: 120px;
   display: flex;
 }
-.user-photo {
+.main-tweet-userPhoto {
   width: 50px;
   height: 50px;
   border-radius: 50%;
 }
-.tweet-textarea {
+.main-tweet-textarea {
   display: flex;
 }
-.msg-board {
+.main-tweet-msg-board {
   width: calc(960px / 2 - 64px - 50px);
   border-style: none;
   resize: none;
@@ -175,49 +194,50 @@ export default {
   border-color: rgb(255, 145, 0) !important;
   box-shadow: 2px 2px 2px 0px rgb(255, 145, 0) !important;
 }
-.space {
+.main-space {
   background-color: rgb(230, 236, 240);
   width: 100%;
   height: 10px;
   border-radius: 5px;
   margin-bottom: 10px;
 }
-.link-stlye:link {
+.main-link-stlye:link {
   text-decoration: none;
 }
-.main-following-tweet {
+.main-following {
   width: 100%;
   height: 135px;
   display: flex;
 }
-.folling-user-photo {
+.main-following-photo {
   width: 50px;
   height: 50px;
   border-radius: 50%;
 }
-.main-following-tweet-msg {
+.main-following-tweet {
   margin-left: 10px;
 }
-.name {
+.main-following-name {
   font-size: 15px;
   font-weight: 700;
   color: black;
 }
-.name-app {
+.main-following-namename-app {
   color: rgba(101, 119, 134, 1);
 }
-.msg {
+.main-following-msg {
   font-size: 15px;
   font-weight: 700;
   line-height: 22px;
   color: black;
 }
-.remind {
+.main-following-remind {
   color: rgba(101, 119, 134, 1);
   font-weight: 500;
   margin: 0 0 0 0;
 }
-.far {
+.main-following-remind-style {
   margin-right: 50px;
+  font-size: 13px;
 }
 </style>

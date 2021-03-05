@@ -3,7 +3,7 @@
     <div class="row">
       <Navbar v-bind:isSetting="isSetting" v-bind:MainPage="MainPage" />
       <div class="setting-main">
-        <div class="setting-header">帳戶設定</div>
+        <div class="setting-main-header">帳戶設定</div>
         <form>
           <div class="form-group">
             <label for="account"></label>
@@ -98,7 +98,7 @@ export default {
 .setting-main {
   width: 50%;
 }
-.setting-header {
+.setting-main-header {
   height: 55px;
   font-size: 25px;
   line-height: 55px;

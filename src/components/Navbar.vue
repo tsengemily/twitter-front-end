@@ -2,23 +2,32 @@
   <div class="nav navbar-container">
     <ul class="nav mb-4 nav-container">
       <router-link to="/mainpage">
-        <li class="nav-item">
-          <img class="ac-logo" src="./../pic/AC_Logo.jpg" alt="" />
+        <li class="nav-item nav-container-img">
+          <img
+            class="nav-container-img-acLogo"
+            src="./../pic/AC_Logo.jpg"
+            alt=""
+          />
         </li>
       </router-link>
-      <li class="nav-item">
+      <li class="nav-item nav-container-mainPage">
         <router-link
-          class="font-color"
+          class="nav-container-mainPage-fontColor"
           to="/mainpage"
           v-bind:class="{ routerLinkActive: MainPage }"
         >
-          <i class="fas fa-home link-style" style="font-size: 25px">
-            <span>首頁</span></i
+          <i
+            class="fas fa-home nav-container-mainPage-fontColor-linkStyle"
+            style="font-size: 25px"
+          >
+            <span class="nav-container-mainPage-fontColor-linkStyle-fontStyle"
+              >首頁</span
+            ></i
           >
         </router-link>
       </li>
-      <li class="nav-item">
-        <router-link class="font-color" to="#">
+      <li class="nav-item-userData">
+        <router-link class="nav-item-userData-font-color" to="#">
           <i class="far fa-user link-style" style="font-size: 25px"
             ><span>個人資料</span></i
           >
@@ -140,8 +149,23 @@ export default {
   display: flex;
   flex-direction: column;
 }
+.nav-container-mainPage-fontColor,
+.nav-item-userData-font-color {
+  color: black;
+}
+.nav-container-mainPage-fontColor-linkStyle {
+  text-decoration: none;
+  font-weight: 900;
+  margin-bottom: 40px;
+}
+.nav-container-mainPage-fontColor-linkStyle-fontStyle {
+  margin-left: 21px;
+}
 .font-color {
   color: black;
+}
+span {
+  margin-left: 21px;
 }
 .link-style {
   text-decoration: none;
@@ -155,35 +179,11 @@ export default {
   text-decoration: none;
   color: rgba(255, 102, 0, 1);
 }
-span {
-  margin-left: 21px;
-}
-.ac-logo {
+.nav-container-img-acLogo {
   margin-top: 14px;
   margin-bottom: calc(98px - 39px);
   width: 25px;
   height: 25px;
-}
-.btn {
-  border-radius: 50px;
-  border-color: rgba(255, 102, 0, 1);
-  background-color: rgba(255, 102, 0, 1);
-  font-weight: 900;
-  font-size: 25px;
-  width: 210px;
-  height: 45px;
-  line-height: 25px;
-  margin-top: 30px;
-}
-.btn:hover {
-  background-color: rgb(230, 94, 4) !important;
-  border-color: rgb(230, 94, 4) !important;
-}
-.btn:active,
-.btn:focus {
-  background-color: rgb(255, 145, 0) !important;
-  border-color: rgb(255, 145, 0) !important;
-  box-shadow: 2px 2px 2px 0px rgb(255, 145, 0) !important;
 }
 .log-out {
   /* margin-top: 844px; */
@@ -218,6 +218,28 @@ span {
   border-style: none;
   resize: none;
   box-shadow: none;
+}
+
+.btn {
+  border-radius: 50px;
+  border-color: rgba(255, 102, 0, 1);
+  background-color: rgba(255, 102, 0, 1);
+  font-weight: 900;
+  font-size: 25px;
+  width: 210px;
+  height: 45px;
+  line-height: 25px;
+  margin-top: 30px;
+}
+.btn:hover {
+  background-color: rgb(230, 94, 4) !important;
+  border-color: rgb(230, 94, 4) !important;
+}
+.btn:active,
+.btn:focus {
+  background-color: rgb(255, 145, 0) !important;
+  border-color: rgb(255, 145, 0) !important;
+  box-shadow: 2px 2px 2px 0px rgb(255, 145, 0) !important;
 }
 </style>
 
