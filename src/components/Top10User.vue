@@ -15,7 +15,7 @@
           </h2>
           <router-link 
             class="user-account ml-2"
-            to="#"
+            :to="{name: 'user', params: {id: user.id}}" 
           >
             @pizzahut
           </router-link>
@@ -49,7 +49,7 @@
           </h2>
           <router-link 
             class="user-account ml-2"
-            to="#"
+            :to="{name: 'user', params: {id: user.id}}" 
           >
             @pizzahut
           </router-link>
@@ -89,6 +89,9 @@ export default {
   },
   data () {
     return {
+      user: {
+        id: 1234
+      },
       isFollow: this.initialIsFollow
     }
   }

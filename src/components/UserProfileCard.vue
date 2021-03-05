@@ -75,13 +75,13 @@
       </p>
       <div class="d-flex">
         <router-link
-          to="/user/self/following" 
+          :to="{name: 'user-following', params: {id: user.id}}" 
           class="user-following"
         >
           <strong>34個</strong>跟隨中
         </router-link>
         <router-link 
-          to="/user/self/follower" 
+          :to="{name: 'user-follower', params: {id: user.id}}" 
           class="user-follower"
         >
           <strong>59位</strong>跟隨者
@@ -115,6 +115,9 @@ export default {
   },
   data () {
     return {
+      user: {
+        id: 1234
+      },
       isInfo: this.initialIsInfo,
       isFollow: this.initialIsFollow
     }

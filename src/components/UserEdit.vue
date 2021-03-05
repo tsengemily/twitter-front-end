@@ -13,14 +13,30 @@
         </div>
         <div class="modal-body">
           <div class="edit-cover">
-            <img src="https://picsum.photos/300/200" class="cover-img">
+            <img :src="user.coverImg" class="cover-img">
+            <label for="cover-input" class="cover-label"></label>
+            <input
+              id="cover-input" 
+              type="file"
+              accept="image/*"
+              @change="handleCoverFileChange"
+              class="cover-input"
+            >
           </div>
            <div class="edit-avatar">
-            <img src="https://picsum.photos/300/200" class="avatar-img">
+            <img :src="user.avatarImg" class="avatar-img">
+            <label for="avatar-input" class="avatar-label"></label>
+            <input
+              id="avatar-input" 
+              type="file"
+              accept="image/*"
+              @change="handleAvatarFileChange"
+              class="avatar-input"
+            >
           </div>
           <div class="edit-name">
             <label for="">名稱</label>
-            <input type="text" class="name-input" :value="user.name">
+            <input type="text" class="name-input" value="user.name" v-model="user.name">
             <div class="word-count">{{nameCount}}/50</div>
           </div>
           <div class="edit-introduction">
@@ -35,12 +51,16 @@
 
 
 <script>
+
+
 export default {
   data () {
     return {
       user: {
         name: '曾怡叡',
-        introduction: ''
+        introduction: '',
+        coverImg: '',
+        avatarImg: ''
       }
     }
   },
@@ -50,6 +70,24 @@ export default {
     },
     introductionCount () {
       return this.user.introduction.length
+    }
+  },
+  methods: {
+    handleCoverFileChange (event) {
+      const { files } = event.target
+      console.log(files)
+      if (files.length === 0) return
+      const imgURL = window.URL.createObjectURL(files[0])
+      this.user.coverImg = imgURL
+      console.log(imgURL)
+    },
+    handleAvatarFileChange (event) {
+      const { files } = event.target
+      console.log(files)
+      if (files.length === 0) return
+      const imgURL = window.URL.createObjectURL(files[0])
+      this.user.avatarImg = imgURL
+      console.log(imgURL)
     }
   }
 }
@@ -94,10 +132,43 @@ export default {
     background-color: #ff6600;
   }
 
+  .edit-cover {
+    position: relative;
+    /* outline: 1px solid red; */
+  }
+
   .cover-img {
     width: 100%;
     height: 200px;
-    margin-bottom: 80px;
+    margin-bottom: 40px;
+  }
+
+  .cover-label,
+  .avatar-label {
+    width: 30px;
+    height: 30px;
+    background-image: url('../assets/update.png');
+    background-size: contain;
+    background-color: gray;
+    cursor: pointer;
+  }
+
+  .cover-label {
+    position: absolute;
+    top: 80px;
+    left: 45%;
+  }
+
+  .avatar-label {
+    position: relative;
+    z-index: 10;
+    top: -70px;
+    left: 60px
+  }
+
+  .cover-input,
+  .avatar-input {
+    display: none;
   }
 
   .avatar-img {
@@ -111,6 +182,15 @@ export default {
     height: 120px;
 
   }
+
+
+
+
+
+
+
+
+
 
   .edit-name,
   .edit-introduction {

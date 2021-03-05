@@ -37,8 +37,7 @@
             喜歡的內容
           </li>
         </ul>
-        <PostCard />
-        <CommentAndLike
+        <PostCard 
           :initialIsLiked="isLiked"
         />
       </div>
@@ -58,16 +57,14 @@
 import UserHeader from '../components/UserHeader'
 import UserProfileCard from '../components/UserProfileCard'
 import PostCard from '../components/PostCard'
-import CommentAndLike from '../components/CommentAndLike'
 import Top10User from '../components/Top10User'
 
 export default {
-  name: 'User Other',
+  name: 'User',
   components: {
     UserHeader,
     UserProfileCard,
     PostCard,
-    CommentAndLike,
     Top10User
   },
   data() {
@@ -110,7 +107,7 @@ export default {
   .page-container {
     outline: 1px solid red;
     width: 960px;
-    margin: 0 auto;
+    margin: 20px auto 0;
   }
 
   .row { 

@@ -14,7 +14,7 @@
             class="nav-item"
           >
             <router-link 
-              to="/user/self/follower"
+              :to="{name: 'user-follower', params: {id: user.id}}" 
               class="link-btn"
             ></router-link>
             跟隨者
@@ -53,6 +53,9 @@ export default {
   },
   data() {
     return {
+      user: {
+        id: 1234
+      },
       active:true,
       isFollow: true,
     }
@@ -64,7 +67,7 @@ export default {
   .page-container {
     outline: 1px solid red;
     width: 960px;
-    margin: 0 auto;
+    margin: 20px auto 0;
   }
 
   .row { 

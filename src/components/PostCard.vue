@@ -29,9 +29,44 @@
       <p class="post-txt">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime, ipsam? Aliquam rerum dolorem maiores placeat tempora dolores aut atque tenetur quaerat delectus natus earum, iure repellat perferendis aliquid officia minima?
       </p>
+      <div class="d-flex mt-2">
+        <div class="comment">
+          <img src="../assets/comment.png">
+            13
+        </div>
+        <div class="like">
+          <template 
+            v-if="isLiked"
+          >
+            <img src="../assets/addlike.png">
+          </template>
+          <template
+            v-else
+          >
+            <img src="../assets/like.png">
+          </template>
+            76
+        </div>
+      </div>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  props: {
+    initialIsLiked: {
+      type: Boolean,
+      required: true
+    }
+  },
+  data() {
+    return {
+      isLiked: this.initialIsLiked
+    }
+  },
+}
+</script>
 
 
 <style scoped>
@@ -51,10 +86,11 @@
   }
 
   .post-link {
+    /* outline: 1px solid gray; */
     position: absolute;
     left: 70px;
     width: calc(100% - 80px);
-    height: calc(100% - 10px);
+    height: calc(100% - 40px);
   }
 
   .user-name {
@@ -81,4 +117,23 @@
 
   }
 
+  .comment,
+  .like {
+    font-size: 13px;
+    color: #657786;
+  }
+
+  .comment {
+    margin-right: 50px;
+  }
+
+  .like {
+    cursor: pointer;
+  }
+
+  .comment img,
+  .like img {
+    width: 12px;
+    height: 12px;
+  }
 </style>

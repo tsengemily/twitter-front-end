@@ -6,24 +6,19 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/user/self',
-    name: 'user-self',
-    component: () => import('../views/UserSelf'),
+    path: '/users/:id',
+    name: 'user',
+    component: () => import('../views/User'),
   },
   {
-    path: '/user/self/follower',
-    name: 'user-self-follower',
-    component: () => import('../views/UserSelfFollower'),
+    path: '/users/:id/follower',
+    name: 'user-follower',
+    component: () => import('../views/UserFollower'),
   },
   {
-    path: '/user/self/following',
-    name: 'user-self-following',
-    component: () => import('../views/UserSelfFollowing'),
-  },
-  {
-    path: '/user/other',
-    name: 'user-other',
-    component: () => import('../views/UserOther'),
+    path: '/users/:id/following',
+    name: 'user-following',
+    component: () => import('../views/UserFollowing'),
   },
   {
     path: '*',
