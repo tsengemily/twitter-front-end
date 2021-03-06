@@ -27,6 +27,7 @@ export default new Vuex.Store({
       state.isAuthenticated = true
     }
   },
+  // 透過API請求資料
   actions: {
   },
   modules: {

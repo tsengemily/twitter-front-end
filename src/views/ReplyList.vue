@@ -2,12 +2,11 @@
   <div class="replylist-container">
     <div class="row">
       <Navbar v-bind:isSetting="isSetting" v-bind:MainPage="MainPage" />
-      <div
-        class="replylist-main"
-        data-toggle="modal"
-        data-target="#ReplyListModal"
-      >
-        <router-link class="replylist-main-header" to="/mainpage">
+      <div class="replylist-main">
+        <router-link
+          class="replylist-main-header"
+          v-bind:to="{ name: 'MainPage', params: { id: currentUser.id } }"
+        >
           <div class="replylist-main-header-style">
             <i
               class="fas fa-arrow-left replylist-main-header-style-icon"
@@ -20,24 +19,24 @@
           <div class="replylist-main-tweet-info">
             <img
               class="replylist-main-tweet-info-photo"
-              src="https://picsum.photos/300/300"
+              v-bind:src="tweetData.User.avatar"
               alt=""
             />
             <div class="replylist-main-tweet-info-name">
-              Apple
+              {{ tweetData.User.name }}
               <div class="replylist-main-tweet-info-name-app">@apple</div>
             </div>
           </div>
           <div class="replylist-main-tweet-msg">
-            Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco
-            cillum dolor. Voluptate exercitation incididunt aliquip deserunt
-            reprehenderit elit laborum.
+            {{ tweetData.description }}
           </div>
-          <div class="replylist-main-tweet-time">上午10:05．2020年6月10號</div>
+          <div class="replylist-main-tweet-time">
+            {{ tweetData.updatedAt | publishTime }}
+          </div>
           <div class="replylist-main-tweet-replyRecord">
-            34
+            {{ tweetData.Likes.length }}
             <span class="replylist-main-tweet-replyRecord-style">回覆</span>
-            808
+            {{ tweetData.Replies.length }}
             <span class="replylist-main-tweet-replyRecord-style">
               喜歡次數
             </span>
@@ -46,6 +45,8 @@
             <i
               class="far fa-comment replylist-main-tweet-icons-icon"
               style="font-size: 25px"
+              data-toggle="modal"
+              data-target="#ReplyListModal"
             ></i>
             <i
               class="far fa-heart replylist-main-tweet-icons-icon"
@@ -54,27 +55,29 @@
           </div>
         </div>
 
-        <div class="replylist-main-following">
+        <div
+          class="replylist-main-following"
+          v-for="reply in tweetData.Replies"
+          v-bind:key="reply.id"
+        >
           <img
             class="replylist-main-following-photo"
-            src="https://picsum.photos/300/300"
+            v-bind:src="reply.User.avatar"
             alt=""
           />
           <div class="replylist-main-following-msg">
             <div class="replylist-main-following-msg-name">
               Apple<span class="replylist-main-following-msg-name-app">
-                @apple．3小時</span
+                @apple．{{ reply.updatedAt | fromNow }}</span
               >
             </div>
             <div class="replylist-main-following-msg-reply">
               回覆<span class="`replylist-main-following-msg-reply-tag`">
-                @apple</span
+                @{{ tweetData.User.name }}</span
               >
             </div>
             <div class="replylist-main-following-msg-context">
-              Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-              ullamco cillum dolor. Voluptate exercitation incididunt aliquip
-              deserunt reprehenderit elit laborum.
+              {{ reply.comment }}
             </div>
           </div>
         </div>
@@ -111,14 +114,13 @@
                 />
                 <div class="modal-body-tweet-msg">
                   <div class="modal-body-tweet-msg-name">
-                    Apple<span class="modal-body-tweet-msg-name-app">
-                      @apple．3小時</span
+                    {{ tweetData.User.name
+                    }}<span class="modal-body-tweet-msg-name-app">
+                      @apple．{{ tweetData.updatedAt | fromNow }}</span
                     >
                   </div>
                   <div class="modal-body-tweet-msg-context">
-                    Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-                    ullamco cillum dolor. Voluptate exercitation incididunt
-                    aliquip deserunt reprehenderit elit laborum.
+                    {{ tweetData.description }}
                   </div>
                   <div class="modal-body-tweet-msg-to">
                     回覆給<span class="modal-body-tweet-msg-to-who">
@@ -156,6 +158,16 @@
 
 <script>
 import Navbar from "./../components/Navbar";
+
+import mainPageAPI from "./../apis/user";
+import { Toast } from "./../utils/helpers";
+
+// 從 Vuex 抓取使用者資料
+import { mapState } from "vuex";
+
+// 時間顯示器
+import moment from "moment";
+
 export default {
   name: "ReplyList",
   components: {
@@ -165,6 +177,17 @@ export default {
     return {
       MainPage: false,
       isSetting: false,
+      tweetData: {
+        description: "",
+        updatedAt: "",
+        Likes: "",
+        Replies: "",
+        User: {
+          name:
+            "" /* 因為一開始User是空值，裡面的name會undefine，所以先給name一個空值 */,
+          avatar: "",
+        },
+      },
     };
   },
   created() {
@@ -173,6 +196,44 @@ export default {
       this.MainPage = true;
       this.isSetting = false;
     }
+    const { id: tweetId } = this.$route.params; /* TODO: 解構付值問 */
+    this.fetchReplyList({ tweetId });
+  },
+  methods: {
+    async fetchReplyList({ tweetId }) {
+      try {
+        const response = await mainPageAPI.ReplyList({ tweetId });
+        this.tweetData = { ...response.data };
+        console.log(this.tweetData);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試",
+        });
+      }
+    },
+  },
+  computed: {
+    ...mapState([
+      "currentUser",
+      "isAuthenticated",
+    ]) /* TODO: 又是解構付值要問 */,
+  },
+  filters: {
+    publishTime(datetime) {
+      if (!datetime) {
+        return "-";
+      }
+      // 使用 moment 提供的 fromNow 方法
+      return moment(datetime).format("h:mm:ss a．MMMM Do YYYY");
+    },
+    fromNow(datetime) {
+      if (!datetime) {
+        return "-";
+      }
+      // 使用 moment 提供的 fromNow 方法
+      return moment(datetime).fromNow();
+    },
   },
 };
 </script>
@@ -189,7 +250,7 @@ export default {
 .replylist-main {
   width: 50%;
 }
-.replylist-main:hover {
+.fa-comment:hover {
   cursor: pointer;
 }
 .replylist-main-header:link {
@@ -205,9 +266,7 @@ export default {
 .replylist-main-header-style-icon {
   margin-right: 45px;
 }
-.replylist-main-tweet {
-  height: 360px;
-}
+
 .replylist-main-tweet-info {
   display: flex;
 }
@@ -254,7 +313,7 @@ export default {
   width: 100%;
   height: 106px;
   display: flex;
-  margin: 0 0 30px 0;
+  margin: 15px 0 15px 0;
 }
 .replylist-main-following-photo {
   width: 50px;

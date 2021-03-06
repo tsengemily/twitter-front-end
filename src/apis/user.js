@@ -13,5 +13,12 @@ export default {
     return apiHelper.get(`/tweets`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
+  },
+  ReplyList({ tweetId }) {
+    // 這裡 return 的會是一個 Promise
+    return apiHelper.get(`/tweets/${tweetId}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+    // TODO: ${tweetId}怎麼解構啊?
   }
 }
