@@ -22,88 +22,31 @@
         </div>
         <div class="main-space"></div>
         <router-link
+          v-for="tweet in tweetData"
+          v-bind:key="tweet.id"
           class="main-link-stlye"
-          v-bind:to="{ name: 'ReplyList', params: { id: 1 } }"
+          v-bind:to="{ name: 'ReplyList', params: { id: tweet.id } }"
         >
           <div class="main-following">
-            <img
-              class="main-following-photo"
-              src="https://picsum.photos/300/300"
-              alt=""
-            />
+            <img class="main-following-photo" :src="tweet.User.avatar" alt="" />
             <div class="main-following-tweet">
               <div class="main-following-name">
-                Apple<span class="main-following-namename-app">
-                  @apple．3小時</span
+                {{ tweet.User.name
+                }}<span class="main-following-namename-app">
+                  @apple．{{ tweet.User.updatedAt }}</span
                 >
               </div>
               <div class="main-following-msg">
-                Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-                ullamco cillum dolor. Voluptate exercitation incididunt aliquip
-                deserunt reprehenderit elit laborum.
+                {{ tweet.description }}
               </div>
               <div class="main-following-remind">
-                <i class="far fa-comment main-following-remind-style"> 13 </i>
+                <i class="far fa-comment main-following-remind-style">
+                  {{ tweet.Replies.length }}
+                </i>
 
-                <i class="far fa-heart main-following-remind-style"> 76 </i>
-              </div>
-            </div>
-          </div>
-        </router-link>
-        <router-link
-          class="main-link-stlye"
-          v-bind:to="{ name: 'ReplyList', params: { id: 1 } }"
-        >
-          <div class="main-following">
-            <img
-              class="main-following-photo"
-              src="https://picsum.photos/300/300"
-              alt=""
-            />
-            <div class="main-following-tweet">
-              <div class="main-following-name">
-                Apple<span class="main-following-namename-app">
-                  @apple．3小時</span
-                >
-              </div>
-              <div class="main-following-msg">
-                Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-                ullamco cillum dolor. Voluptate exercitation incididunt aliquip
-                deserunt reprehenderit elit laborum.
-              </div>
-              <div class="main-following-remind">
-                <i class="far fa-comment main-following-remind-style"> 13 </i>
-
-                <i class="far fa-heart main-following-remind-style"> 76 </i>
-              </div>
-            </div>
-          </div>
-        </router-link>
-        <router-link
-          class="main-link-stlye"
-          v-bind:to="{ name: 'ReplyList', params: { id: 1 } }"
-        >
-          <div class="main-following">
-            <img
-              class="main-following-photo"
-              src="https://picsum.photos/300/300"
-              alt=""
-            />
-            <div class="main-following-tweet">
-              <div class="main-following-name">
-                Apple<span class="main-following-namename-app">
-                  @apple．3小時</span
-                >
-              </div>
-              <div class="main-following-msg">
-                Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-                ullamco cillum dolor. Voluptate exercitation incididunt aliquip
-                deserunt reprehenderit elit laborum.
-              </div>
-              <div class="main-following-remind">
-                <i class="far fa-comment main-following-remind-style"> 13 </i>
-
-                <i class="far fa-heart main-following-remind-style"> 76 </i>
+                <i class="far fa-heart main-following-remind-style">
+                  {{ tweet.Likes.length }}
+                </i>
               </div>
             </div>
           </div>
@@ -115,6 +58,9 @@
 
 <script>
 import Navbar from "./../components/Navbar";
+
+import mainPageAPI from "./../apis/user";
+import { Toast } from "./../utils/helpers";
 
 // 從 Vuex 抓取使用者資料
 import { mapState } from "vuex";
@@ -128,6 +74,7 @@ export default {
     return {
       MainPage: false,
       isSetting: false,
+      tweetData: [],
     };
   },
   created() {
@@ -136,6 +83,21 @@ export default {
       this.MainPage = true;
       this.isSetting = false;
     }
+    const { userId } = { userId: this.currentUser.id };
+    this.fetchMainPage({ userId });
+  },
+  methods: {
+    async fetchMainPage({ userId }) {
+      try {
+        const response = await mainPageAPI.mainPage({ userId });
+        this.tweetData = [...response.data];
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試",
+        });
+      }
+    },
   },
   computed: {
     ...mapState([

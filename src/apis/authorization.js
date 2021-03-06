@@ -1,5 +1,4 @@
 // ./src/apis/authorization.js
-// import { apiHelper } from './../utils/helpers'
 import { apiHelper } from '../utils/helpers'
 
 export default {

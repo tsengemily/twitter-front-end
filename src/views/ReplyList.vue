@@ -172,7 +172,6 @@ export default {
     if (currentPath === "ReplyList") {
       this.MainPage = true;
       this.isSetting = false;
-      console.log("12345");
     }
   },
 };

@@ -1,7 +1,9 @@
 <template>
   <div class="nav navbar-container">
     <ul class="nav mb-4 nav-container">
-      <router-link to="/mainpage">
+      <router-link
+        v-bind:to="{ name: 'MainPage', params: { id: currentUser.id } }"
+      >
         <li class="nav-item nav-container-img">
           <img
             class="nav-container-img-acLogo"
@@ -13,7 +15,7 @@
       <li class="nav-item nav-container-mainPage">
         <router-link
           class="nav-container-mainPage-fontColor"
-          to="/mainpage"
+          v-bind:to="{ name: 'MainPage', params: { id: currentUser.id } }"
           v-bind:class="{ routerLinkActive: MainPage }"
         >
           <i
@@ -118,6 +120,9 @@
 </template>
 
 <script>
+// 從 Vuex 抓取使用者資料
+import { mapState } from "vuex";
+
 export default {
   name: "Navbar",
   props: {
@@ -135,8 +140,14 @@ export default {
   data() {
     return {};
   },
-  create() {
+  created() {
     // console.log(this.$route);
+  },
+  computed: {
+    ...mapState([
+      "currentUser",
+      "isAuthenticated",
+    ]) /* TODO: 又是解構付值要問 */,
   },
 };
 </script>

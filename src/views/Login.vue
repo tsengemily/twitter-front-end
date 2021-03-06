@@ -87,7 +87,8 @@ export default {
         this.$store.commit("setCurrentUser", data.user);
 
         // 成功登入後轉址到餐廳首頁
-        this.$router.push("/mainpage");
+        // this.$router.push("/mainpage");
+        this.$router.push({ path: `/mainpage/${data.user.id}` });
       } catch (error) {
         // 接收錯誤
         // 將密碼欄位清空
