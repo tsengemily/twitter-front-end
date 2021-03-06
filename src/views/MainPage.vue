@@ -33,7 +33,7 @@
               <div class="main-following-name">
                 {{ tweet.User.name
                 }}<span class="main-following-namename-app">
-                  @apple．{{ tweet.User.updatedAt }}</span
+                  @apple．{{ tweet.User.updatedAt | fromNow }}</span
                 >
               </div>
               <div class="main-following-msg">
@@ -64,6 +64,9 @@ import { Toast } from "./../utils/helpers";
 
 // 從 Vuex 抓取使用者資料
 import { mapState } from "vuex";
+
+// 時間顯示器
+import moment from "moment";
 
 export default {
   name: "mainPage",
@@ -104,6 +107,15 @@ export default {
       "currentUser",
       "isAuthenticated",
     ]) /* TODO: 又是解構付值要問 */,
+  },
+  filters: {
+    fromNow(datetime) {
+      if (!datetime) {
+        return "-";
+      }
+      // 使用 moment 提供的 fromNow 方法
+      return moment(datetime).fromNow();
+    },
   },
 };
 </script>
