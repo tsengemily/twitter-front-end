@@ -7,39 +7,45 @@
       <div class="AdminUsers-main">
         <div class="AdminUsers-header">使用者列表</div>
         <div class="AdminUsers-cards">
-          <div class="AdminUsers-card">
+          <div
+            class="AdminUsers-card"
+            v-for="user in tweetUsers"
+            v-bind:key="user.id"
+          >
             <img
               class="AdminUsers-card-BGphoto"
-              src="https://picsum.photos/300/300"
+              v-bind:src="user.cover"
               alt=""
             />
             <div class="AdminUsers-card-info">
-              <div class="AdminUsers-card-info-name">Jackson</div>
+              <div class="AdminUsers-card-info-name">{{ user.name }}</div>
               <div class="AdminUsers-card-info-app">@Jackson</div>
               <div class="AdminUsers-card-info-icon">
                 <i
                   class="far fa-comment AdminUsers-card-info-icon-msg"
                   style="font-size: 20px"
                 ></i>
-                1.5K
+                {{ user.Tweets.length }}
                 <i
                   class="far fa-heart AdminUsers-card-info-icon-msg"
                   style="font-size: 20px"
                 ></i>
-                20K
+                {{ user.Likes.length }}
               </div>
               <div class="AdminUsers-card-info-follow">
-                34 個<span class="AdminUsers-card-info-follow-style"
+                {{ user.Followers.length }} 個<span
+                  class="AdminUsers-card-info-follow-style"
                   >跟隨中</span
                 >
-                59 位<span class="AdminUsers-card-info-follow-style"
+                {{ user.Followings.length }} 位<span
+                  class="AdminUsers-card-info-follow-style"
                   >跟隨者</span
                 >
               </div>
             </div>
             <img
               class="AdminUsers-card-userPhote"
-              src="https://picsum.photos/300/300"
+              v-bind:src="user.avatar"
               alt=""
             />
           </div>
@@ -51,6 +57,13 @@
 
 <script>
 import AdminNavbar from "./../components/Admin-Navbar";
+
+import mainPageAPI from "./../apis/user";
+import { Toast } from "./../utils/helpers";
+
+// 從 Vuex 抓取使用者資料
+import { mapState } from "vuex";
+
 export default {
   name: "AdminUsers",
   components: {
@@ -60,6 +73,7 @@ export default {
     return {
       TweetList: false,
       UserList: false,
+      tweetUsers: [],
     };
   },
   created() {
@@ -67,6 +81,27 @@ export default {
     if (currentPath === "AdminUsers") {
       this.UserList = true;
     }
+    this.fetchAdminUsers();
+  },
+  methods: {
+    async fetchAdminUsers() {
+      try {
+        const response = await mainPageAPI.AdminUsers();
+        this.tweetUsers = [...response.data];
+        console.log("tweetData", this.tweetUsers);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試",
+        });
+      }
+    },
+  },
+  computed: {
+    ...mapState([
+      "currentUser",
+      "isAuthenticated",
+    ]) /* TODO: 又是解構付值要問 */,
   },
 };
 </script>
@@ -155,6 +190,6 @@ export default {
   position: absolute;
   left: 50%;
   transform: translate(-50px, 0);
-  top: 68px;
+  top: 40px;
 }
 </style>
