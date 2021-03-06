@@ -20,5 +20,10 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
     // TODO: ${tweetId}怎麼解構啊?
+  },
+  AdminMain() {
+    return apiHelper.get(`/tweets`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
   }
 }
