@@ -9,5 +9,12 @@ export default {
       account,
       password
     })
-  }
+  },
+  Admin({ account, password }) {
+    // 這裡 return 的會是一個 Promise
+    return apiHelper.post('/users/login', {
+      account,
+      password
+    })
+  },
 }
