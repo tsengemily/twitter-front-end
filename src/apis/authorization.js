@@ -1,6 +1,6 @@
 // ./src/apis/authorization.js
 // import { apiHelper } from './../utils/helpers'
-import { apiHelper } from './../utils/helpers'
+import { apiHelper } from '../utils/helpers'
 
 export default {
   // 帶入需要的參數
