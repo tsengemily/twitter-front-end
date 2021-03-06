@@ -115,6 +115,10 @@
 
 <script>
 import Navbar from "./../components/Navbar";
+
+// 從 Vuex 抓取使用者資料
+import { mapState } from "vuex";
+
 export default {
   name: "mainPage",
   components: {
@@ -132,6 +136,12 @@ export default {
       this.MainPage = true;
       this.isSetting = false;
     }
+  },
+  computed: {
+    ...mapState([
+      "currentUser",
+      "isAuthenticated",
+    ]) /* TODO: 又是解構付值要問 */,
   },
 };
 </script>
