@@ -28,7 +28,7 @@
             正在跟隨
           </li>
         </ul>
-        <UserCard 
+        <UserFollowingCard 
           v-for="following in followings"
           :key="following.followingId"
           :initial-following="following"
@@ -145,13 +145,14 @@ const dummyFollowing = [
 
 
 import UserHeader from '../components/UserHeader'
-import UserCard from '../components/UserCard'
+import UserFollowingCard from '../components/UserFollowingCard'
 import Top10User from '../components/Top10User'
 
 export default {
+  name: 'UserFollowing',
   components: {
     UserHeader,
-    UserCard,
+    UserFollowingCard,
     Top10User
   },
   data() {

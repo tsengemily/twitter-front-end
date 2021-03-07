@@ -1,21 +1,26 @@
 <template>
   <div class="card-container d-flex">
+    <template>
+      <div>
+        
+      </div>
+    </template>
     <router-link 
       to="/user/self"
     >
       <img 
         class="user-avatar"
-        :src="initialFollowing.following.avatar"
+        :src="initialFollower.follower.avatar"
       >
     </router-link>
     
 
     <div>
       <h1 class="user-name">
-         {{initialFollowing.following.name}}
+         {{initialFollower.follower.name}}
       </h1>
       <p class="user-account ml-2">
-        @{{initialFollowing.following.account}}
+        @{{initialFollower.follower.account}}
       </p>
 
       <template
@@ -40,7 +45,7 @@
       </template>
 
       <p class="post-txt">
-        {{initialFollowing.following.introduction}}
+        {{initialFollower.follower.introduction}}
       </p>
     </div>
   </div>
@@ -50,14 +55,14 @@
 <script>
 export default {
   props: {
-    initialFollowing: {
+    initialFollower: {
       type: Object,
-      required: true
-    },
+      require: true
+    }
   },
   data () {
     return {
-      isFollowed: this.initialFollowing.isFollowed
+      isFollowed: this.initialFollower.isFollowed
     }
   },
   methods: {
