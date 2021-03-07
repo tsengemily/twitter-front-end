@@ -62,8 +62,8 @@
               class="form-control"
               placeholder="密碼確認"
               required
-              v-model="userData.confirmPassword"
-              name="passwordConfirm"
+              v-model="userData.checkPassword"
+              name="checkPassword"
               autocomplete="off"
             />
           </div>
@@ -97,7 +97,7 @@ export default {
         name: "",
         email: "",
         password: "",
-        confirmPassword: "",
+        checkPassword: "",
       },
     };
   },

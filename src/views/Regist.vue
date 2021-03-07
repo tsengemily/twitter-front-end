@@ -2,7 +2,7 @@
   <div class="container">
     <img class="ac-logo" src="./../pic/AC_Logo.jpg" alt="" />
     <h2 class="justify-content-center">建立你的帳號</h2>
-    <form>
+    <form @submit.prevent.stop="handleSubmit($event)">
       <div class="form-group">
         <label for="account"></label>
         <input
@@ -11,6 +11,8 @@
           class="form-control"
           placeholder="帳號"
           required
+          v-model="account"
+          name="accout"
         />
       </div>
       <div class="form-group">
@@ -21,6 +23,8 @@
           class="form-control"
           placeholder="名稱"
           required
+          v-model="name"
+          name="name"
         />
       </div>
       <div class="form-group">
@@ -31,6 +35,8 @@
           class="form-control"
           placeholder="Email"
           required
+          v-model="email"
+          name="email"
         />
       </div>
       <div class="form-group">
@@ -41,6 +47,9 @@
           class="form-control"
           placeholder="密碼"
           required
+          v-model="password"
+          name="password"
+          autocomplete="off"
         />
       </div>
       <div class="form-group">
@@ -51,9 +60,12 @@
           class="form-control"
           placeholder="密碼確認"
           required
+          v-model="checkPassword"
+          name="checkPassword"
+          autocomplete="off"
         />
       </div>
-      <button type="button" class="btn btn-primary btn-lg btn-block">
+      <button type="submit" class="btn btn-primary btn-lg btn-block">
         註冊
       </button>
     </form>
@@ -64,6 +76,59 @@
     </div>
   </div>
 </template>
+
+<script>
+import SettingAPI from "./../apis/user";
+import { Toast } from "./../utils/helpers";
+
+export default {
+  name: "Regist",
+  data() {
+    return {
+      account: "",
+      email: "",
+      password: "",
+      checkPassword: "",
+      name: "",
+    };
+  },
+  methods: {
+    async handleSubmit(event) {
+      try {
+        const form = event.target;
+        const formData = new FormData(form);
+        for (let [name, value] of formData.entries()) {
+          console.log(name + ": " + value);
+        }
+        // console.log(formData);
+        // console.log("account", this.account);
+        // console.log("email", this.email);
+        // console.log("password", this.password);
+        // console.log("checkPassword", this.checkPassword);
+        // console.log("name", this.name);
+        // const { data } = await SettingAPI.userSetUp({ formData });
+        const { data } = await SettingAPI.userSetUp({
+          account: this.account,
+          email: this.email,
+          password: this.password,
+          checkPassword: this.checkPassword,
+          name: this.name,
+        });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.$router.push({ path: `/login` });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法建立帳號，請稍後再試",
+        });
+      }
+    },
+  },
+};
+</script>
 
 <style scoped>
 .ac-logo {
@@ -97,3 +162,4 @@ a {
   margin-top: 5px;
 }
 </style>
+

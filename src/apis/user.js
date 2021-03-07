@@ -40,5 +40,11 @@ export default {
     return apiHelper.put(`/users/${userId}`, formData, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
-  }
+  },
+  userSetUp({ account, email, password, checkPassword, name }) {
+    return apiHelper.post(`/users`, { account, email, password, checkPassword, name })
+  },
+  // userSetUp({ formData }) {
+  //   return apiHelper.post(`/users`, { formData })
+  // }
 }
