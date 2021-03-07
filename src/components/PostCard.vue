@@ -10,42 +10,48 @@
     >
       <img 
         class="user-avatar"
-        src="https://picsum.photos/300/200"
+        :src="tweet.User.avatar"
       >
     </router-link>
 
     <div>
       <div class="d-flex">
         <h1 class="user-name">
-          Devon Lanne
+          {{tweet.User.name}}
         </h1>
         <span class="user-account ml-2">
-          @DL
+          @{{tweet.User.account}}
         </span> ．
         <span class="post-time">
-          3小時
+          {{tweet.createdAt | fromNow}}
         </span>
       </div>
       <p class="post-txt">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime, ipsam? Aliquam rerum dolorem maiores placeat tempora dolores aut atque tenetur quaerat delectus natus earum, iure repellat perferendis aliquid officia minima?
+        {{tweet.description}}
       </p>
       <div class="d-flex mt-2">
         <div class="comment">
           <img src="../assets/comment.png">
-            13
+            {{replyCount}}
         </div>
         <div class="like">
           <template 
-            v-if="isLiked"
+            v-if="tweet.isLikedbyMe"
           >
-            <img src="../assets/addlike.png">
+            <img 
+              src="../assets/addlike.png"
+              @click="deleteLike(tweet.id)" 
+            >
           </template>
           <template
             v-else
           >
-            <img src="../assets/like.png">
+            <img 
+              src="../assets/like.png"
+              @click="addLike(tweet.id)"
+            >
           </template>
-            76
+            {{likeCount}}
         </div>
       </div>
     </div>
@@ -53,25 +59,46 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   props: {
-    initialIsLiked: {
-      type: Boolean,
-      required: true
+    initialTweet: {
+      type: Object,
+      require: true
     }
   },
-  data() {
+  data () {
     return {
-      isLiked: this.initialIsLiked
+      tweet: this.initialTweet,
+      replyCount: this.initialTweet.Replies.length,
+      likeCount: this.initialTweet.Likes.length,
     }
   },
+  methods: {
+    addLike () {
+      this.likeCount = this.likeCount + 1 
+      this.tweet.isLikedbyMe = true
+    },
+    deleteLike() {
+      this.likeCount = this.likeCount - 1 
+      this.tweet.isLikedbyMe = false
+    }
+  },
+  filters: {
+    fromNow (datetime) {
+      if (!datetime) {
+        return '-'
+      }
+      return moment(datetime).fromNow()
+    }
+  }, 
 }
 </script>
 
-
 <style scoped>
   .card-container {
-    /* outline: 1px solid gray; */
+    outline: 1px solid gray;
     padding: 15px 15px 0 15px;
     border-top: 1px solid #e6ecf0;
     position: relative;

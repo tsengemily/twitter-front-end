@@ -78,13 +78,13 @@
           :to="{name: 'user-following', params: {id: user.id}}" 
           class="user-following"
         >
-          <strong>個</strong>跟隨中
+          <strong>{{followingCount}}個</strong>跟隨中
         </router-link>
         <router-link 
           :to="{name: 'user-follower', params: {id: user.id}}" 
           class="user-follower"
         >
-          <strong>59位</strong>跟隨者
+          <strong>{{followerCount}}位</strong>跟隨者
         </router-link>
       </div>
     </div>
@@ -102,6 +102,14 @@ export default {
   props: {
     user: {
       type: Object,
+      required: true
+    },
+    followingCount: {
+      type: Number,
+      required: true
+    },
+    followerCount: {
+      type: Number,
       required: true
     },
     isCurrentUser: {

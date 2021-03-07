@@ -10,10 +10,12 @@
       <div class="main">
         <UserHeader 
           :user-name="user.name"
-          :user-tweets-count="user.tweetsCount"
+          :user-tweets-count="tweetsCount"
         />
         <UserProfileCard 
           :user="user"
+          :following-count="followingCount"
+          :follower-count="followerCount"
           :isCurrentUser="currentUser"
           :initialIsInfo="info"
           :initialIsFollow="isFollow"
@@ -42,7 +44,9 @@
           </li>
         </ul>
         <PostCard 
-          :initialIsLiked="isLiked"
+          v-for="tweet in tweets"
+          :key="tweet.id"
+          :initial-tweet="tweet"
         />
       </div>
       <!-- 跟隨誰 -->
@@ -139,28 +143,52 @@ const dummyTweets = [
 ]
 
 //使用者所有正在追蹤的人
-// const dummyFollowing = [
-//   {
-//     "followerId": 11,
-//     "followingId": 21,
-//     "createdAt": "2021-03-05T04:26:13.000Z",
-//     "updatedAt": "2021-03-05T04:26:13.000Z",
-//     "following": {
-//       "id": 21,
-//       "account": "user2",
-//       "email": "user2@example.com",
-//       "name": "Johnny2",
-//       "avatar": "http://placeimg.com/640/480/people",
-//       "introduction": "I am Johnny2",
-//       "role": "user",
-//       "cover": "http://placeimg.com/640/480/nature",
-//       "createdAt": "2021-03-05T04:26:13.000Z",
-//       "updatedAt": "2021-03-05T04:26:13.000Z"
-//     },
-//     "isFollowed": true,
-//     "isSelf": false
-//   }
-// ]
+const dummyFollowing = [
+  {
+    "followerId": 11,
+    "followingId": 21,
+    "createdAt": "2021-03-05T04:26:13.000Z",
+    "updatedAt": "2021-03-05T04:26:13.000Z",
+    "following": {
+      "id": 21,
+      "account": "user2",
+      "email": "user2@example.com",
+      "name": "Johnny2",
+      "avatar": "http://placeimg.com/640/480/people",
+      "introduction": "I am Johnny2",
+      "role": "user",
+      "cover": "http://placeimg.com/640/480/nature",
+      "createdAt": "2021-03-05T04:26:13.000Z",
+      "updatedAt": "2021-03-05T04:26:13.000Z"
+    },
+    "isFollowed": true,
+    "isSelf": false
+  }
+]
+
+//使用者所有的追蹤者
+const dummyFollower = [
+  {
+    "followerId": 21,
+    "followingId": 11,
+    "createdAt": "2021-03-05T04:26:13.000Z",
+    "updatedAt": "2021-03-05T04:26:13.000Z",
+    "follower": {
+      "id": 21,
+      "account": "user2",
+      "email": "user2@example.com",
+      "name": "Johnny2",
+      "avatar": "http://placeimg.com/640/480/people",
+      "introduction": "I am Johnny2",
+      "role": "user",
+      "cover": "http://placeimg.com/640/480/nature",
+      "createdAt": "2021-03-05T04:26:13.000Z",
+      "updatedAt": "2021-03-05T04:26:13.000Z"
+    },
+    "isFollowed": true,
+    "isSelf": false
+  }
+]
 
 import UserHeader from '../components/UserHeader'
 import UserProfileCard from '../components/UserProfileCard'
@@ -184,10 +212,13 @@ export default {
         account: '',
         cover: '',
         avatar: '',
-        introduction: '',
-        tweetsCount: 0
+        introduction: ''
       },
-      // isCurrentUser: false,
+      tweetsCount: 0,
+      followingCount: 0,
+      followerCount: 0,
+      currentUser: false,
+      tweets: [],
       info: false,
       isFollow: false,
       isPostActive: true,
@@ -202,7 +233,7 @@ export default {
   methods: {
     fetchUser () {
       const { user } = dummyData
-      const { id, name, email, account, cover, avatar, introduction } = user
+      const { id, name, email, account, cover, avatar, introduction, isSelf } = user
       this.user = {
         ...this.user,
         id,
@@ -211,10 +242,13 @@ export default {
         account,
         cover,
         avatar,
-        introduction,
-        tweetsCount: dummyTweets.length
+        introduction
       }
-      // this.isCurrentUser = isSelf
+      this.tweetsCount = dummyTweets.length
+      this.followingCount = dummyFollowing.length
+      this.followerCount = dummyFollower.length
+      this.currentUser = isSelf,
+      this.tweets = dummyTweets
     },
      postActive () {
       this.isPostActive = true
