@@ -5,7 +5,7 @@
         class="post-link"
     ></router-link>
     <router-link 
-      to="/user/self"
+      :to="{name: 'user', params: {id: tweet.UserId}}"
       class="user-link"
     >
       <img 
@@ -77,12 +77,18 @@ export default {
   },
   methods: {
     addLike () {
+      this.tweet = {
+        ...this.tweet,
+        isLikedbyMe: true
+      }
       this.likeCount = this.likeCount + 1 
-      this.tweet.isLikedbyMe = true
     },
     deleteLike() {
+      this.tweet = {
+        ...this.tweet,
+        isLikedbyMe: false
+      }
       this.likeCount = this.likeCount - 1 
-      this.tweet.isLikedbyMe = false
     }
   },
   filters: {

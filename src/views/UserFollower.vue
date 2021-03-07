@@ -166,6 +166,9 @@ export default {
   },
   methods: {
     fetchUser () {
+      //get:/api/users/{id}
+      //get:/api/users/{id}/tweets
+      //get:api/users/{id}/followers
       this.userId = dummyData.user.id
       this.userName = dummyData.user.name
       this.tweetsCount = dummyTweets.length

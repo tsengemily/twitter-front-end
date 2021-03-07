@@ -6,29 +6,29 @@
       </div>
     </template>
     <router-link 
-      to="/user/self"
+      :to="{name: 'user', params: {id: following.followingId}}"
     >
       <img 
         class="user-avatar"
-        :src="initialFollowing.following.avatar"
+        :src="following.following.avatar"
       >
     </router-link>
     
 
     <div>
       <h1 class="user-name">
-         {{initialFollowing.following.name}}
+         {{following.following.name}}
       </h1>
       <p class="user-account ml-2">
-        @{{initialFollowing.following.account}}
+        @{{following.following.account}}
       </p>
 
       <template
-        v-if="isFollowed"
+        v-if="following.isFollowed"
       >
         <button 
           class="follow-btn following"
-          @click="deleteFollow"
+          @click="deleteFollow(following.followingId)"
         > 
           正在跟隨
         </button>
@@ -38,14 +38,14 @@
       >
         <button 
           class="follow-btn follow"
-          @click="addFollow"
+          @click="addFollow(following.followingId)"
         >
           跟隨
         </button>
       </template>
 
       <p class="post-txt">
-        {{initialFollowing.following.introduction}}
+        {{following.following.introduction}}
       </p>
     </div>
   </div>
@@ -62,15 +62,25 @@ export default {
   },
   data () {
     return {
-      isFollowed: this.initialFollowing.isFollowed
+      following: this.initialFollowing
     }
   },
   methods: {
     deleteFollow () {
-      this.isFollowed = false
+      //delete/api/followships/{followingId}
+      //api:usersAPI.deleteFollow({followingId})
+      this.following = {
+        ...this.following,
+        isFollowed: false
+      }
     },
     addFollow () {
-      this.isFollowed = true
+      //post/api/followships
+      //api:usersAPI.addFollow({userId})
+       this.following = {
+        ...this.following,
+        isFollowed: true
+      }
     }
   }
 }
