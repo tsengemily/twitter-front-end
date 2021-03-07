@@ -30,5 +30,10 @@ export default {
     return apiHelper.get(`/admin/users`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
-  }
+  },
+  get({ userId }) {
+    return apiHelper.get(`/users/${userId}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
 }

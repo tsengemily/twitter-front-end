@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import usersAPI from "./../apis/user"
 
 Vue.use(Vuex)
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     isAuthenticated: false
   },
   // 用來修改 state 的方法，methods
+  // commit 來發動 mutations
   mutations: {
     setCurrentUser(state, currentUser) {
       state.currentUser = {
@@ -28,7 +30,27 @@ export default new Vuex.Store({
     }
   },
   // 透過API請求資料
+  // dispatch 發動 actions
   actions: {
+    async fetchCurrentUser({ commit }) {
+      try {
+        const Id = localStorage.getItem('userId')
+        const { userId } = { userId: Id } /* TODO:解構付值 */
+        // 呼叫 usersAPI.getCurrentUser() 方法，並將 response 顯示出來
+        const { data } = await usersAPI.get({ userId })
+        let { id, name, email, role } = data
+        console.log("store中的持續登入")
+        commit('setCurrentUser', {
+          id,
+          name,
+          email,
+          role
+        })
+      } catch (error) {
+        console.log('error', error)
+        console.error('can not fetch user information')
+      }
+    }
   },
   modules: {
   }
