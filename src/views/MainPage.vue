@@ -9,7 +9,7 @@
         <div class="main-tweet">
           <img
             class="main-tweet-userPhoto"
-            src="https://picsum.photos/300/300"
+            v-bind:src="userData.avatar"
             alt=""
           />
           <form class="main-tweet-textarea" action="">
@@ -78,6 +78,7 @@ export default {
       MainPage: false,
       isSetting: false,
       tweetData: [],
+      userData: {},
     };
   },
   created() {
@@ -88,12 +89,25 @@ export default {
     }
     const { userId } = { userId: this.currentUser.id };
     this.fetchMainPage({ userId });
+    this.getUserId({ userId });
   },
   methods: {
     async fetchMainPage({ userId }) {
       try {
         const response = await mainPageAPI.mainPage({ userId });
         this.tweetData = [...response.data];
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試",
+        });
+      }
+    },
+    async getUserId({ userId }) {
+      try {
+        const response = await mainPageAPI.get({ userId });
+        this.userData = { ...response.data };
+        console.log(this.userData);
       } catch (error) {
         Toast.fire({
           icon: "error",
