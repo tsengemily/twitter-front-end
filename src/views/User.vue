@@ -8,8 +8,12 @@
 
       <!-- 主要內容 -->
       <div class="main">
-        <UserHeader />
+        <UserHeader 
+          :user-name="user.name"
+          :user-tweets-count="user.tweetsCount"
+        />
         <UserProfileCard 
+          :user="user"
           :isCurrentUser="currentUser"
           :initialIsInfo="info"
           :initialIsFollow="isFollow"
@@ -54,6 +58,110 @@
 
 
 <script>
+// const dummyUser = {
+//   currentUser: {
+//     id: 2,
+//     name: "user1",
+//   }
+// }
+
+//查看使用者
+const dummyData = {
+  'user': {
+    "id": 2,
+    "account": "user1",
+    "email": "user1@example.com",
+    "name": "user1",
+    "avatar": "http://placeimg.com/640/480/people",
+    "introduction": "I am Jackson",
+    "role": "user",
+    "cover": "http://placeimg.com/640/480/nature",
+    "createdAt": "2021-03-02T02:18:21.000Z",
+    "updatedAt": "2021-03-02T02:18:21.000Z",
+    "isSelf": true
+  } 
+}
+
+//使用者發布過的所有tweets
+const dummyTweets = [
+  {
+    "id": 1,
+    "UserId": 2,
+    "description": "Johnny1 is a handsome guy.",
+    "createdAt": "2021-03-02T02:18:21.000Z",
+    "updatedAt": "2021-03-02T02:18:21.000Z",
+    "Replies": [
+      {
+        "id": 1,
+        "UserId": 2,
+        "TweetId": 1,
+        "comment": "Reply 1",
+        "createdAt": "2021-03-02T02:18:21.000Z",
+        "updatedAt": "2021-03-02T02:18:21.000Z",
+        "User": {
+          "id": 2,
+          "account": "user1",
+          "email": "user1@example.com",
+          "name": "user1",
+          "avatar": "http://placeimg.com/640/480/people",
+          "introduction": "I am Jackson",
+          "role": "user",
+          "cover": "http://placeimg.com/640/480/nature",
+          "createdAt": "2021-03-02T02:18:21.000Z",
+          "updatedAt": "2021-03-02T02:18:21.000Z"
+        }
+      }
+    ],
+    "Likes": [
+      {
+        "id": 2,
+        "UserId": 2,
+        "TweetId": 1,
+        "createdAt": "2021-03-02T12:55:19.000Z",
+        "updatedAt": "2021-03-02T12:55:19.000Z"
+      }
+    ],
+    "User": {
+      "id": 2,
+      "account": "user1",
+      "email": "user1@example.com",
+      "name": "user1",
+      "avatar": "http://placeimg.com/640/480/people",
+      "introduction": "I am Jackson",
+      "role": "user",
+      "cover": "http://placeimg.com/640/480/nature",
+      "createdAt": "2021-03-02T02:18:21.000Z",
+      "updatedAt": "2021-03-02T02:18:21.000Z"
+    },
+    "isLikedbyMe": false,
+    "isMyTweet": true
+  }
+]
+
+//使用者所有正在追蹤的人
+// const dummyFollowing = [
+//   {
+//     "followerId": 11,
+//     "followingId": 21,
+//     "createdAt": "2021-03-05T04:26:13.000Z",
+//     "updatedAt": "2021-03-05T04:26:13.000Z",
+//     "following": {
+//       "id": 21,
+//       "account": "user2",
+//       "email": "user2@example.com",
+//       "name": "Johnny2",
+//       "avatar": "http://placeimg.com/640/480/people",
+//       "introduction": "I am Johnny2",
+//       "role": "user",
+//       "cover": "http://placeimg.com/640/480/nature",
+//       "createdAt": "2021-03-05T04:26:13.000Z",
+//       "updatedAt": "2021-03-05T04:26:13.000Z"
+//     },
+//     "isFollowed": true,
+//     "isSelf": false
+//   }
+// ]
+
 import UserHeader from '../components/UserHeader'
 import UserProfileCard from '../components/UserProfileCard'
 import PostCard from '../components/PostCard'
@@ -69,7 +177,17 @@ export default {
   },
   data() {
     return {
-      currentUser: false,
+      user: {
+        id: -1,
+        name: '',
+        email: '',
+        account: '',
+        cover: '',
+        avatar: '',
+        introduction: '',
+        tweetsCount: 0
+      },
+      // isCurrentUser: false,
       info: false,
       isFollow: false,
       isPostActive: true,
@@ -78,7 +196,26 @@ export default {
       isLiked: false
     }
   },
+  created () {
+    this.fetchUser()
+  },
   methods: {
+    fetchUser () {
+      const { user } = dummyData
+      const { id, name, email, account, cover, avatar, introduction } = user
+      this.user = {
+        ...this.user,
+        id,
+        name,
+        email,
+        account,
+        cover,
+        avatar,
+        introduction,
+        tweetsCount: dummyTweets.length
+      }
+      // this.isCurrentUser = isSelf
+    },
      postActive () {
       this.isPostActive = true
       this.isPostAndRecommentActive = false

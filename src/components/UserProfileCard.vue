@@ -1,7 +1,7 @@
 <template>
   <div class="card-container">
     <div class="cover-pic">
-      <img src="https://picsum.photos/300/200">
+      <img :src="user.cover">
     </div>
 
     <template
@@ -61,24 +61,24 @@
 
     <img 
       class="user-avatar" 
-      src="https://picsum.photos/300/100" >
-      
+      :src="user.avatar"
+    >  
     <div class="profile-txt">
       <h1 class="user-name">
-        John Doe
+        {{user.name}}
       </h1>
       <p class="user-account">
-        @heyjohn
+        @{{user.account}}
       </p>
       <p class="user-introduction">
-        Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.
+        {{user.introduction}}
       </p>
       <div class="d-flex">
         <router-link
           :to="{name: 'user-following', params: {id: user.id}}" 
           class="user-following"
         >
-          <strong>34個</strong>跟隨中
+          <strong>個</strong>跟隨中
         </router-link>
         <router-link 
           :to="{name: 'user-follower', params: {id: user.id}}" 
@@ -100,6 +100,10 @@ export default {
     UserEdit
   },
   props: {
+    user: {
+      type: Object,
+      required: true
+    },
     isCurrentUser: {
       type: Boolean,
       required: true
@@ -115,9 +119,6 @@ export default {
   },
   data () {
     return {
-      user: {
-        id: 1234
-      },
       isInfo: this.initialIsInfo,
       isFollow: this.initialIsFollow
     }

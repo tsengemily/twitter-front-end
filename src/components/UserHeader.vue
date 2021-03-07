@@ -6,8 +6,8 @@
       <img src="../assets/arrow.png" class="back-arrow">
     </div>
     <div>
-      <h1 class="header-name">John Doe</h1>
-      <p class="header-post-counts">25推文</p>
+      <h1 class="header-name">{{userName}}</h1>
+      <p class="header-post-counts">{{userTweetsCount}}推文</p>
     </div>
   </div>
 </template>
@@ -15,6 +15,16 @@
 
 <script>
 export default {
+  props: {
+    userName: {
+      type: String,
+      required: true
+    },
+    userTweetsCount: {
+      type: Number,
+      required: true
+    }
+  }
 }
 </script>
 
