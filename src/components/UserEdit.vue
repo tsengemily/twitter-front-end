@@ -3,46 +3,48 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close-btn" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">
-              <img src="../assets/close.png" class="close-icon">
-            </span>
-          </button>
-          <h5 class="edit-title">編輯個人資料</h5>
-          <button type="button" class="edit-close">儲存</button>
-        </div>
-        <div class="modal-body">
-          <div class="edit-cover">
-            <img :src="user.coverImg" class="cover-img">
-            <label for="cover-input" class="cover-label"></label>
-            <input
-              id="cover-input" 
-              type="file"
-              accept="image/*"
-              @change="handleCoverFileChange"
-              class="cover-input"
-            >
-          </div>
-           <div class="edit-avatar">
-            <img :src="user.avatarImg" class="avatar-img">
-            <label for="avatar-input" class="avatar-label"></label>
-            <input
-              id="avatar-input" 
-              type="file"
-              accept="image/*"
-              @change="handleAvatarFileChange"
-              class="avatar-input"
-            >
-          </div>
-          <div class="edit-name">
-            <label for="">名稱</label>
-            <input type="text" class="name-input" value="user.name" v-model="user.name">
-            <div class="word-count">{{nameCount}}/50</div>
-          </div>
-          <div class="edit-introduction">
-            <textarea name="" id="" rows="10" class="introduction-input" placeholder="自我介紹" v-model="user.introduction"></textarea>
-            <div class="word-count">{{introductionCount}}/160</div> 
-          </div>
+          <form @submit.stop.prevent="handleSubmit">
+            <button type="button" class="close-btn" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">
+                <img src="../assets/close.png" class="close-icon">
+              </span>
+            </button>
+            <h5 class="edit-title">編輯個人資料</h5>
+            <button type="submit" class="edit-close">儲存</button>
+            <div class="modal-body">
+              <div class="edit-cover">
+                <img :src="user.cover" class="cover-img">
+                <label for="cover-input" class="cover-label"></label>
+                <input
+                  id="cover-input" 
+                  type="file"
+                  accept="image/*"
+                  @change="handleCoverFileChange"
+                  class="cover-input"
+                >
+              </div>
+              <div class="edit-avatar">
+                <img :src="user.avatar" class="avatar-img">
+                <label for="avatar-input" class="avatar-label"></label>
+                <input
+                  id="avatar-input" 
+                  type="file"
+                  accept="image/*"
+                  @change="handleAvatarFileChange"
+                  class="avatar-input"
+                >
+              </div>
+              <div class="edit-name">
+                <label for="">名稱</label>
+                <input type="text" class="name-input" value="user.name" v-model="user.name">
+                <div class="word-count">{{nameCount}}/50</div>
+              </div>
+              <div class="edit-introduction">
+                <textarea name="" id="" rows="10" class="introduction-input" placeholder="自我介紹" v-model="user.introduction"></textarea>
+                <div class="word-count">{{introductionCount}}/160</div> 
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -51,16 +53,25 @@
 
 
 <script>
-
-
 export default {
+  props: {
+    initialUser: {
+       type: Object,
+      default: () => ({
+        id: -1,
+        name: '',
+        email: '',
+        account: '',
+        cover: '',
+        avatar: '',
+        introduction: ''
+      })
+    }
+  },
   data () {
     return {
       user: {
-        name: '曾怡叡',
-        introduction: '',
-        coverImg: '',
-        avatarImg: ''
+       ...this.initialUser
       }
     }
   },
@@ -78,7 +89,7 @@ export default {
       console.log(files)
       if (files.length === 0) return
       const imgURL = window.URL.createObjectURL(files[0])
-      this.user.coverImg = imgURL
+      this.user.cover = imgURL
       console.log(imgURL)
     },
     handleAvatarFileChange (event) {
@@ -86,8 +97,18 @@ export default {
       console.log(files)
       if (files.length === 0) return
       const imgURL = window.URL.createObjectURL(files[0])
-      this.user.avatarImg = imgURL
+      this.user.avatar = imgURL
       console.log(imgURL)
+    },
+    handleSubmit (e) {
+      console.log('e', e)
+      const form = e.target
+      console.log('form', form)
+      const formData = new FormData(form)
+
+      for (let [name, value] of formData.entries()) {
+        console.log(name + ': ' + value)
+      } 
     }
   }
 }
@@ -125,6 +146,9 @@ export default {
   }
 
   .edit-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
     border-radius: 100px;
     border: none;
     padding: 6px 14px;
@@ -149,7 +173,7 @@ export default {
     height: 30px;
     background-image: url('../assets/update.png');
     background-size: contain;
-    background-color: gray;
+    /* background-color: gray; */
     cursor: pointer;
   }
 

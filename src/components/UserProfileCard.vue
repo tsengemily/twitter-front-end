@@ -15,7 +15,9 @@
       >
        編輯個人資料
       </button>
-      <UserEdit />
+      <UserEdit 
+        :initial-user="user"
+      />
     </template>
 
     <template
@@ -100,9 +102,17 @@ export default {
     UserEdit
   },
   props: {
-    user: {
+    initialUser: {
       type: Object,
-      required: true
+      default: () => ({
+        id: -1,
+        name: '',
+        email: '',
+        account: '',
+        cover: '',
+        avatar: '',
+        introduction: ''
+      })
     },
     followingCount: {
       type: Number,
@@ -115,18 +125,13 @@ export default {
     isCurrentUser: {
       type: Boolean,
       required: true
-    },
-    initialIsInfo: {
-      type: Boolean,
-      required: true
-    },
-    initialIsFollow: {
-      type: Boolean,
-      required: true
     }
   },
   data () {
     return {
+      user: {
+       ...this.initialUser 
+      },
       isInfo: this.initialIsInfo,
       isFollow: this.initialIsFollow
     }

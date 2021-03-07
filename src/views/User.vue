@@ -13,12 +13,10 @@
           :user-tweets-count="tweetsCount"
         />
         <UserProfileCard 
-          :user="user"
+          :initial-user="user"
           :following-count="followingCount"
           :follower-count="followerCount"
           :isCurrentUser="currentUser"
-          :initialIsInfo="info"
-          :initialIsFollow="isFollow"
         />
         <ul class="nav">
           <li
@@ -82,7 +80,8 @@ const dummyData = {
     "cover": "http://placeimg.com/640/480/nature",
     "createdAt": "2021-03-02T02:18:21.000Z",
     "updatedAt": "2021-03-02T02:18:21.000Z",
-    "isSelf": true
+    "isSelf": true,
+    "isFollowed": false 
   } 
 }
 
@@ -142,6 +141,8 @@ const dummyTweets = [
   }
 ]
 
+//
+
 //使用者所有正在追蹤的人
 const dummyFollowing = [
   {
@@ -190,6 +191,9 @@ const dummyFollower = [
   }
 ]
 
+
+
+
 import UserHeader from '../components/UserHeader'
 import UserProfileCard from '../components/UserProfileCard'
 import PostCard from '../components/PostCard'
@@ -219,8 +223,6 @@ export default {
       followerCount: 0,
       currentUser: false,
       tweets: [],
-      info: false,
-      isFollow: false,
       isPostActive: true,
       isPostAndRecommentActive: false,
       isLikeActive: false,
