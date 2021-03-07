@@ -36,4 +36,9 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
+  updateUserInfo({ userId, formData }) {
+    return apiHelper.put(`/users/${userId}`, formData, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  }
 }

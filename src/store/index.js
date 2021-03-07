@@ -39,7 +39,6 @@ export default new Vuex.Store({
         // 呼叫 usersAPI.getCurrentUser() 方法，並將 response 顯示出來
         const { data } = await usersAPI.get({ userId })
         let { id, name, email, role } = data
-        console.log("store中的持續登入")
         commit('setCurrentUser', {
           id,
           name,

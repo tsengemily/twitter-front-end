@@ -4,7 +4,7 @@
       <Navbar v-bind:isSetting="isSetting" v-bind:MainPage="MainPage" />
       <div class="setting-main">
         <div class="setting-main-header">帳戶設定</div>
-        <form>
+        <form @submit.prevent.stop="handleSubmit($event)">
           <div class="form-group">
             <label for="account"></label>
             <input
@@ -13,6 +13,8 @@
               class="form-control"
               placeholder="帳號"
               required
+              v-model="userData.account"
+              name="accout"
             />
           </div>
           <div class="form-group">
@@ -23,6 +25,8 @@
               class="form-control"
               placeholder="名稱"
               required
+              v-model="userData.name"
+              name="name"
             />
           </div>
           <div class="form-group">
@@ -33,6 +37,8 @@
               class="form-control"
               placeholder="Email"
               required
+              v-model="userData.email"
+              name="email"
             />
           </div>
           <div class="form-group">
@@ -43,6 +49,9 @@
               class="form-control"
               placeholder="密碼"
               required
+              v-model="userData.password"
+              name="password"
+              autocomplete="off"
             />
           </div>
           <div class="form-group">
@@ -53,9 +62,12 @@
               class="form-control"
               placeholder="密碼確認"
               required
+              v-model="userData.confirmPassword"
+              name="passwordConfirm"
+              autocomplete="off"
             />
           </div>
-          <button type="button" class="btn btn-primary btn-lg">儲存</button>
+          <button type="submit" class="btn btn-primary btn-lg">儲存</button>
         </form>
       </div>
     </div>
@@ -64,6 +76,13 @@
 
 <script>
 import Navbar from "./../components/Navbar";
+
+import SettingAPI from "./../apis/user";
+import { Toast } from "./../utils/helpers";
+
+// 從 Vuex 抓取使用者資料
+import { mapState } from "vuex";
+
 export default {
   name: "Setting",
   components: {
@@ -73,6 +92,13 @@ export default {
     return {
       MainPage: false,
       isSetting: false,
+      userData: {
+        account: "",
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      },
     };
   },
   created() {
@@ -81,6 +107,66 @@ export default {
       this.isSetting = true;
       this.MainPage = false;
     }
+    const { userId } = { userId: this.currentUser.id };
+    this.getUserId({ userId });
+  },
+  methods: {
+    async getUserId({ userId }) {
+      try {
+        const response = await SettingAPI.get({ userId });
+        this.userData = { ...response.data };
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試",
+        });
+      }
+    },
+    async handleSubmit(event) {
+      try {
+        // 確認帳號與密碼是否一樣
+        if (this.userData.account === this.userData.email) {
+          Toast.fire({
+            icon: "error",
+            title: "請勿將帳號與密碼設置為一樣",
+          });
+          return false;
+        }
+        // 確認密碼與確認密碼是否一樣
+        if (this.userData.password !== this.userData.confirmPassword) {
+          Toast.fire({
+            icon: "error",
+            title: "密碼與確認密碼不一致",
+          });
+          return false;
+        }
+        // 將event.target轉成form格式準備打包送出
+        const form = event.target;
+        const formData = new FormData(form);
+        const { userId } = { userId: this.currentUser.id };
+        const { data } = await SettingAPI.updateUserInfo({ userId, formData });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.$router.push({
+          name: "MainPage",
+          params: { id: this.currentUser.id },
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試",
+        });
+      }
+    },
+  },
+
+  computed: {
+    ...mapState([
+      "currentUser",
+      "isAuthenticated",
+    ]) /* TODO: 又是解構付值要問 */,
   },
 };
 </script>
