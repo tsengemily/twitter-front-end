@@ -95,20 +95,20 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form class="tweet-textarea" action="">
+          <form
+            class="tweet-textarea"
+            @submit.prevent.stop="handleSubmit($event)"
+          >
             <div class="modal-body">
-              <img
-                class="user-photo"
-                src="https://picsum.photos/300/300"
-                alt=""
-              />
+              <img class="user-photo" v-bind:src="userData.avatar" alt="" />
               <textarea
                 class="form-control msg-board"
                 placeholder="有什麼新鮮事?"
+                v-model="description"
               ></textarea>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary modal-btn-size">
+              <button type="submit" class="btn btn-primary modal-btn-size">
                 推文
               </button>
             </div>
@@ -122,6 +122,9 @@
 <script>
 // 從 Vuex 抓取使用者資料
 import { mapState } from "vuex";
+
+import mainPageAPI from "./../apis/user";
+import { Toast } from "./../utils/helpers";
 
 export default {
   name: "Navbar",
@@ -138,10 +141,54 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      description: "",
+      userData: {},
+    };
   },
   created() {
     // console.log(this.$route);
+    const { userId } = { userId: this.currentUser.id };
+    this.fetchMainPage({ userId });
+  },
+  methods: {
+    async fetchMainPage({ userId }) {
+      try {
+        const response = await mainPageAPI.mainPage({ userId });
+        this.tweetData = [...response.data];
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試",
+        });
+      }
+    },
+    async handleSubmit(event) {
+      try {
+        const form = event.target;
+        const formData = new FormData(form);
+        // for (let [name, value] of formData.entries()) {
+        //   console.log(name + ": " + value);
+        // }
+        console.log(formData);
+        console.log("description", this.description);
+        // const { data } = await SettingAPI.userSetUp({ formData });
+        const { data } = await mainPageAPI.tweet({
+          description: this.description,
+        });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        location.reload();
+        // this.$router.push({ path: `/mainpage/${this.currentUser.id}` });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法建立推文，請稍後再試",
+        });
+      }
+    },
   },
   computed: {
     ...mapState([

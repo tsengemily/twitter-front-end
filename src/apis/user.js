@@ -47,4 +47,9 @@ export default {
   // userSetUp({ formData }) {
   //   return apiHelper.post(`/users`, { formData })
   // }
+  tweet({ description }) {
+    return apiHelper.post(`/tweets`, { description }, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
 }

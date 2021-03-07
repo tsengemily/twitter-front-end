@@ -67,7 +67,8 @@
           />
           <div class="replylist-main-following-msg">
             <div class="replylist-main-following-msg-name">
-              Apple<span class="replylist-main-following-msg-name-app">
+              {{ reply.User.name
+              }}<span class="replylist-main-following-msg-name-app">
                 @apple．{{ reply.updatedAt | fromNow }}</span
               >
             </div>
@@ -204,7 +205,7 @@ export default {
       try {
         const response = await mainPageAPI.ReplyList({ tweetId });
         this.tweetData = { ...response.data };
-        console.log(this.tweetData);
+        console.log("this.tweetData", this.tweetData);
       } catch (error) {
         Toast.fire({
           icon: "error",

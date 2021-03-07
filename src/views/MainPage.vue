@@ -12,12 +12,16 @@
             v-bind:src="userData.avatar"
             alt=""
           />
-          <form class="main-tweet-textarea" action="">
+          <form
+            class="main-tweet-textarea"
+            @submit.prevent.stop="handleSubmit($event)"
+          >
             <textarea
               class="form-control main-tweet-msg-board"
               placeholder="有什麼新鮮事?"
+              v-model="description"
             ></textarea>
-            <button type="button" class="btn btn-primary">推文</button>
+            <button type="submit" class="btn btn-primary">推文</button>
           </form>
         </div>
         <div class="main-space"></div>
@@ -79,6 +83,7 @@ export default {
       isSetting: false,
       tweetData: [],
       userData: {},
+      description: "",
     };
   },
   created() {
@@ -107,11 +112,36 @@ export default {
       try {
         const response = await mainPageAPI.get({ userId });
         this.userData = { ...response.data };
-        console.log(this.userData);
       } catch (error) {
         Toast.fire({
           icon: "error",
           title: "無法取得資料，請稍後再試",
+        });
+      }
+    },
+    async handleSubmit(event) {
+      try {
+        const form = event.target;
+        const formData = new FormData(form);
+        // for (let [name, value] of formData.entries()) {
+        //   console.log(name + ": " + value);
+        // }
+        console.log(formData);
+        console.log("description", this.description);
+        // const { data } = await SettingAPI.userSetUp({ formData });
+        const { data } = await mainPageAPI.tweet({
+          description: this.description,
+        });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        location.reload();
+        // this.$router.push({ path: `/mainpage/${this.currentUser.id}` });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法建立推文，請稍後再試",
         });
       }
     },
