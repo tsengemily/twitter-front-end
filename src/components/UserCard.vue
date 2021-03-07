@@ -5,36 +5,42 @@
     >
       <img 
         class="user-avatar"
-        src="https://picsum.photos/300/200"
+        :src="initialFollowing.following.avatar"
       >
     </router-link>
     
 
     <div>
       <h1 class="user-name">
-         Devon Lanne
+         {{initialFollowing.following.name}}
       </h1>
       <p class="user-account ml-2">
-        @DL
+        @{{initialFollowing.following.account}}
       </p>
 
       <template
-        v-if="isFollow"
+        v-if="isFollowed"
       >
-        <button class="follow-btn following"> 
+        <button 
+          class="follow-btn following"
+          @click="deleteFollow"
+        > 
           正在跟隨
         </button>
       </template>
       <template
         v-else
       >
-        <button class="follow-btn follow">
+        <button 
+          class="follow-btn follow"
+          @click="addFollow"
+        >
           跟隨
         </button>
       </template>
 
       <p class="post-txt">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime, ipsam?
+        {{initialFollowing.following.introduction}}
       </p>
     </div>
   </div>
@@ -44,14 +50,22 @@
 <script>
 export default {
   props: {
-    initialIsFollow: {
-      type: Boolean,
+    initialFollowing: {
+      type: Object,
       required: true
-    }
+    },
   },
   data () {
     return {
-      isFollow: this.initialIsFollow
+      isFollowed: this.initialFollowing.isFollowed
+    }
+  },
+  methods: {
+    deleteFollow () {
+      this.isFollowed = false
+    },
+    addFollow () {
+      this.isFollowed = true
     }
   }
 }
