@@ -34,9 +34,9 @@
             {{ tweetData.updatedAt | publishTime }}
           </div>
           <div class="replylist-main-tweet-replyRecord">
-            {{ tweetData.Likes.length }}
-            <span class="replylist-main-tweet-replyRecord-style">回覆</span>
             {{ tweetData.Replies.length }}
+            <span class="replylist-main-tweet-replyRecord-style">回覆</span>
+            {{ tweetData.Likes.length }}
             <span class="replylist-main-tweet-replyRecord-style">
               喜歡次數
             </span>
@@ -49,8 +49,16 @@
               data-target="#ReplyListModal"
             ></i>
             <i
+              v-if="isLike"
+              class="fas fa-heart replylist-main-tweet-icons-icon-favorite"
+              style="font-size: 25px"
+              v-on:click="deleteLike"
+            ></i>
+            <i
+              v-else
               class="far fa-heart replylist-main-tweet-icons-icon"
               style="font-size: 25px"
+              v-on:click="addLike"
             ></i>
           </div>
         </div>
@@ -105,7 +113,10 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form class="tweet-textarea" action="">
+          <form
+            class="tweet-textarea"
+            @submit.prevent.stop="handleSubmit($event)"
+          >
             <div class="modal-body">
               <div class="modal-body-tweet">
                 <img
@@ -139,12 +150,13 @@
                 <textarea
                   class="form-control modal-body-reply-msg"
                   placeholder="推你的回覆"
+                  v-model="comment"
                 ></textarea>
               </div>
             </div>
             <div class="modal-footer">
               <button
-                type="button"
+                type="submit"
                 class="btn btn-primary modal-footer-btn-size"
               >
                 回覆
@@ -189,6 +201,10 @@ export default {
           avatar: "",
         },
       },
+      comment: "",
+      isLike: false,
+      likeUsersId: [],
+      likeList: [],
     };
   },
   created() {
@@ -205,11 +221,83 @@ export default {
       try {
         const response = await mainPageAPI.ReplyList({ tweetId });
         this.tweetData = { ...response.data };
-        console.log("this.tweetData", this.tweetData);
+        // 檢驗使用者是否有對貼文按讚
+        this.likeList = [...this.tweetData.Likes];
+
+        this.likeList.forEach((like) => {
+          this.likeUsersId.push(like.UserId);
+        });
+        if (this.likeUsersId.includes(this.currentUser.id)) {
+          this.isLike = true;
+        }
       } catch (error) {
         Toast.fire({
           icon: "error",
           title: "無法取得資料，請稍後再試",
+        });
+      }
+    },
+    async handleSubmit(event) {
+      try {
+        const form = event.target;
+        const formData = new FormData(form);
+        // for (let [name, value] of formData.entries()) {
+        //   console.log(name + ": " + value);
+        // }
+        console.log(formData);
+        console.log("comment", this.comment);
+        const { id: tweetId } = this.$route.params;
+        // const { data } = await SettingAPI.userSetUp({ formData });
+        const { data } = await mainPageAPI.reply({
+          tweetId,
+          comment: this.comment,
+        });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        location.reload();
+        // this.$router.push({ path: `/mainpage/${this.currentUser.id}` });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法建立推文，請稍後再試",
+        });
+      }
+    },
+    async addLike() {
+      try {
+        const { id: tweetId } = this.$route.params;
+        const { data } = await mainPageAPI.addLike({ tweetId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.isLike = true;
+        location.reload();
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法將推文加入最愛，請稍後再試",
+        });
+      }
+    },
+    async deleteLike() {
+      try {
+        const { id: tweetId } = this.$route.params;
+        const { data } = await mainPageAPI.deleteLike({ tweetId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.isLike = false;
+        location.reload();
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法將推文移除最愛，請稍後再試",
         });
       }
     },
@@ -309,6 +397,14 @@ export default {
 .replylist-main-tweet-icons-icon {
   margin-right: 60px;
   color: rgba(101, 119, 134, 1);
+}
+.replylist-main-tweet-icons-icon-favorite {
+  margin-right: 60px;
+  color: rgba(255, 102, 0, 1);
+}
+.replylist-main-tweet-icons-icon,
+.replylist-main-tweet-icons-icon-favorite {
+  cursor: pointer;
 }
 .replylist-main-following {
   width: 100%;
