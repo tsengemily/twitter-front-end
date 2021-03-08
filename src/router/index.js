@@ -79,8 +79,30 @@ const router = new VueRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
-  store.dispatch('fetchCurrentUser')
+router.beforeEach(async (to, from, next) => {
+  // 從 localStorage 取出 token
+  const token = localStorage.getItem('token')
+  // 預設是尚未驗證
+  let isAuthenticated = false
+  // 如果有 token 的話才驗證
+  if (token) {
+    // 取得驗證成功與否
+    isAuthenticated = store.dispatch('fetchCurrentUser')
+  }
+  // 對於不需要驗證 token 的頁面
+  const pathsWithoutAuthentication = ['Login', 'Regist']
+  // 如果 token 無效則轉址到登入頁
+  if (!isAuthenticated && !pathsWithoutAuthentication.includes(to.name)) {
+    next('/login')
+    return
+  }
+  // 如果 token 有效則轉址到首頁
+  if (isAuthenticated && pathsWithoutAuthentication.includes(to.name)) {
+    const userId = localStorage.getItem('userId')
+    console.log(userId)
+    next(`/mainpage/${userId}`)
+    return
+  }
   next()
 })
 

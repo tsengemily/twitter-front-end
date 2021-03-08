@@ -64,12 +64,12 @@
           推文
         </button>
       </li>
-      <li class="nav-item log-out">
-        <router-link class="log-out-style" to="/login">
-          <i class="fas fa-sign-out-alt" style="font-size: 25px"
-            ><span>登出</span></i
-          >
-        </router-link>
+      <li class="nav-item log-out log-out-style">
+        <!-- <router-link class="log-out-style" to="/login"> -->
+        <i class="fas fa-sign-out-alt" style="font-size: 25px" @click="logout"
+          ><span>登出</span></i
+        >
+        <!-- </router-link> -->
       </li>
     </ul>
 
@@ -152,6 +152,10 @@ export default {
     this.fetchMainPage({ userId });
   },
   methods: {
+    logout() {
+      this.$store.commit("revokeAuthentication");
+      this.$router.push("/login");
+    },
     async fetchMainPage({ userId }) {
       try {
         const response = await mainPageAPI.mainPage({ userId });
@@ -252,6 +256,7 @@ span {
 }
 .log-out-style:hover {
   color: rgb(2, 117, 216);
+  cursor: pointer;
 }
 .modal-btn-size {
   width: 64px;
