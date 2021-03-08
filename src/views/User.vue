@@ -49,9 +49,17 @@
       </div>
       <!-- 跟隨誰 -->
       <div class="right">
-        <Top10User 
-          :initialIsFollow="isFollow"
-        />
+        <div class="top-users-container">
+          <h1 class="top-users-title">跟隨誰</h1>
+            <Top10User 
+              v-for="topUser in topUsers"
+              :key="topUser.id"
+              :initial-top-user="topUser"
+            />
+          <div class="top-users-more">
+            顯示更多
+          </div> 
+        </div>
       </div>  
     </div>  
   </div>
@@ -60,13 +68,6 @@
 
 
 <script>
-// const dummyUser = {
-//   currentUser: {
-//     id: 2,
-//     name: "user1",
-//   }
-// }
-
 //查看使用者
 const dummyData = {
   'user': {
@@ -141,8 +142,6 @@ const dummyTweets = [
   }
 ]
 
-//
-
 //使用者所有正在追蹤的人
 const dummyFollowing = [
   {
@@ -191,6 +190,89 @@ const dummyFollower = [
   }
 ]
 
+//top10users
+const dummyTopUser = [
+  {
+    "id": 1,
+    "account": "user1",
+    "email": "user1@example.com",
+    "password": "$2a$10$P/pvqRxhgVuoIC6fG2yHOunYnFnkhBOIR6kdi1LWhLM96kF9/rtHK",
+    "name": "Johnny1",
+    "avatar": "http://placeimg.com/640/480/people",
+    "introduction": "I am Johnny4",
+    "role": "user",
+    "cover": "http://placeimg.com/640/480/nature",
+    "createdAt": "2021-03-05T04:26:13.000Z",
+    "updatedAt": "2021-03-05T04:26:13.000Z",
+    "Followers": [],
+    "followerCount": 1,
+    "isFollowed": false
+  },
+  {
+    "id": 2,
+    "account": "user2",
+    "email": "user2@example.com",
+    "password": "$2a$10$P/pvqRxhgVuoIC6fG2yHOunYnFnkhBOIR6kdi1LWhLM96kF9/rtHK",
+    "name": "Johnny2",
+    "avatar": "http://placeimg.com/640/480/people",
+    "introduction": "I am Johnny4",
+    "role": "user",
+    "cover": "http://placeimg.com/640/480/nature",
+    "createdAt": "2021-03-05T04:26:13.000Z",
+    "updatedAt": "2021-03-05T04:26:13.000Z",
+    "Followers": [],
+    "followerCount": 2,
+    "isFollowed": false
+  },
+  {
+    "id": 3,
+    "account": "user3",
+    "email": "user4@example.com",
+    "password": "$2a$10$P/pvqRxhgVuoIC6fG2yHOunYnFnkhBOIR6kdi1LWhLM96kF9/rtHK",
+    "name": "Johnny3",
+    "avatar": "http://placeimg.com/640/480/people",
+    "introduction": "I am Johnny4",
+    "role": "user",
+    "cover": "http://placeimg.com/640/480/nature",
+    "createdAt": "2021-03-05T04:26:13.000Z",
+    "updatedAt": "2021-03-05T04:26:13.000Z",
+    "Followers": [],
+    "followerCount": 3,
+    "isFollowed": false
+  },
+  {
+    "id": 4,
+    "account": "user4",
+    "email": "user4@example.com",
+    "password": "$2a$10$P/pvqRxhgVuoIC6fG2yHOunYnFnkhBOIR6kdi1LWhLM96kF9/rtHK",
+    "name": "Johnny4",
+    "avatar": "http://placeimg.com/640/480/people",
+    "introduction": "I am Johnny4",
+    "role": "user",
+    "cover": "http://placeimg.com/640/480/nature",
+    "createdAt": "2021-03-05T04:26:13.000Z",
+    "updatedAt": "2021-03-05T04:26:13.000Z",
+    "Followers": [],
+    "followerCount": 4,
+    "isFollowed": false
+  },
+  {
+    "id": 5,
+    "account": "user5",
+    "email": "user4@example.com",
+    "password": "$2a$10$P/pvqRxhgVuoIC6fG2yHOunYnFnkhBOIR6kdi1LWhLM96kF9/rtHK",
+    "name": "Johnny5",
+    "avatar": "http://placeimg.com/640/480/people",
+    "introduction": "I am Johnny4",
+    "role": "user",
+    "cover": "http://placeimg.com/640/480/nature",
+    "createdAt": "2021-03-05T04:26:13.000Z",
+    "updatedAt": "2021-03-05T04:26:13.000Z",
+    "Followers": [],
+    "followerCount": 5,
+    "isFollowed": false
+  }
+]
 
 
 
@@ -226,14 +308,20 @@ export default {
       isPostActive: true,
       isPostAndRecommentActive: false,
       isLikeActive: false,
-      isLiked: false
+      topUsers: []
     }
   },
   created () {
-    this.fetchUser()
+    const { id: userId } = this.$route.params
+    this.fetchUser(userId)
+    this.fetchTopUsers()
   },
   methods: {
     fetchUser () {
+      //get:/api/users/{id}
+      //get:/api/users/{id}/tweets
+      //get:/api/users/{id}/followings
+      //get:/api/users/{id}/followers
       const { user } = dummyData
       const { id, name, email, account, cover, avatar, introduction, isSelf } = user
       this.user = {
@@ -252,24 +340,36 @@ export default {
       this.currentUser = isSelf,
       this.tweets = dummyTweets
     },
+    fetchTopUsers () {
+      //get:/api/users/top
+      this.topUsers = dummyTopUser
+    },
      postActive () {
       this.isPostActive = true
       this.isPostAndRecommentActive = false
       this.isLikeActive = false
       //向api發送請求 推文
+      //get:/api/users/{id}/tweets
     },
      postAndRecommentActive () {
       this.isPostActive = false
       this.isPostAndRecommentActive = true
       this.isLikeActive = false
       //向api發送請求 推文與回覆
+      //get:/api/users/{id}/replied_tweets
     },
     likeActive () {
       this.isPostActive = false
       this.isPostAndRecommentActive = false
       this.isLikeActive = true
       //向api發送請求 喜歡的內容
+      //get:/api/users/{id}/likes
     }
+  },
+  beforeRouteUpdate (to, next) {
+    const { id: userId } = to.params
+    this.fetchUser(userId)
+    next()
   }
 }
 </script>
@@ -299,7 +399,32 @@ export default {
 
   .right {
     /* outline: 5px solid blue; */
+    position: relative;
     width: 25%;
+  }
+
+  .top-users-container {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    background-color: #f5f8fa;
+    border-radius: 14px;
+    width: 220px;
+  }
+
+  .top-users-title {
+    padding: 5px 15px;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 35px;
+    border-bottom: 1px solid #e6ecf0;
+  }
+
+  .top-users-more {
+    padding: 5px 15px;
+    font-size: 13px;
+    line-height: 30px;
+    color: #ff6600;
   }
 
 

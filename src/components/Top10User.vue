@@ -1,79 +1,41 @@
 <template>
-  <div class="right-part">
-    <div class="top-users-container">
-      <h1>跟隨誰</h1>
+  <div class="card-container d-flex">
+    <img 
+      class="user-avatar"
+      :src="topUser.avatar"
+    >
 
-      <div class="card-container d-flex">
-        <img 
-          class="user-avatar"
-          src="https://picsum.photos/300/200"
+    <div>
+      <h2 class="user-name">
+        {{topUser.name}}
+      </h2>
+      <router-link 
+        class="user-account ml-2"
+        :to="{name: 'user', params: {id: topUser.id}}" 
+      >
+        @{{topUser.account}}
+      </router-link>
+
+      <template
+        v-if="topUser.isFollowed"
+      >
+        <button 
+          class="follow-btn following"
+          @click.stop.prevent="deleteFollow(topUser.id)"
+        > 
+          正在跟隨
+        </button>
+      </template>
+      <template
+        v-else
+      >
+        <button 
+          class="follow-btn follow"
+          @click.stop.prevent="addFollow(topUser.id)"
         >
-
-        <div>
-          <h2 class="user-name">
-            Pizza Hut
-          </h2>
-          <router-link 
-            class="user-account ml-2"
-            :to="{name: 'user', params: {id: user.id}}" 
-          >
-            @pizzahut
-          </router-link>
-
-          <template
-            v-if="isFollow"
-          >
-            <button class="follow-btn following"> 
-              正在跟隨
-            </button>
-          </template>
-          <template
-            v-else
-          >
-            <button class="follow-btn follow">
-              跟隨
-            </button>
-          </template>
-        </div>
-      </div>
-
-      <div class="card-container d-flex">
-        <img 
-          class="user-avatar"
-          src="https://picsum.photos/300/200"
-        >
-
-        <div>
-          <h2 class="user-name">
-            Pizza Hut
-          </h2>
-          <router-link 
-            class="user-account ml-2"
-            :to="{name: 'user', params: {id: user.id}}" 
-          >
-            @pizzahut
-          </router-link>
-
-          <template
-            v-if="isFollow"
-          >
-            <button class="follow-btn following"> 
-              正在跟隨
-            </button>
-          </template>
-          <template
-            v-else
-          >
-            <button class="follow-btn follow">
-              哈囉跟隨
-            </button>
-          </template>
-        </div>
-      </div>
-
-      <div class="more">
-        顯示更多
-      </div> 
+          跟隨
+        </button>
+      </template>
     </div>
   </div>
 </template>
@@ -82,17 +44,32 @@
 <script>
 export default {
   props: {
-    initialIsFollow: {
-      type: Boolean,
+    initialTopUser: {
+      type: Object,
       required: true
     }
   },
   data () {
     return {
-      user: {
-        id: 1234
-      },
-      isFollow: this.initialIsFollow
+      topUser: this.initialTopUser
+    }
+  },
+  methods: {
+    deleteFollow () {
+      //delete/api/followships/{followingId}
+      //api:followshipsAPI.deleteFollow({followingId})
+      this.topUser = {
+        ...this.topUser,
+        isFollowed: false
+      }
+    },
+    addFollow () {
+      //post/api/followships
+      //api:followshipsAPI.addFollow
+      this.topUser = {
+        ...this.topUser,
+        isFollowed: true
+      }
     }
   }
 }
@@ -100,30 +77,6 @@ export default {
 
 
 <style scoped>
-  .right-part {
-    /* outline: 4px solid purple; */
-    position: relative;
-    width: 240px;
-
-  }
-
-  .top-users-container {
-    position: absolute;
-    top: 15px;
-    left: 20px;
-    background-color: #f5f8fa;
-    border-radius: 14px;
-    width: 220px;
-  }
-
-  h1 {
-    padding: 5px 15px;
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 35px;
-    border-bottom: 1px solid #e6ecf0;
-  }
-
   .card-container {
     /* outline: 1px solid #808080; */
     position: relative;
@@ -173,12 +126,5 @@ export default {
   .following {
     background: #ff6600;
     color: #fff;
-  }
-
-  .more {
-    padding: 5px 15px;
-    font-size: 13px;
-    line-height: 30px;
-    color: #ff6600;
   }
 </style>

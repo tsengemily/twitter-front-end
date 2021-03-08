@@ -68,7 +68,7 @@ export default {
   methods: {
     deleteFollow () {
       //delete/api/followships/{followingId}
-      //api:usersAPI.deleteFollow({followingId})
+      //api:followshipsAPI.deleteFollow({followingId})
       this.following = {
         ...this.following,
         isFollowed: false
@@ -76,7 +76,7 @@ export default {
     },
     addFollow () {
       //post/api/followships
-      //api:usersAPI.addFollow({userId})
+      //api:followshipsAPI.addFollow
        this.following = {
         ...this.following,
         isFollowed: true

@@ -162,7 +162,8 @@ export default {
     }
   },
   created () {
-    this.fetchUser()
+    const { id: userId } = this.$route.params
+    this.fetchUser(userId)
   },
   methods: {
     fetchUser () {
@@ -174,6 +175,11 @@ export default {
       this.tweetsCount = dummyTweets.length
       this.followers = dummyFollower
     }
+  },
+  beforeRouteUpdate (to, next) {
+    const { id: userId } = to.params
+    this.fetchUser(userId)
+    next()
   }
 }
 </script>

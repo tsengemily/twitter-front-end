@@ -28,7 +28,7 @@
       >
         <button 
           class="follow-btn following"
-          @click="deleteFollow(follower.followerId)"
+          @click.stop.prevent="deleteFollow(follower.followerId)"
         > 
           正在跟隨
         </button>
@@ -38,7 +38,7 @@
       >
         <button 
           class="follow-btn follow"
-          @click="addFollow(follower.followerId)"
+          @click.stop.prevent="addFollow(follower.followerId)"
         >
           跟隨
         </button>
@@ -68,7 +68,7 @@ export default {
   methods: {
     deleteFollow () {
       //delete/api/followships/{followingId}
-      //api:usersAPI.deleteFollow({followingId})
+      //api:followshipsAPI.deleteFollow({followingId})
       this.follower = {
         ...this.follower,
         isFollowed: false
@@ -76,7 +76,7 @@ export default {
     },
     addFollow () {
       //post/api/followships
-      //api:usersAPI.addFollow({userId})
+      //api:followshipsAPI.addFollow
       this.follower = {
         ...this.follower,
         isFollowed: true

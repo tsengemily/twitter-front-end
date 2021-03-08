@@ -1,14 +1,16 @@
 <template>
-  <div id="simple-twitter">
-    <router-view/>
+  <div class="">
+    <div id="simple-twitter">
+      <router-view />
+    </div>
   </div>
 </template>
 
 <script>
-import 'bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import "bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 export default {
-  name: 'App'
-}
+  name: "App",
+};
 </script>
 

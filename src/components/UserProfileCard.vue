@@ -98,6 +98,7 @@
 import UserEdit from '../components/UserEdit'
 
 export default {
+  name: 'UserProfileCard',
   components: {
     UserEdit
   },
@@ -132,7 +133,7 @@ export default {
       user: {
        ...this.initialUser 
       },
-      isInfo: this.initialIsInfo,
+      isInfo: false,
       isFollow: this.initialIsFollow
     }
   }

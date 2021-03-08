@@ -62,6 +62,7 @@
 import moment from 'moment'
 
 export default {
+  name: 'PostCard',
   props: {
     initialTweet: {
       type: Object,
@@ -77,6 +78,7 @@ export default {
   },
   methods: {
     addLike () {
+      //post:api/tweets/{tweetId}/like
       this.tweet = {
         ...this.tweet,
         isLikedbyMe: true
@@ -84,6 +86,7 @@ export default {
       this.likeCount = this.likeCount + 1 
     },
     deleteLike() {
+      //post:api/tweets/{tweetId}/unlike
       this.tweet = {
         ...this.tweet,
         isLikedbyMe: false
