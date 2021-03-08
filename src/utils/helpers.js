@@ -5,12 +5,12 @@ import Swal from 'sweetalert2'
 // const baseURL = 'http://localhost:3000/api'
 
 export const apiHelper = axios.create({
-  baseURL: 'http://localhost:3000/api'
+  baseURL: 'http://localhost:3000/api',
 })
 
 export const Toast = Swal.mixin({
   toast: true,
   position: 'top-end',
   showConfirmButton: false,
-  timer: 3000
+  timer: 3000,
 })
