@@ -20,11 +20,11 @@
             <div class="AdminMain-tweet-msg-name">
               {{ tweet.User.name
               }}<span class="AdminMain-tweet-msg-name-app">
-                @apple．{{ tweet.User.updatedAt | fromNow }}</span
+                @apple．{{ tweet.updatedAt | fromNow }}</span
               >
             </div>
             <div class="AdminMain-tweet-msg-name-msg">
-              {{ tweet.description }}
+              {{ tweet.description | textCount }}
             </div>
           </div>
           <div class="AdminMain-tweet-delete">
@@ -85,9 +85,7 @@ export default {
         });
       }
     },
-    textCount(text) {
-      text;
-    },
+
     async deleteTweet(tweetId) {
       try {
         const { TweetId } = { TweetId: tweetId };
@@ -118,6 +116,14 @@ export default {
       }
       // 使用 moment 提供的 fromNow 方法
       return moment(datetime).fromNow();
+    },
+    textCount(text) {
+      if (text.length > 50) {
+        text = text.substr(0, 50);
+        text = text + "...";
+        return text;
+      }
+      return text;
     },
   },
 };
