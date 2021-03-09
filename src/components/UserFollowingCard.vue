@@ -38,7 +38,7 @@
       >
         <button 
           class="follow-btn follow"
-          @click="addFollow(following.followingId)"
+          @click="addFollow()"
         >
           跟隨
         </button>
@@ -53,6 +53,10 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import UserAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
+
 export default {
   props: {
     initialFollowing: {
@@ -65,21 +69,58 @@ export default {
       following: this.initialFollowing
     }
   },
+  computed: {
+    ...mapState(['currentUser'])
+  },
   methods: {
-    deleteFollow () {
-      //delete/api/followships/{followingId}
-      //api:followshipsAPI.deleteFollow({followingId})
-      this.following = {
-        ...this.following,
-        isFollowed: false
+    async addFollow () {
+      try {
+        const { data } = await UserAPI.addFollow({ id: this.following.followingId })
+
+         if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.following = {
+          ...this.following,
+          isFollowed: true
+        }
+
+        Toast.fire({
+          icon: 'success',
+          title: '新增跟隨成功'
+        })
+      }  catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法新增跟隨，請稍後再試'
+        })
+        console.log(error)
       }
     },
-    addFollow () {
-      //post/api/followships
-      //api:followshipsAPI.addFollow
-       this.following = {
-        ...this.following,
-        isFollowed: true
+     async deleteFollow (userId) {
+      try {
+        const { data } = await UserAPI.deleteFollow({ userId })
+
+         if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.following = {
+          ...this.following,
+          isFollowed: false
+        }
+
+        Toast.fire({
+          icon: 'success',
+          title: '取消跟隨成功'
+        })
+      }  catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取消跟隨，請稍後再試'
+        })
+        console.log(error)
       }
     }
   }
