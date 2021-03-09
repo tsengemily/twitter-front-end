@@ -39,6 +39,7 @@
         <button 
           class="follow-btn follow"
           @click.stop.prevent="addFollow()"
+          :disabled="follower.followerId === currentUser.id"
         >
           跟隨
         </button>

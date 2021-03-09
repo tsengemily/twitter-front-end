@@ -55,7 +55,7 @@
         >
           <button 
             class="follow-btn follow"
-            @click="addFollow(user.id)"
+            @click="addFollow()"
           >
             跟隨
           </button>
@@ -102,6 +102,9 @@
 
 <script>
 import UserEdit from '../components/UserEdit'
+import { mapState } from 'vuex'
+import UserAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
 
 export default {
   name: 'UserProfileCard',
@@ -124,10 +127,6 @@ export default {
         followingCount: 0
       })
     },
-    initialFollowingCount: {
-      type: Number,
-      required: true
-    },
     isCurrentUser: {
       type: Boolean,
       required: true
@@ -140,6 +139,9 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState(['currentUser'])
+  },
   watch: {
     initialUser (newValue) {
       this.user = {
@@ -149,25 +151,60 @@ export default {
     }
   },
   methods: {
-    deleteFollow () {
-      //delete/api/followships/{followingId}
-      //api:followshipsAPI.deleteFollow({followingId})
-      this.user = {
-        ...this.user,
-        isFollowed: false
+    async addFollow () {
+      try {
+        const { data } = await UserAPI.addFollow({ id: this.user.id })
+
+         if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.user = {
+          ...this.user,
+          isFollowed: true
+        }
+        this.user.followerCount = this.user.followerCount + 1
+
+        Toast.fire({
+          icon: 'success',
+          title: '新增跟隨成功'
+        })
+      }  catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法新增跟隨，請稍後再試'
+        })
+        console.log(error)
       }
-      this.followerCount -= 1 
     },
-    addFollow () {
-      //post/api/followships
-      //api:followshipsAPI.addFollow
-       this.user = {
-        ...this.user,
-        isFollowed: true
+     async deleteFollow (userId) {
+      try {
+        const { data } = await UserAPI.deleteFollow({ userId })
+
+         if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.user = {
+          ...this.user,
+          isFollowed: false
+        }
+        this.user.followerCount = this.user.followerCount - 1
+    
+
+        Toast.fire({
+          icon: 'success',
+          title: '取消跟隨成功'
+        })
+      }  catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取消跟隨，請稍後再試'
+        })
+        console.log(error)
       }
-      this.followerCount += 1 
     }
-  }
+  }  
 }
 </script>
 

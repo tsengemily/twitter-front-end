@@ -9,12 +9,12 @@
       <!-- 主要內容 -->
       <div class="main">
         <UserHeader 
+          :user-id="user.id"
           :user-name="user.name"
-          :user-tweets-count="tweetsCount"
+          :user-tweets-count="user.tweetCount"
         />
         <UserProfileCard 
           :initial-user="user"
-          :initial-following-count="user.followingCount"
           :isCurrentUser="currentUser"
         />
         <ul class="nav">
@@ -98,15 +98,15 @@ export default {
         introduction: '',
         isFollowed: false,
         followerCount: 0,
-        followingCount: 0
+        followingCount: 0,
+        tweetCount: 0
       },
-      tweetsCount: 0,
       currentUser: false,
       tweets: [],
+      topUsers: [],
       isPostActive: true,
       isPostAndRecommentActive: false,
-      isLikeActive: false,
-      topUsers: []
+      isLikeActive: false
     }
   },
   computed: {
@@ -125,7 +125,7 @@ export default {
       try {
         const { data } = await UserAPI.get({ userId })
 
-        const { id, name, email, account, cover, avatar, introduction, isSelf, isFollowed, Followers } = data
+        const { id, name, email, account, cover, avatar, introduction, isSelf, isFollowed, followerCount, followingCount, tweetCount } = data
         this.user = {
           ...this.user,
           id,
@@ -136,23 +136,11 @@ export default {
           avatar,
           introduction,
           isFollowed,
-          followerCount: Followers.length
+          followerCount,
+          followingCount,
+          tweetCount
         }
         this.currentUser = isSelf
-      } catch (error) {
-        console.log('error', error)
-        Toast.fire({
-          icon: 'error',
-          title: '載入資料失敗，請稍後再試'
-        })
-      }
-    },
-    //計算followingCount，之後在fetchUser執行
-    async fetchFollowingCount ({ userId }) {
-      try {
-        const { data } = await UserAPI.getFollowings({ userId }
-        )
-        this.user.followingCount = data.length
       } catch (error) {
         console.log('error', error)
         Toast.fire({
@@ -166,7 +154,6 @@ export default {
       try {
         const { data } = await UserAPI.getTweets({ userId })
         
-        this.tweetsCount = data.length
         this.tweets = data
       } catch (error) {
         console.log('error', error)

@@ -8,9 +8,10 @@
 
       <!-- 主要內容 -->
       <div class="main">
-        <UserHeader 
+        <UserHeader
+          :user-id="user.id" 
           :user-name="user.name"
-          :user-tweets-count="tweetsCount"
+          :user-tweets-count="user.tweetCount"
         />
         <ul class="nav">
           <li
@@ -75,9 +76,9 @@ export default {
     return {
       user: {
         id: -1,
-        name: ''
+        name: '',
+        tweetCount: 0
       },
-      tweetsCount: 0,
       followers: [],
       topUsers: [],
       currentUser: false
@@ -89,7 +90,6 @@ export default {
   created () {
     const { id: userId } = this.$route.params
     this.fetchUser({ userId })
-    this.fetchTweetsCount({ userId })
     this.fetchFollower({ userId })
     this.fetchTopUsers()
   },
@@ -99,27 +99,14 @@ export default {
       try {
         const { data } = await UserAPI.get({ userId })
 
-        const { id, name, isSelf } = data
+        const { id, name, isSelf, tweetCount } = data
         this.user = {
           ...this.user,
           id,
-          name
+          name,
+          tweetCount
         }
         this.currentUser = isSelf
-      } catch (error) {
-        console.log('error', error)
-        Toast.fire({
-          icon: 'error',
-          title: '載入資料失敗，請稍後再試'
-        })
-      }
-    },
-    //取得使用者推文數
-    async fetchTweetsCount ({ userId }) {
-      try {
-        const { data } = await UserAPI.getTweets({ userId })
-        
-        this.tweetsCount = data.length
       } catch (error) {
         console.log('error', error)
         Toast.fire({

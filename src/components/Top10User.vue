@@ -1,20 +1,23 @@
 <template>
   <div class="card-container d-flex">
-    <img 
-      class="user-avatar"
-      :src="topUser.avatar"
+    <router-link 
+      :to="{name: 'user', params: {id: topUser.id}}" 
     >
+      <img 
+        class="user-avatar"
+        :src="topUser.avatar"
+      >
+    </router-link>
 
     <div>
       <h2 class="user-name">
         {{topUser.name}}
       </h2>
-      <router-link 
+      <p
         class="user-account ml-2"
-        :to="{name: 'user', params: {id: topUser.id}}" 
       >
         @{{topUser.account}}
-      </router-link>
+      </p>
 
       <template
         v-if="topUser.isFollowed"
