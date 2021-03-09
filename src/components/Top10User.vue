@@ -31,7 +31,7 @@
       >
         <button 
           class="follow-btn follow"
-          @click.stop.prevent="addFollow(topUser.id)"
+          @click.stop.prevent="addFollow()"
         >
           跟隨
         </button>
@@ -42,6 +42,9 @@
 
 
 <script>
+import UserAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
+
 export default {
   props: {
     initialTopUser: {
@@ -55,20 +58,54 @@ export default {
     }
   },
   methods: {
-    deleteFollow () {
-      //delete/api/followships/{followingId}
-      //api:followshipsAPI.deleteFollow({followingId})
-      this.topUser = {
-        ...this.topUser,
-        isFollowed: false
+    async addFollow () {
+      try {
+        const { data } = await UserAPI.addFollow({ id: this.topUser.id })
+
+         if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.topUser = {
+          ...this.topUser,
+          isFollowed: true
+        }
+
+        Toast.fire({
+          icon: 'success',
+          title: '新增跟隨成功'
+        })
+      }  catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法新增跟隨，請稍後再試'
+        })
+        console.log(error)
       }
     },
-    addFollow () {
-      //post/api/followships
-      //api:followshipsAPI.addFollow
-      this.topUser = {
-        ...this.topUser,
-        isFollowed: true
+     async deleteFollow (userId) {
+      try {
+        const { data } = await UserAPI.deleteFollow({ userId })
+
+         if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.topUser = {
+          ...this.topUser,
+          isFollowed: false
+        }
+
+        Toast.fire({
+          icon: 'success',
+          title: '取消跟隨成功'
+        })
+      }  catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取消跟隨，請稍後再試'
+        })
+        console.log(error)
       }
     }
   }

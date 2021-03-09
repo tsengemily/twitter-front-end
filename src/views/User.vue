@@ -116,7 +116,8 @@ export default {
     const { id: userId } = this.$route.params
     this.fetchUser({ userId })
     this.fetchTweets({ userId })
-    this.fetchTopUsers()
+    this.fetchFollowingCount({ userId })
+    // this.fetchTopUsers()
   },
   methods: {
     async fetchUser ({ userId }) {
@@ -137,7 +138,20 @@ export default {
           followerCount: Followers.length
         }
       this.currentUser = isSelf
-      // this.followingCount = dummyFollowing.length
+      } catch (error) {
+        console.log('error', error)
+        Toast.fire({
+          icon: 'error',
+          title: '載入資料失敗，請稍後再試'
+        })
+      }
+    },
+    //計算followingCount，之後在fetchUser執行
+    async fetchFollowingCount ({ userId }) {
+      try {
+        const { data } = await UserAPI.getFollowings({ userId }
+        )
+        this.user.followingCount = data.length
       } catch (error) {
         console.log('error', error)
         Toast.fire({

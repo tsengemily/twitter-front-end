@@ -111,6 +111,7 @@ export default {
     padding: 15px 15px 0 15px;
     border-top: 1px solid #e6ecf0;
     position: relative;
+    overflow: hidden;
   }
 
   .user-link,
