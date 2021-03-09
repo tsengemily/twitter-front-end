@@ -117,9 +117,10 @@ export default {
     this.fetchUser({ userId })
     this.fetchTweets({ userId })
     this.fetchFollowingCount({ userId })
-    // this.fetchTopUsers()
+    this.fetchTopUsers()
   },
   methods: {
+    //取得使用者資料
     async fetchUser ({ userId }) {
       try {
         const { data } = await UserAPI.get({ userId })
@@ -137,7 +138,7 @@ export default {
           isFollowed,
           followerCount: Followers.length
         }
-      this.currentUser = isSelf
+        this.currentUser = isSelf
       } catch (error) {
         console.log('error', error)
         Toast.fire({
@@ -160,6 +161,7 @@ export default {
         })
       }
     },
+    //取得推文、推文數
     async fetchTweets ({ userId }) {
       try {
         const { data } = await UserAPI.getTweets({ userId })
@@ -174,11 +176,21 @@ export default {
         })
       }
     },
-    // fetchTopUsers () {
-    //   //get:/api/users/top
-    //   this.topUsers = dummyTopUser
-    // },
-     postActive () {
+    //取得topUsers
+    async fetchTopUsers () {
+      try {
+        const { data } = await UserAPI.getUsersTop()
+
+        this.topUsers = data
+      } catch (error) {
+        console.log('error', error)
+        Toast.fire({
+          icon: 'error',
+          title: '載入資料失敗，請稍後再試'
+        })
+      }
+    },
+    postActive () {
       this.isPostActive = true
       this.isPostAndRecommentActive = false
       this.isLikeActive = false
