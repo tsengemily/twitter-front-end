@@ -8,6 +8,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    name: 'Root',
+    redirect: '/login',
+  },
+  {
     path: '/users/:id',
     name: 'user',
     component: () => import('../views/User'),
@@ -21,11 +26,6 @@ const routes = [
     path: '/users/:id/following',
     name: 'user-following',
     component: () => import('../views/UserFollowing'),
-  },
-  {
-    path: '/',
-    name: 'Root',
-    redirect: '/login',
   },
   {
     path: '/regist',
@@ -90,7 +90,7 @@ router.beforeEach(async (to, from, next) => {
     isAuthenticated = store.dispatch('fetchCurrentUser')
   }
   // 對於不需要驗證 token 的頁面
-  const pathsWithoutAuthentication = ['Login', 'Regist']
+  const pathsWithoutAuthentication = ['Login', 'Regist', 'Admin']
   // 如果 token 無效則轉址到登入頁
   if (!isAuthenticated && !pathsWithoutAuthentication.includes(to.name)) {
     next('/login')

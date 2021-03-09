@@ -2,10 +2,17 @@
   <div class="main-container">
     <div class="row">
       <!-- Navbar -->
-      <Navbar v-bind:isSetting="isSetting" v-bind:MainPage="MainPage" />
+      <Navbar
+        v-bind:isSetting="isSetting"
+        v-bind:MainPage="MainPage"
+        v-bind:userData="userData"
+      />
       <!-- 中間主畫面 -->
       <div class="main-main">
         <div class="main-header">首頁</div>
+        <div class="main-counter">
+          推文剩餘字數:{{ 140 - this.description.length }}字
+        </div>
         <div class="main-tweet">
           <img
             class="main-tweet-userPhoto"
@@ -24,6 +31,7 @@
             <button type="submit" class="btn btn-primary">推文</button>
           </form>
         </div>
+
         <div class="main-space"></div>
         <router-link
           v-for="tweet in tweetData"
@@ -37,7 +45,7 @@
               <div class="main-following-name">
                 {{ tweet.User.name
                 }}<span class="main-following-namename-app">
-                  @apple．{{ tweet.User.updatedAt | fromNow }}</span
+                  @apple．{{ tweet.updatedAt | fromNow }}</span
                 >
               </div>
               <div class="main-following-msg">
@@ -92,14 +100,16 @@ export default {
       this.MainPage = true;
       this.isSetting = false;
     }
-    const { userId } = { userId: this.currentUser.id };
-    this.fetchMainPage({ userId });
+    const localUserId = localStorage.getItem("userId");
+    // const { userId } = { userId: this.currentUser.id };
+    const { userId } = { userId: localUserId };
+    this.fetchMainPage();
     this.getUserId({ userId });
   },
   methods: {
-    async fetchMainPage({ userId }) {
+    async fetchMainPage() {
       try {
-        const response = await mainPageAPI.mainPage({ userId });
+        const response = await mainPageAPI.mainPage();
         this.tweetData = [...response.data];
       } catch (error) {
         Toast.fire({
@@ -123,11 +133,26 @@ export default {
       try {
         const form = event.target;
         const formData = new FormData(form);
+        console.log("formData", formData);
         // for (let [name, value] of formData.entries()) {
         //   console.log(name + ": " + value);
         // }
-        console.log(formData);
-        console.log("description", this.description);
+        // 檢測推文字數不能為0
+        if (this.description.length === 0) {
+          Toast.fire({
+            icon: "error",
+            title: "請輸入文字",
+          });
+          return;
+        }
+        // 檢測推文字數不能>140
+        if (this.description.length > 140) {
+          Toast.fire({
+            icon: "error",
+            title: "輸入文字不能超過140字",
+          });
+          return;
+        }
         // const { data } = await SettingAPI.userSetUp({ formData });
         const { data } = await mainPageAPI.tweet({
           description: this.description,
@@ -222,6 +247,11 @@ export default {
   border-color: rgb(255, 145, 0) !important;
   box-shadow: 2px 2px 2px 0px rgb(255, 145, 0) !important;
 }
+.main-counter {
+  font-size: 15px;
+  font-weight: 700;
+  text-align: end;
+}
 .main-space {
   background-color: rgb(230, 236, 240);
   width: 100%;
@@ -234,7 +264,6 @@ export default {
 }
 .main-following {
   width: 100%;
-  height: 135px;
   display: flex;
 }
 .main-following-photo {
@@ -258,6 +287,7 @@ export default {
   font-weight: 700;
   line-height: 22px;
   color: black;
+  word-break: break-all;
 }
 .main-following-remind {
   color: rgba(101, 119, 134, 1);

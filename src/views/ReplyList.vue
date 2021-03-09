@@ -244,6 +244,14 @@ export default {
         // for (let [name, value] of formData.entries()) {
         //   console.log(name + ": " + value);
         // }
+        // 檢測推文字數不能為0
+        if (this.comment.length === 0) {
+          Toast.fire({
+            icon: "error",
+            title: "請輸入文字",
+          });
+          return;
+        }
         console.log(formData);
         console.log("comment", this.comment);
         const { id: tweetId } = this.$route.params;
@@ -377,6 +385,7 @@ export default {
   font-weight: 500;
   line-height: 34px;
   margin-top: 15px;
+  word-break: break-all;
 }
 .replylist-main-tweet-time {
   font-size: 15px;
@@ -422,6 +431,7 @@ export default {
   font-weight: bold;
   font-size: 15px;
   line-height: 22px;
+  word-break: break-all;
 }
 .replylist-main-following-msg-name-app {
   color: rgba(101, 119, 134, 1);
@@ -467,6 +477,7 @@ export default {
   font-size: 15px;
   line-height: 22px;
   margin-left: 10px;
+  word-break: break-all;
 }
 .modal-body-tweet-msg-to {
   color: rgba(101, 119, 134, 1);

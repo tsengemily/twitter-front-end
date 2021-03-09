@@ -1,7 +1,7 @@
 <template>
   <div class="nav AdminNavbar-container">
     <ul class="nav mb-4 AdminNav-container">
-      <router-link to="/admin">
+      <router-link to="/admin_main">
         <li class="nav-item AdminNav-container-icon">
           <img
             class="AdminNav-container-icon-AClogo"
@@ -43,6 +43,13 @@
           >
         </router-link>
       </li>
+      <li class="nav-item log-out log-out-style">
+        <!-- <router-link class="log-out-style" to="/login"> -->
+        <i class="fas fa-sign-out-alt" style="font-size: 25px" @click="logout"
+          ><span>登出</span></i
+        >
+        <!-- </router-link> -->
+      </li>
     </ul>
   </div>
 </template>
@@ -64,6 +71,12 @@ export default {
   },
   data() {
     return {};
+  },
+  methods: {
+    logout() {
+      this.$store.commit("revokeAuthentication");
+      this.$router.push("/admin");
+    },
   },
   create() {
     // console.log(this.$route);
@@ -106,6 +119,17 @@ export default {
   margin-bottom: calc(98px - 39px);
   width: 25px;
   height: 25px;
+}
+.log-out {
+  /* margin-top: 844px; */
+  margin-top: 160px;
+}
+.log-out-style {
+  color: black;
+}
+.log-out-style:hover {
+  color: rgb(2, 117, 216);
+  cursor: pointer;
 }
 </style>
 

@@ -76,7 +76,6 @@ export default {
       try {
         const response = await mainPageAPI.AdminMain();
         this.tweetData = [...response.data];
-        console.log("tweetData", this.tweetData);
       } catch (error) {
         Toast.fire({
           icon: "error",

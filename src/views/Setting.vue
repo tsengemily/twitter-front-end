@@ -133,7 +133,7 @@ export default {
           return false;
         }
         // 確認密碼與確認密碼是否一樣
-        if (this.userData.password !== this.userData.confirmPassword) {
+        if (this.userData.password !== this.userData.checkPassword) {
           Toast.fire({
             icon: "error",
             title: "密碼與確認密碼不一致",
@@ -143,8 +143,17 @@ export default {
         // 將event.target轉成form格式準備打包送出
         const form = event.target;
         const formData = new FormData(form);
+        console.log(formData);
         const { userId } = { userId: this.currentUser.id };
-        const { data } = await SettingAPI.updateUserInfo({ userId, formData });
+        const { data } = await SettingAPI.updateUserInfo({
+          userId,
+          account: this.userData.account,
+          name: this.userData.name,
+          email: this.userData.email,
+          password: this.userData.password,
+          checkPassword: this.userData.checkPassword,
+        });
+        console.log("data.status", data.status);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
