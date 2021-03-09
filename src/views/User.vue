@@ -3,7 +3,7 @@
     <div class="row">
       <!-- 導覽列 -->
       <div class="left">
-
+        <Navbar />
       </div>
 
       <!-- 主要內容 -->
@@ -14,8 +14,7 @@
         />
         <UserProfileCard 
           :initial-user="user"
-          :following-count="followingCount"
-          :follower-count="followerCount"
+          :initial-following-count="user.followingCount"
           :isCurrentUser="currentUser"
         />
         <ul class="nav">
@@ -68,222 +67,20 @@
 
 
 <script>
-//查看使用者
-const dummyData = {
-  'user': {
-    "id": 2,
-    "account": "user1",
-    "email": "user1@example.com",
-    "name": "user1",
-    "avatar": "http://placeimg.com/640/480/people",
-    "introduction": "I am Jackson",
-    "role": "user",
-    "cover": "http://placeimg.com/640/480/nature",
-    "createdAt": "2021-03-02T02:18:21.000Z",
-    "updatedAt": "2021-03-02T02:18:21.000Z",
-    "isSelf": true,
-    "isFollowed": false 
-  } 
-}
-
-//使用者發布過的所有tweets
-const dummyTweets = [
-  {
-    "id": 1,
-    "UserId": 2,
-    "description": "Johnny1 is a handsome guy.",
-    "createdAt": "2021-03-02T02:18:21.000Z",
-    "updatedAt": "2021-03-02T02:18:21.000Z",
-    "Replies": [
-      {
-        "id": 1,
-        "UserId": 2,
-        "TweetId": 1,
-        "comment": "Reply 1",
-        "createdAt": "2021-03-02T02:18:21.000Z",
-        "updatedAt": "2021-03-02T02:18:21.000Z",
-        "User": {
-          "id": 2,
-          "account": "user1",
-          "email": "user1@example.com",
-          "name": "user1",
-          "avatar": "http://placeimg.com/640/480/people",
-          "introduction": "I am Jackson",
-          "role": "user",
-          "cover": "http://placeimg.com/640/480/nature",
-          "createdAt": "2021-03-02T02:18:21.000Z",
-          "updatedAt": "2021-03-02T02:18:21.000Z"
-        }
-      }
-    ],
-    "Likes": [
-      {
-        "id": 2,
-        "UserId": 2,
-        "TweetId": 1,
-        "createdAt": "2021-03-02T12:55:19.000Z",
-        "updatedAt": "2021-03-02T12:55:19.000Z"
-      }
-    ],
-    "User": {
-      "id": 2,
-      "account": "user1",
-      "email": "user1@example.com",
-      "name": "user1",
-      "avatar": "http://placeimg.com/640/480/people",
-      "introduction": "I am Jackson",
-      "role": "user",
-      "cover": "http://placeimg.com/640/480/nature",
-      "createdAt": "2021-03-02T02:18:21.000Z",
-      "updatedAt": "2021-03-02T02:18:21.000Z"
-    },
-    "isLikedbyMe": false,
-    "isMyTweet": true
-  }
-]
-
-//使用者所有正在追蹤的人
-const dummyFollowing = [
-  {
-    "followerId": 11,
-    "followingId": 21,
-    "createdAt": "2021-03-05T04:26:13.000Z",
-    "updatedAt": "2021-03-05T04:26:13.000Z",
-    "following": {
-      "id": 21,
-      "account": "user2",
-      "email": "user2@example.com",
-      "name": "Johnny2",
-      "avatar": "http://placeimg.com/640/480/people",
-      "introduction": "I am Johnny2",
-      "role": "user",
-      "cover": "http://placeimg.com/640/480/nature",
-      "createdAt": "2021-03-05T04:26:13.000Z",
-      "updatedAt": "2021-03-05T04:26:13.000Z"
-    },
-    "isFollowed": true,
-    "isSelf": false
-  }
-]
-
-//使用者所有的追蹤者
-const dummyFollower = [
-  {
-    "followerId": 21,
-    "followingId": 11,
-    "createdAt": "2021-03-05T04:26:13.000Z",
-    "updatedAt": "2021-03-05T04:26:13.000Z",
-    "follower": {
-      "id": 21,
-      "account": "user2",
-      "email": "user2@example.com",
-      "name": "Johnny2",
-      "avatar": "http://placeimg.com/640/480/people",
-      "introduction": "I am Johnny2",
-      "role": "user",
-      "cover": "http://placeimg.com/640/480/nature",
-      "createdAt": "2021-03-05T04:26:13.000Z",
-      "updatedAt": "2021-03-05T04:26:13.000Z"
-    },
-    "isFollowed": true,
-    "isSelf": false
-  }
-]
-
-//top10users
-const dummyTopUser = [
-  {
-    "id": 1,
-    "account": "user1",
-    "email": "user1@example.com",
-    "password": "$2a$10$P/pvqRxhgVuoIC6fG2yHOunYnFnkhBOIR6kdi1LWhLM96kF9/rtHK",
-    "name": "Johnny1",
-    "avatar": "http://placeimg.com/640/480/people",
-    "introduction": "I am Johnny4",
-    "role": "user",
-    "cover": "http://placeimg.com/640/480/nature",
-    "createdAt": "2021-03-05T04:26:13.000Z",
-    "updatedAt": "2021-03-05T04:26:13.000Z",
-    "Followers": [],
-    "followerCount": 1,
-    "isFollowed": false
-  },
-  {
-    "id": 2,
-    "account": "user2",
-    "email": "user2@example.com",
-    "password": "$2a$10$P/pvqRxhgVuoIC6fG2yHOunYnFnkhBOIR6kdi1LWhLM96kF9/rtHK",
-    "name": "Johnny2",
-    "avatar": "http://placeimg.com/640/480/people",
-    "introduction": "I am Johnny4",
-    "role": "user",
-    "cover": "http://placeimg.com/640/480/nature",
-    "createdAt": "2021-03-05T04:26:13.000Z",
-    "updatedAt": "2021-03-05T04:26:13.000Z",
-    "Followers": [],
-    "followerCount": 2,
-    "isFollowed": false
-  },
-  {
-    "id": 3,
-    "account": "user3",
-    "email": "user4@example.com",
-    "password": "$2a$10$P/pvqRxhgVuoIC6fG2yHOunYnFnkhBOIR6kdi1LWhLM96kF9/rtHK",
-    "name": "Johnny3",
-    "avatar": "http://placeimg.com/640/480/people",
-    "introduction": "I am Johnny4",
-    "role": "user",
-    "cover": "http://placeimg.com/640/480/nature",
-    "createdAt": "2021-03-05T04:26:13.000Z",
-    "updatedAt": "2021-03-05T04:26:13.000Z",
-    "Followers": [],
-    "followerCount": 3,
-    "isFollowed": false
-  },
-  {
-    "id": 4,
-    "account": "user4",
-    "email": "user4@example.com",
-    "password": "$2a$10$P/pvqRxhgVuoIC6fG2yHOunYnFnkhBOIR6kdi1LWhLM96kF9/rtHK",
-    "name": "Johnny4",
-    "avatar": "http://placeimg.com/640/480/people",
-    "introduction": "I am Johnny4",
-    "role": "user",
-    "cover": "http://placeimg.com/640/480/nature",
-    "createdAt": "2021-03-05T04:26:13.000Z",
-    "updatedAt": "2021-03-05T04:26:13.000Z",
-    "Followers": [],
-    "followerCount": 4,
-    "isFollowed": false
-  },
-  {
-    "id": 5,
-    "account": "user5",
-    "email": "user4@example.com",
-    "password": "$2a$10$P/pvqRxhgVuoIC6fG2yHOunYnFnkhBOIR6kdi1LWhLM96kF9/rtHK",
-    "name": "Johnny5",
-    "avatar": "http://placeimg.com/640/480/people",
-    "introduction": "I am Johnny4",
-    "role": "user",
-    "cover": "http://placeimg.com/640/480/nature",
-    "createdAt": "2021-03-05T04:26:13.000Z",
-    "updatedAt": "2021-03-05T04:26:13.000Z",
-    "Followers": [],
-    "followerCount": 5,
-    "isFollowed": false
-  }
-]
-
-
-
+import Navbar from '../components/Navbar'
 import UserHeader from '../components/UserHeader'
 import UserProfileCard from '../components/UserProfileCard'
 import PostCard from '../components/PostCard'
 import Top10User from '../components/Top10User'
+import { mapState } from 'vuex'
+import UserAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
+
 
 export default {
   name: 'User',
   components: {
+    Navbar,
     UserHeader,
     UserProfileCard,
     PostCard,
@@ -298,11 +95,12 @@ export default {
         account: '',
         cover: '',
         avatar: '',
-        introduction: ''
+        introduction: '',
+        isFollowed: false,
+        followerCount: 0,
+        followingCount: 0
       },
       tweetsCount: 0,
-      followingCount: 0,
-      followerCount: 0,
       currentUser: false,
       tweets: [],
       isPostActive: true,
@@ -311,39 +109,61 @@ export default {
       topUsers: []
     }
   },
+  computed: {
+    ...mapState(['currentUser'])
+  },
   created () {
     const { id: userId } = this.$route.params
-    this.fetchUser(userId)
+    this.fetchUser({ userId })
+    this.fetchTweets({ userId })
     this.fetchTopUsers()
   },
   methods: {
-    fetchUser () {
-      //get:/api/users/{id}
-      //get:/api/users/{id}/tweets
-      //get:/api/users/{id}/followings
-      //get:/api/users/{id}/followers
-      const { user } = dummyData
-      const { id, name, email, account, cover, avatar, introduction, isSelf } = user
-      this.user = {
-        ...this.user,
-        id,
-        name,
-        email,
-        account,
-        cover,
-        avatar,
-        introduction
+    async fetchUser ({ userId }) {
+      try {
+        const { data } = await UserAPI.get({ userId })
+
+        const { id, name, email, account, cover, avatar, introduction, isSelf, isFollowed, Followers } = data
+        this.user = {
+          ...this.user,
+          id,
+          name,
+          email,
+          account,
+          cover,
+          avatar,
+          introduction,
+          isFollowed,
+          followerCount: Followers.length
+        }
+      this.currentUser = isSelf
+      // this.followingCount = dummyFollowing.length
+      } catch (error) {
+        console.log('error', error)
+        Toast.fire({
+          icon: 'error',
+          title: '載入資料失敗，請稍後再試'
+        })
       }
-      this.tweetsCount = dummyTweets.length
-      this.followingCount = dummyFollowing.length
-      this.followerCount = dummyFollower.length
-      this.currentUser = isSelf,
-      this.tweets = dummyTweets
     },
-    fetchTopUsers () {
-      //get:/api/users/top
-      this.topUsers = dummyTopUser
+    async fetchTweets ({ userId }) {
+      try {
+        const { data } = await UserAPI.getTweets({ userId })
+        
+        this.tweetsCount = data.length
+        this.tweets = data
+      } catch (error) {
+        console.log('error', error)
+        Toast.fire({
+          icon: 'error',
+          title: '載入資料失敗，請稍後再試'
+        })
+      }
     },
+    // fetchTopUsers () {
+    //   //get:/api/users/top
+    //   this.topUsers = dummyTopUser
+    // },
      postActive () {
       this.isPostActive = true
       this.isPostAndRecommentActive = false

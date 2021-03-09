@@ -9,7 +9,7 @@
       <!-- 主要內容 -->
       <div class="main">
         <UserHeader 
-          :user-name="userName"
+          :user-name="user.name"
           :user-tweets-count="tweetsCount"
         />
         <ul class="nav">
@@ -22,7 +22,7 @@
             class="nav-item"
           >
             <router-link 
-              :to="{name: 'user-following', params: {id: userId}}" 
+              :to="{name: 'user-following', params: {id: user.id}}" 
               class="link-btn"
             ></router-link>
             正在跟隨
@@ -45,135 +45,90 @@
 </template>
 
 <script>
-//查看使用者
-const dummyData = {
-  'user': {
-    "id": 2,
-    "account": "user1",
-    "email": "user1@example.com",
-    "name": "user1",
-    "avatar": "http://placeimg.com/640/480/people",
-    "introduction": "I am Jackson",
-    "role": "user",
-    "cover": "http://placeimg.com/640/480/nature",
-    "createdAt": "2021-03-02T02:18:21.000Z",
-    "updatedAt": "2021-03-02T02:18:21.000Z",
-    "isSelf": true
-  } 
-}
-
-//使用者發布過的所有tweets
-const dummyTweets = [
-  {
-    "id": 1,
-    "UserId": 2,
-    "description": "Johnny1 is a handsome guy.",
-    "createdAt": "2021-03-02T02:18:21.000Z",
-    "updatedAt": "2021-03-02T02:18:21.000Z",
-    "Replies": [
-      {
-        "id": 1,
-        "UserId": 2,
-        "TweetId": 1,
-        "comment": "Reply 1",
-        "createdAt": "2021-03-02T02:18:21.000Z",
-        "updatedAt": "2021-03-02T02:18:21.000Z",
-        "User": {
-          "id": 2,
-          "account": "user1",
-          "email": "user1@example.com",
-          "name": "user1",
-          "avatar": "http://placeimg.com/640/480/people",
-          "introduction": "I am Jackson",
-          "role": "user",
-          "cover": "http://placeimg.com/640/480/nature",
-          "createdAt": "2021-03-02T02:18:21.000Z",
-          "updatedAt": "2021-03-02T02:18:21.000Z"
-        }
-      }
-    ],
-    "Likes": [
-      {
-        "id": 2,
-        "UserId": 2,
-        "TweetId": 1,
-        "createdAt": "2021-03-02T12:55:19.000Z",
-        "updatedAt": "2021-03-02T12:55:19.000Z"
-      }
-    ],
-    "User": {
-      "id": 2,
-      "account": "user1",
-      "email": "user1@example.com",
-      "name": "user1",
-      "avatar": "http://placeimg.com/640/480/people",
-      "introduction": "I am Jackson",
-      "role": "user",
-      "cover": "http://placeimg.com/640/480/nature",
-      "createdAt": "2021-03-02T02:18:21.000Z",
-      "updatedAt": "2021-03-02T02:18:21.000Z"
-    },
-    "isLikedbyMe": false,
-    "isMyTweet": true
-  }
-]
-
-//使用者所有的追蹤者
-const dummyFollower = [
-  {
-    "followerId": 21,
-    "followingId": 11,
-    "createdAt": "2021-03-05T04:26:13.000Z",
-    "updatedAt": "2021-03-05T04:26:13.000Z",
-    "follower": {
-      "id": 21,
-      "account": "user2",
-      "email": "user2@example.com",
-      "name": "Johnny2",
-      "avatar": "http://placeimg.com/640/480/people",
-      "introduction": "I am Johnny2",
-      "role": "user",
-      "cover": "http://placeimg.com/640/480/nature",
-      "createdAt": "2021-03-05T04:26:13.000Z",
-      "updatedAt": "2021-03-05T04:26:13.000Z"
-    },
-    "isFollowed": true,
-    "isSelf": false
-  }
-]
-
 import UserHeader from '../components/UserHeader'
 import UserFollowerCard from '../components/UserFollowerCard'
 import Top10User from '../components/Top10User'
+import { mapState } from 'vuex'
+import UserAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
+
+
 
 export default {
   name: 'UserFollower',
   components: {
     UserHeader,
     UserFollowerCard,
-    Top10User  
+    Top10User
   },
   data() {
     return {
-      userId: -1,
-      userName: '',
+      user: {
+        id: -1,
+        name: ''
+      },
       tweetsCount: 0,
-      followers: []
+      followers: [],
+      currentUser: false
     }
+  },
+   computed: {
+    ...mapState(['currentUser'])
   },
   created () {
     const { id: userId } = this.$route.params
-    this.fetchUser(userId)
+    this.fetchUser({ userId })
+    this.fetchTweetsCount({ userId })
+    this.fetchFollower({ userId })
   },
   methods: {
-    fetchUser () {
-      //get:/api/users/{id}
-      //get:/api/users/{id}/tweets
-      //get:api/users/{id}/followers
-      this.userId = dummyData.user.id
-      this.userName = dummyData.user.name
-      this.tweetsCount = dummyTweets.length
-      this.followers = dummyFollower
+    //取得使用者名稱
+    async fetchUser ({ userId }) {
+      try {
+        const { data } = await UserAPI.get({ userId })
+
+        const { id, name, isSelf } = data
+        this.user = {
+          ...this.user,
+          id,
+          name
+        }
+        this.currentUser = isSelf
+      } catch (error) {
+        console.log('error', error)
+        Toast.fire({
+          icon: 'error',
+          title: '載入資料失敗，請稍後再試'
+        })
+      }
+    },
+    //取得使用者推文數
+    async fetchTweetsCount ({ userId }) {
+      try {
+        const { data } = await UserAPI.getTweets({ userId })
+        
+        this.tweetsCount = data.length
+      } catch (error) {
+        console.log('error', error)
+        Toast.fire({
+          icon: 'error',
+          title: '載入資料失敗，請稍後再試'
+        })
+      }
+    },
+    //取得跟隨者
+    async fetchFollower ({ userId }) {
+      try {
+        const { data } = await UserAPI.getFollowers({ userId })
+        
+        this.followers = data
+      } catch (error) {
+        console.log('error', error)
+        Toast.fire({
+          icon: 'error',
+          title: '載入資料失敗，請稍後再試'
+        })
+      }
     }
   },
   beforeRouteUpdate (to, next) {

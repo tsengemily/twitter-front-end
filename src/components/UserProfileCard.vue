@@ -41,16 +41,22 @@
       
       <div class="follow">
         <template
-          v-if="isFollow"
+          v-if="user.isFollowed"
         >
-          <button class="follow-btn following"> 
+          <button 
+            class="follow-btn following"
+            @click="deleteFollow(user.id)"
+          > 
             正在跟隨
           </button>
         </template>
         <template
           v-else
         >
-          <button class="follow-btn follow">
+          <button 
+            class="follow-btn follow"
+            @click="addFollow(user.id)"
+          >
             跟隨
           </button>
         </template>
@@ -80,13 +86,13 @@
           :to="{name: 'user-following', params: {id: user.id}}" 
           class="user-following"
         >
-          <strong>{{followingCount}}個</strong>跟隨中
+          <strong>{{user.followingCount}}個</strong>跟隨中
         </router-link>
         <router-link 
           :to="{name: 'user-follower', params: {id: user.id}}" 
           class="user-follower"
         >
-          <strong>{{followerCount}}位</strong>跟隨者
+          <strong>{{user.followerCount}}位</strong>跟隨者
         </router-link>
       </div>
     </div>
@@ -112,14 +118,13 @@ export default {
         account: '',
         cover: '',
         avatar: '',
-        introduction: ''
+        introduction: '',
+        isFollowed: false,
+        followerCount: 0,
+        followingCount: 0
       })
     },
-    followingCount: {
-      type: Number,
-      required: true
-    },
-    followerCount: {
+    initialFollowingCount: {
       type: Number,
       required: true
     },
@@ -132,9 +137,35 @@ export default {
     return {
       user: {
        ...this.initialUser 
-      },
-      isInfo: false,
-      isFollow: this.initialIsFollow
+      }
+    }
+  },
+  watch: {
+    initialUser (newValue) {
+      this.user = {
+        ...this.user,
+        ...newValue
+      }
+    }
+  },
+  methods: {
+    deleteFollow () {
+      //delete/api/followships/{followingId}
+      //api:followshipsAPI.deleteFollow({followingId})
+      this.user = {
+        ...this.user,
+        isFollowed: false
+      }
+      this.followerCount -= 1 
+    },
+    addFollow () {
+      //post/api/followships
+      //api:followshipsAPI.addFollow
+       this.user = {
+        ...this.user,
+        isFollowed: true
+      }
+      this.followerCount += 1 
     }
   }
 }
