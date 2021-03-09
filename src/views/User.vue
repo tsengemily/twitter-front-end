@@ -113,11 +113,11 @@ export default {
     ...mapState(['currentUser'])
   },
   created () {
+    this.fetchTopUsers()
     const { id: userId } = this.$route.params
     this.fetchUser({ userId })
     this.fetchTweets({ userId })
     this.fetchFollowingCount({ userId })
-    this.fetchTopUsers()
   },
   methods: {
     //取得使用者資料
@@ -149,7 +149,7 @@ export default {
         })
       }
     },
-    //取得推文、推文數
+    //取得推文
     async fetchTweets ({ userId }) {
       try {
         const { data } = await UserAPI.getTweets({ userId })
@@ -195,9 +195,8 @@ export default {
       this.isPostActive = false
       this.isPostAndRecommentActive = false
       this.isLikeActive = true
-      //向api發送請求 喜歡的內容
-      //get:/api/users/{id}/likes
     }
+  
   },
   beforeRouteUpdate (to, next) {
     const { id: userId } = to.params
@@ -211,7 +210,7 @@ export default {
 <style scoped>
 /* page共用 */
   .page-container {
-    outline: 1px solid red;
+    /* outline: 1px solid red; */
     width: 960px;
     margin: 20px auto 0;
   }

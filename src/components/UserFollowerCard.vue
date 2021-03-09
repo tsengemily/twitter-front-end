@@ -38,10 +38,11 @@
       >
         <button 
           class="follow-btn follow"
+          :class="{disable: follower.followerId === currentUser.id}"
           @click.stop.prevent="addFollow()"
           :disabled="follower.followerId === currentUser.id"
         >
-          跟隨
+          {{ follower.followerId === currentUser.id ? '無法跟隨自己' : '跟隨' }}
         </button>
       </template>
 
@@ -130,7 +131,7 @@ export default {
 
 <style scoped>
   .card-container {
-    outline: 1px solid gray;
+    /* outline: 1px solid gray; */
     position: relative;
     padding: 15px;
     border-top: 1px solid #e6ecf0;
@@ -190,4 +191,10 @@ export default {
     background: #ff6600;
     color: #fff;
   }
+
+  .disable {
+    border: 1px solid #657786;
+    background: #657786;
+    color: #fff;
+   }
 </style>

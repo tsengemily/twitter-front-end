@@ -153,7 +153,7 @@ export default {
 
 <style scoped>
   .page-container {
-    outline: 1px solid red;
+    /* outline: 1px solid red; */
     width: 960px;
     margin: 20px auto 0;
   }

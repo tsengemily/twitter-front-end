@@ -118,7 +118,6 @@ export default {
 
 <style scoped>
   .card-container {
-    /* outline: 1px solid #808080; */
     position: relative;
     padding: 5px;
     border-bottom: 1px solid #e6ecf0;
@@ -140,11 +139,14 @@ export default {
   }
 
   .user-account {
+    /* outline: 1px solid #808080; */
     position: relative;
     left: -10px;
     font-weight: 500;
     font-size: 12px;
     color: #657786;
+    width: 55%;
+    white-space: pre-wrap;
   }
 
   .follow-btn {
