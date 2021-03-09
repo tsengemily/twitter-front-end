@@ -29,6 +29,7 @@
           </div>
           <div class="AdminMain-tweet-delete">
             <i
+              @click.stop.prevent="deleteTweet(tweet.id)"
               class="far fa-trash-alt AdminMain-tweet-delete-icon"
               style="font-size: 20px"
             ></i>
@@ -76,10 +77,30 @@ export default {
       try {
         const response = await mainPageAPI.AdminMain();
         this.tweetData = [...response.data];
+        console.log(this.tweetData);
       } catch (error) {
         Toast.fire({
           icon: "error",
           title: "無法取得資料，請稍後再試",
+        });
+      }
+    },
+    textCount(text) {
+      text;
+    },
+    async deleteTweet(tweetId) {
+      try {
+        const { TweetId } = { TweetId: tweetId };
+        console.log({ TweetId });
+        const { data } = await mainPageAPI.deleteTweet({ TweetId });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.tweetData = this.tweetData.filter((tweet) => tweet.id !== TweetId);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "資料無法刪除，請稍後再試",
         });
       }
     },
