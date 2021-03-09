@@ -3,7 +3,7 @@
     <div class="row">
       <!-- 導覽列 -->
       <div class="left">
-
+        <Navbar />
       </div>
 
       <!-- 主要內容 -->
@@ -36,16 +36,25 @@
       </div>
     
       <!-- 跟隨誰 -->
-      <div class="right">
-        <Top10User 
-          :initialIsFollow="isFollow"
-        />
-      </div>
+       <div class="right">
+        <div class="top-users-container">
+          <h1 class="top-users-title">跟隨誰</h1>
+            <Top10User 
+              v-for="topUser in topUsers"
+              :key="topUser.id"
+              :initial-top-user="topUser"
+            />
+          <div class="top-users-more">
+            顯示更多
+          </div> 
+        </div>
+      </div>  
     </div>  
   </div>
 </template>
 
 <script>
+import Navbar from '../components/Navbar'
 import UserHeader from '../components/UserHeader'
 import UserFollowingCard from '../components/UserFollowingCard'
 import Top10User from '../components/Top10User'
@@ -56,6 +65,7 @@ import { Toast } from '../utils/helpers'
 export default {
   name: 'UserFollowing',
   components: {
+    Navbar,
     UserHeader,
     UserFollowingCard,
     Top10User
@@ -68,6 +78,7 @@ export default {
       },
       tweetsCount: 0,
       followings: [],
+      topUsers: [],
       currentUser: false
     }
   },
@@ -79,6 +90,7 @@ export default {
     this.fetchUser({ userId })
     this.fetchTweetsCount({ userId })
     this.fetchFollowing({ userId })
+    this.fetchTopUsers()
   },
   methods: {
     //取得使用者名稱
@@ -128,6 +140,20 @@ export default {
           title: '載入資料失敗，請稍後再試'
         })
       }
+    },
+    //取得topUsers
+    async fetchTopUsers () {
+      try {
+        const { data } = await UserAPI.getUsersTop()
+
+        this.topUsers = data
+      } catch (error) {
+        console.log('error', error)
+        Toast.fire({
+          icon: 'error',
+          title: '載入資料失敗，請稍後再試'
+        })
+      }
     }
   },
   beforeRouteUpdate (to, next) {
@@ -159,10 +185,39 @@ export default {
     /* outline: 5px solid red; */
   }
 
-  .right {
+
+/* 右欄:跟隨誰的樣式 */
+ .right {
     /* outline: 5px solid blue; */
+    position: relative;
     width: 25%;
   }
+
+  .top-users-container {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    background-color: #f5f8fa;
+    border-radius: 14px;
+    width: 220px;
+  }
+
+  .top-users-title {
+    padding: 5px 15px;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 35px;
+    border-bottom: 1px solid #e6ecf0;
+  }
+
+  .top-users-more {
+    padding: 5px 15px;
+    font-size: 13px;
+    line-height: 30px;
+    color: #ff6600;
+  }
+/* 複製結束 */
+
 
 
 /* 當頁 */
