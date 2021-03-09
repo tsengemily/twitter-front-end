@@ -36,7 +36,7 @@
           <div class="replylist-main-tweet-replyRecord">
             {{ tweetData.Replies.length }}
             <span class="replylist-main-tweet-replyRecord-style">回覆</span>
-            {{ tweetData.Likes.length }}
+            {{ likeＣount }}
             <span class="replylist-main-tweet-replyRecord-style">
               喜歡次數
             </span>
@@ -82,7 +82,7 @@
             </div>
             <div class="replylist-main-following-msg-reply">
               回覆<span class="`replylist-main-following-msg-reply-tag`">
-                @{{ tweetData.User.name }}</span
+                @{{ reply.User.name }}</span
               >
             </div>
             <div class="replylist-main-following-msg-context">
@@ -171,6 +171,7 @@
 
 <script>
 import Navbar from "./../components/Navbar";
+import $ from "jquery";
 
 import mainPageAPI from "./../apis/user";
 import { Toast } from "./../utils/helpers";
@@ -203,8 +204,8 @@ export default {
       },
       comment: "",
       isLike: false,
-      likeUsersId: [],
-      likeList: [],
+      likeＣount: 0,
+      repliedComments: [],
     };
   },
   created() {
@@ -221,14 +222,17 @@ export default {
       try {
         const response = await mainPageAPI.ReplyList({ tweetId });
         this.tweetData = { ...response.data };
-        // 檢驗使用者是否有對貼文按讚
-        this.likeList = [...this.tweetData.Likes];
-
-        this.likeList.forEach((like) => {
-          this.likeUsersId.push(like.UserId);
+        const repliedList = [...this.tweetData.Replies];
+        console.log(repliedList);
+        repliedList.forEach((reply) => {
+          this.repliedComments.push(reply.comment);
         });
-        if (this.likeUsersId.includes(this.currentUser.id)) {
+        this.likeＣount = this.tweetData.Likes.length;
+        // 檢驗使用者是否有對貼文按讚
+        if (this.tweetData.isLikedByMe) {
           this.isLike = true;
+        } else {
+          this.isLike = false;
         }
       } catch (error) {
         Toast.fire({
@@ -253,7 +257,6 @@ export default {
           return;
         }
         console.log(formData);
-        console.log("comment", this.comment);
         const { id: tweetId } = this.$route.params;
         // const { data } = await SettingAPI.userSetUp({ formData });
         const { data } = await mainPageAPI.reply({
@@ -263,6 +266,7 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
+        $("#ReplyListModal").modal("hide");
         location.reload();
         // this.$router.push({ path: `/mainpage/${this.currentUser.id}` });
       } catch (error) {
@@ -283,7 +287,8 @@ export default {
         }
 
         this.isLike = true;
-        location.reload();
+        this.likeＣount = this.likeＣount + 1;
+        this.tweetData.Likes.push("讓愛心加１");
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -301,7 +306,7 @@ export default {
         }
 
         this.isLike = false;
-        location.reload();
+        this.likeＣount = this.likeＣount - 1;
       } catch (error) {
         Toast.fire({
           icon: "error",
