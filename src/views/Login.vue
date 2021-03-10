@@ -85,6 +85,8 @@ export default {
         // 將 token和id存放在 localStorage 內
         localStorage.setItem("token", data.token);
         localStorage.setItem("userId", data.user.id);
+        localStorage.setItem("avatar", data.user.avatar);
+        localStorage.setItem("name", data.user.name);
         // 特過 setCurrentUser 把使用者資料存到 Vuex 的 state 中
         this.$store.commit("setCurrentUser", data.user);
 

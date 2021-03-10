@@ -34,6 +34,8 @@ export default new Vuex.Store({
       state.isAuthenticated = false
       localStorage.removeItem('token')
       localStorage.removeItem('userId')
+      localStorage.removeItem('avatar')
+      localStorage.removeItem('name')
     },
   },
   // 透過API請求資料

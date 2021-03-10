@@ -144,6 +144,9 @@
                   </div>
                 </div>
               </div>
+              <div class="modal-counter">
+                推文剩餘字數:{{ 140 - this.comment.length }}字
+              </div>
               <div class="modal-body-reply">
                 <img
                   class="modal-body-reply-photo"
@@ -159,6 +162,15 @@
             </div>
             <div class="modal-footer">
               <button
+                v-if="isProcessing"
+                type="submit"
+                class="btn btn-primary modal-footer-btn-size"
+                disabled
+              >
+                回覆中!
+              </button>
+              <button
+                v-if="!isProcessing"
                 type="submit"
                 class="btn btn-primary modal-footer-btn-size"
               >
@@ -211,7 +223,7 @@ export default {
       isLike: false,
       isLoading: true,
       likeＣount: 0,
-      repliedComments: [],
+      isProcessing: false,
     };
   },
   created() {
@@ -229,11 +241,6 @@ export default {
         this.isLoading = true;
         const response = await mainPageAPI.ReplyList({ tweetId });
         this.tweetData = { ...response.data };
-        const repliedList = [...this.tweetData.Replies];
-        console.log(repliedList);
-        repliedList.forEach((reply) => {
-          this.repliedComments.push(reply.comment);
-        });
         this.likeＣount = this.tweetData.Likes.length;
         // 檢驗使用者是否有對貼文按讚
         if (this.tweetData.isLikedByMe) {
@@ -252,7 +259,8 @@ export default {
     },
     async handleSubmit(event) {
       try {
-        this.isLoading = true;
+        // 防止多次點擊送出
+        this.isProcessing = true;
         const form = event.target;
         const formData = new FormData(form);
         // for (let [name, value] of formData.entries()) {
@@ -264,6 +272,16 @@ export default {
             icon: "error",
             title: "請輸入文字",
           });
+          this.isProcessing = false;
+          return;
+        }
+        // 檢測推文字數不能>140
+        if (this.comment.length > 140) {
+          Toast.fire({
+            icon: "error",
+            title: "輸入文字不能超過140字",
+          });
+          this.isProcessing = false;
           return;
         }
         console.log(formData);
@@ -276,17 +294,20 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
+        const response = await mainPageAPI.ReplyList({ tweetId });
+        this.tweetData = { ...response.data };
+        this.comment = "";
+        this.isProcessing = false;
         $("#ReplyListModal").modal("hide");
-        location.reload();
-        this.isLoading = false;
+        // location.reload();
         // this.$router.push({ path: `/mainpage/${this.currentUser.id}` });
       } catch (error) {
-        this.isLoading = false;
         console.log(error);
         Toast.fire({
           icon: "error",
           title: "無法建立推文，請稍後再試",
         });
+        this.isProcessing = false;
       }
     },
     async addLike() {
@@ -503,6 +524,12 @@ export default {
   line-height: 22px;
   margin: 10px 0 10px 10px;
 }
+.modal-counter {
+  margin: 15px 15px 0 15px;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: end;
+}
 .modal-body-tweet-msg-to-who {
   font-weight: normal;
   color: rgba(255, 102, 0, 1);
@@ -519,6 +546,7 @@ export default {
   border-style: none;
   resize: none;
   box-shadow: none;
+  height: 250px;
 }
 .btn {
   border-radius: 50px;
@@ -532,11 +560,11 @@ export default {
   margin-top: 30px;
 }
 .modal-footer-btn-size {
-  width: 64px;
+  width: 120px;
   height: 40px;
-  font-size: 18px;
-  line-height: 18px;
-  font-weight: 500;
+  font-weight: 900;
+  font-size: 25px;
+  line-height: 25px;
 }
 .btn:hover {
   background-color: rgb(230, 94, 4) !important;
