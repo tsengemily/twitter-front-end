@@ -36,6 +36,12 @@
             :key="follower.followerId"
             :initial-follower="follower"
           />
+          <div 
+            v-if="followers.length < 1"
+            class="no-data"
+          >
+            沒有跟隨者
+          </div>
         </div>
         <!-- 跟隨誰 -->
         <div class="right">
@@ -259,5 +265,11 @@ export default {
   .active {
     border-bottom: 2px solid #ff6600;
     color: #ff6600;
+  }
+
+  .no-data {
+    margin: 20px;
+    font-size: 18px;
+    color: #657786;
   }
 </style>
