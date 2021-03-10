@@ -3,8 +3,8 @@ const getToken = () => localStorage.getItem('token')
 
 export default {
   // 帶入需要的參數
-  mainPage({ userId }) {
-    console.log("在user.js中" + { userId });
+  mainPage() {
+    // console.log("在user.js中" + { userId });
 
     // 這裡 return 的會是一個 Promise
     // return apiHelper.get(`/tweets/${userId}`, {
@@ -19,10 +19,9 @@ export default {
     return apiHelper.get(`/tweets/${tweetId}`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
-    // TODO: ${tweetId}怎麼解構啊?
   },
   AdminMain() {
-    return apiHelper.get(`/tweets`, {
+    return apiHelper.get(`admin/tweets`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
@@ -36,8 +35,8 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
-  updateUserInfo({ userId, formData }) {
-    return apiHelper.put(`/users/${userId}`, formData, {
+  updateUserInfo({ userId, account, name, email, password, checkPassword }) {
+    return apiHelper.put(`/users/${userId}/account`, { account, email, name, password, checkPassword }, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
@@ -64,6 +63,11 @@ export default {
   },
   deleteLike({ tweetId }) {
     return apiHelper.post(`/tweets/${tweetId}/unlike`, null, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  deleteTweet({ TweetId }) {
+    return apiHelper.delete(`/admin/tweets/${TweetId}`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },

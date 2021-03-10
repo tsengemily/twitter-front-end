@@ -24,6 +24,7 @@
           placeholder="密碼"
           required
           v-model="password"
+          autocomplete="off"
         />
       </div>
       <button

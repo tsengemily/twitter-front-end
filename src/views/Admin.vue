@@ -71,7 +71,7 @@ export default {
         }
         // 防止多次點擊送出
         this.isProcessing = true;
-        const response = await authorizationAPI.signIn({
+        const response = await authorizationAPI.Admin({
           account: this.account,
           password: this.password,
         });
@@ -140,5 +140,8 @@ h2 {
 .btn-link {
   margin-left: 50px;
   margin-top: 5px;
+  font-weight: 900;
+  font-size: 20px;
+  text-decoration: none;
 }
 </style>

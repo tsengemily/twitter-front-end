@@ -1,97 +1,100 @@
 <template>
   <div class="replylist-container">
-    <div class="row">
-      <Navbar v-bind:isSetting="isSetting" v-bind:MainPage="MainPage" />
-      <div class="replylist-main">
-        <router-link
-          class="replylist-main-header"
-          v-bind:to="{ name: 'MainPage', params: { id: currentUser.id } }"
-        >
-          <div class="replylist-main-header-style">
-            <i
-              class="fas fa-arrow-left replylist-main-header-style-icon"
-              style="font-size: 25px"
-            ></i
-            >推文
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <div class="row">
+        <Navbar v-bind:isSetting="isSetting" v-bind:MainPage="MainPage" />
+        <div class="replylist-main">
+          <router-link
+            class="replylist-main-header"
+            v-bind:to="{ name: 'MainPage', params: { id: currentUser.id } }"
+          >
+            <div class="replylist-main-header-style">
+              <i
+                class="fas fa-arrow-left replylist-main-header-style-icon"
+                style="font-size: 25px"
+              ></i
+              >推文
+            </div>
+          </router-link>
+          <div class="replylist-main-tweet">
+            <div class="replylist-main-tweet-info">
+              <img
+                class="replylist-main-tweet-info-photo"
+                v-bind:src="tweetData.User.avatar"
+                alt=""
+              />
+              <div class="replylist-main-tweet-info-name">
+                {{ tweetData.User.name }}
+                <div class="replylist-main-tweet-info-name-app">@apple</div>
+              </div>
+            </div>
+            <div class="replylist-main-tweet-msg">
+              {{ tweetData.description }}
+            </div>
+            <div class="replylist-main-tweet-time">
+              {{ tweetData.updatedAt | publishTime }}
+            </div>
+            <div class="replylist-main-tweet-replyRecord">
+              {{ tweetData.Replies.length }}
+              <span class="replylist-main-tweet-replyRecord-style">回覆</span>
+              {{ likeＣount }}
+              <span class="replylist-main-tweet-replyRecord-style">
+                喜歡次數
+              </span>
+            </div>
+            <div class="replylist-main-tweet-icons">
+              <i
+                class="far fa-comment replylist-main-tweet-icons-icon"
+                style="font-size: 25px"
+                data-toggle="modal"
+                data-target="#ReplyListModal"
+              ></i>
+              <i
+                v-if="isLike"
+                class="fas fa-heart replylist-main-tweet-icons-icon-favorite"
+                style="font-size: 25px"
+                v-on:click="deleteLike"
+              ></i>
+              <i
+                v-else
+                class="far fa-heart replylist-main-tweet-icons-icon"
+                style="font-size: 25px"
+                v-on:click="addLike"
+              ></i>
+            </div>
           </div>
-        </router-link>
-        <div class="replylist-main-tweet">
-          <div class="replylist-main-tweet-info">
+
+          <div
+            class="replylist-main-following"
+            v-for="reply in tweetData.Replies"
+            v-bind:key="reply.id"
+          >
             <img
-              class="replylist-main-tweet-info-photo"
-              v-bind:src="tweetData.User.avatar"
+              class="replylist-main-following-photo"
+              v-bind:src="reply.User.avatar"
               alt=""
             />
-            <div class="replylist-main-tweet-info-name">
-              {{ tweetData.User.name }}
-              <div class="replylist-main-tweet-info-name-app">@apple</div>
-            </div>
-          </div>
-          <div class="replylist-main-tweet-msg">
-            {{ tweetData.description }}
-          </div>
-          <div class="replylist-main-tweet-time">
-            {{ tweetData.updatedAt | publishTime }}
-          </div>
-          <div class="replylist-main-tweet-replyRecord">
-            {{ tweetData.Replies.length }}
-            <span class="replylist-main-tweet-replyRecord-style">回覆</span>
-            {{ tweetData.Likes.length }}
-            <span class="replylist-main-tweet-replyRecord-style">
-              喜歡次數
-            </span>
-          </div>
-          <div class="replylist-main-tweet-icons">
-            <i
-              class="far fa-comment replylist-main-tweet-icons-icon"
-              style="font-size: 25px"
-              data-toggle="modal"
-              data-target="#ReplyListModal"
-            ></i>
-            <i
-              v-if="isLike"
-              class="fas fa-heart replylist-main-tweet-icons-icon-favorite"
-              style="font-size: 25px"
-              v-on:click="deleteLike"
-            ></i>
-            <i
-              v-else
-              class="far fa-heart replylist-main-tweet-icons-icon"
-              style="font-size: 25px"
-              v-on:click="addLike"
-            ></i>
-          </div>
-        </div>
-
-        <div
-          class="replylist-main-following"
-          v-for="reply in tweetData.Replies"
-          v-bind:key="reply.id"
-        >
-          <img
-            class="replylist-main-following-photo"
-            v-bind:src="reply.User.avatar"
-            alt=""
-          />
-          <div class="replylist-main-following-msg">
-            <div class="replylist-main-following-msg-name">
-              {{ reply.User.name
-              }}<span class="replylist-main-following-msg-name-app">
-                @apple．{{ reply.updatedAt | fromNow }}</span
-              >
-            </div>
-            <div class="replylist-main-following-msg-reply">
-              回覆<span class="`replylist-main-following-msg-reply-tag`">
-                @{{ tweetData.User.name }}</span
-              >
-            </div>
-            <div class="replylist-main-following-msg-context">
-              {{ reply.comment }}
+            <div class="replylist-main-following-msg">
+              <div class="replylist-main-following-msg-name">
+                {{ reply.User.name
+                }}<span class="replylist-main-following-msg-name-app">
+                  @apple．{{ reply.updatedAt | fromNow }}</span
+                >
+              </div>
+              <div class="replylist-main-following-msg-reply">
+                回覆<span class="`replylist-main-following-msg-reply-tag`">
+                  @{{ reply.User.name }}</span
+                >
+              </div>
+              <div class="replylist-main-following-msg-context">
+                {{ reply.comment }}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </template>
     <!-- Modal -->
     <div
       class="modal fade"
@@ -171,6 +174,8 @@
 
 <script>
 import Navbar from "./../components/Navbar";
+import $ from "jquery";
+import Spinner from "./../components/Spinner";
 
 import mainPageAPI from "./../apis/user";
 import { Toast } from "./../utils/helpers";
@@ -185,6 +190,7 @@ export default {
   name: "ReplyList",
   components: {
     Navbar,
+    Spinner,
   },
   data() {
     return {
@@ -203,8 +209,9 @@ export default {
       },
       comment: "",
       isLike: false,
-      likeUsersId: [],
-      likeList: [],
+      isLoading: true,
+      likeＣount: 0,
+      repliedComments: [],
     };
   },
   created() {
@@ -219,18 +226,24 @@ export default {
   methods: {
     async fetchReplyList({ tweetId }) {
       try {
+        this.isLoading = true;
         const response = await mainPageAPI.ReplyList({ tweetId });
         this.tweetData = { ...response.data };
-        // 檢驗使用者是否有對貼文按讚
-        this.likeList = [...this.tweetData.Likes];
-
-        this.likeList.forEach((like) => {
-          this.likeUsersId.push(like.UserId);
+        const repliedList = [...this.tweetData.Replies];
+        console.log(repliedList);
+        repliedList.forEach((reply) => {
+          this.repliedComments.push(reply.comment);
         });
-        if (this.likeUsersId.includes(this.currentUser.id)) {
+        this.likeＣount = this.tweetData.Likes.length;
+        // 檢驗使用者是否有對貼文按讚
+        if (this.tweetData.isLikedByMe) {
           this.isLike = true;
+        } else {
+          this.isLike = false;
         }
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           icon: "error",
           title: "無法取得資料，請稍後再試",
@@ -239,13 +252,21 @@ export default {
     },
     async handleSubmit(event) {
       try {
+        this.isLoading = true;
         const form = event.target;
         const formData = new FormData(form);
         // for (let [name, value] of formData.entries()) {
         //   console.log(name + ": " + value);
         // }
+        // 檢測推文字數不能為0
+        if (this.comment.length === 0) {
+          Toast.fire({
+            icon: "error",
+            title: "請輸入文字",
+          });
+          return;
+        }
         console.log(formData);
-        console.log("comment", this.comment);
         const { id: tweetId } = this.$route.params;
         // const { data } = await SettingAPI.userSetUp({ formData });
         const { data } = await mainPageAPI.reply({
@@ -255,9 +276,12 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
+        $("#ReplyListModal").modal("hide");
         location.reload();
+        this.isLoading = false;
         // this.$router.push({ path: `/mainpage/${this.currentUser.id}` });
       } catch (error) {
+        this.isLoading = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -275,7 +299,8 @@ export default {
         }
 
         this.isLike = true;
-        location.reload();
+        this.likeＣount = this.likeＣount + 1;
+        this.tweetData.Likes.push("讓愛心加１");
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -293,7 +318,7 @@ export default {
         }
 
         this.isLike = false;
-        location.reload();
+        this.likeＣount = this.likeＣount - 1;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -377,6 +402,7 @@ export default {
   font-weight: 500;
   line-height: 34px;
   margin-top: 15px;
+  word-break: break-all;
 }
 .replylist-main-tweet-time {
   font-size: 15px;
@@ -422,6 +448,7 @@ export default {
   font-weight: bold;
   font-size: 15px;
   line-height: 22px;
+  word-break: break-all;
 }
 .replylist-main-following-msg-name-app {
   color: rgba(101, 119, 134, 1);
@@ -467,6 +494,7 @@ export default {
   font-size: 15px;
   line-height: 22px;
   margin-left: 10px;
+  word-break: break-all;
 }
 .modal-body-tweet-msg-to {
   color: rgba(101, 119, 134, 1);

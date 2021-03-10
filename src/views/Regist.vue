@@ -97,10 +97,10 @@ export default {
       try {
         const form = event.target;
         const formData = new FormData(form);
-        for (let [name, value] of formData.entries()) {
-          console.log(name + ": " + value);
-        }
-        // console.log(formData);
+        // for (let [name, value] of formData.entries()) {
+        //   console.log(name + ": " + value);
+        // }
+        console.log(formData);
         // console.log("account", this.account);
         // console.log("email", this.email);
         // console.log("password", this.password);
