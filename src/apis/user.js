@@ -94,6 +94,11 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` },
     })
   },
+  getTweetsReplies({ userId }) {
+    return apiHelper.get(`/users/${userId}/replied_tweets`, {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    })
+  },
   getFollowers({ userId }) {
     return apiHelper.get(`/users/${userId}/followers`, {
       headers: { Authorization: `Bearer ${getToken()}` },
@@ -123,10 +128,14 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` },
     })
   },
-  editProfile({ userId, formData }) {
-    return apiHelper.put(`/users/${userId}`, formData, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    })
+  editProfile({ userId, name, introduction, avatar, cover }) {
+    return apiHelper.put(
+      `/users/${userId}`,
+      { name, introduction, avatar, cover },
+      {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      }
+    )
   },
   deleteTweet({ TweetId }) {
     return apiHelper.delete(`/admin/tweets/${TweetId}`, {

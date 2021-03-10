@@ -1,78 +1,105 @@
 <template>
-  <div 
-    class="modal fade" 
-    id="user-edit" 
-    tabindex="-1"
-    aria-labelledby="exampleModalLabel" 
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-            <button 
-              type="button" 
-              class="close-btn" 
-              data-dismiss="modal" 
-              aria-label="Close"
-            >
-              <span aria-hidden="true">
-                <img src="../assets/close.png" class="close-icon">
-              </span>
-            </button>
-            <h5 class="edit-title">編輯個人資料</h5>
-            <button 
-              type="submit" 
+   <!-- Modal -->
+    <div
+      class="modal fade"
+      id="user-edit"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="d-flex">
+              <button
+                type="button"
+                class="close-btn"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">
+                  <img src="../assets/close.png" class="close-icon">
+                </span>
+              </button>
+              <div class="edit-title">編輯個人資料</div>
+            </div>
+            <button
+              type="submit"
               class="edit-close"
               data-dismiss="modal"
               @click="handleSubmit"
             >
               儲存
             </button>
-            <div class="modal-body">
+          </div>
+          <div class="modal-body">
             <form
               id="edit-user-profile-form"
               @submit.stop.prevent
               enctype="multipart/form-data"
             >
-              <div class="edit-cover">
-                <img :src="user.cover" class="cover-img">
-                <label for="cover-input" class="cover-label"></label>
-                <input
-                  id="cover-input" 
-                  type="file"
-                  accept="image/*"
-                  @change="handleCoverFileChange"
-                  class="cover-input"
-                >
-              </div>
-              <div class="edit-avatar">
-                <img :src="user.avatar" class="avatar-img">
-                <label for="avatar-input" class="avatar-label"></label>
-                <input
-                  id="avatar-input" 
-                  type="file"
-                  accept="image/*"
-                  @change="handleAvatarFileChange"
-                  class="avatar-input"
-                >
-              </div>
-              <div class="edit-name">
-                <label for="">名稱</label>
-                <input type="text" class="name-input" value="user.name" v-model="user.name">
-                <div class="word-count">{{nameCount}}/50</div>
-              </div>
-              <div class="edit-introduction">
-                <textarea name="" id="" rows="10" class="introduction-input" placeholder="自我介紹" v-model="user.introduction"></textarea>
-                <div class="word-count">{{introductionCount}}/160</div> 
-              </div>    
+               <div class="edit-cover">
+                  <img :src="user.cover" class="cover-img">
+                  <label for="cover-input" class="cover-label"></label>
+                  <input
+                    id="cover-input" 
+                    type="file"
+                    accept="image/*"
+                    @change="handleCoverFileChange"
+                    class="cover-input"
+                  >
+                </div>
+                <div class="edit-avatar">
+                  <img 
+                    :src="user.avatar" 
+                    class="avatar-img"
+                  >
+                  <label 
+                    for="avatar-input" 
+                    class="avatar-label"
+                  >
+                  </label>
+                  <input
+                    id="avatar-input" 
+                    type="file"
+                    accept="image/*"
+                    @change="handleAvatarFileChange"
+                    class="avatar-input"
+                  >
+                </div>
+                <div class="edit-name">
+                  <label for="">名稱</label>
+                  <input 
+                    type="text" 
+                    class="name-input" 
+                    value="user.name" 
+                    v-model="user.name" 
+                    required
+                  >
+                  <div class="word-count">
+                    {{nameCount}}/50
+                  </div>
+                </div>
+                <div class="edit-introduction">
+                  <textarea 
+                    name="" 
+                    id="" 
+                    rows="10" 
+                    class="introduction-input" 
+                    placeholder="自我介紹" 
+                    v-model="user.introduction"
+                  >
+                  </textarea>
+                  <div class="word-count">
+                    {{introductionCount}}/160
+                  </div> 
+                </div>    
             </form>
-            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</template>  
-
+</template>
 
 <script>
 import UserAPI from '../apis/user'
@@ -126,18 +153,37 @@ export default {
       console.log(imgURL)
     },
     async handleSubmit () {
-     let formData = new FormData(document.getElementById('edit-user-profile-form'))
-    console.log(formData)
     try {
+      if (!this.user.name) {
+        Toast.fire({
+          icon: 'warning',
+          title: '名稱為必填'
+        })
+        return
+      } else if (this.nameCount > 50) {
+         Toast.fire({
+          icon: 'warning',
+          title: '名稱不可超過50字'
+        })
+        return
+      } else if (this.introductionCount > 160) {
+         Toast.fire({
+          icon: 'warning',
+          title: '自我介紹不可超過160字'
+        })
+        return
+      }  
+
       const response = await UserAPI.editProfile({
         userId: this.user.id,
-        formData
+        name: this.user.name,
+        introduction: this.user.introduction,
+        avatar: this.user.avatar,
+        cover: this.user.cover
       })
-      if (response.status !== 200) {
-          throw new Error(response.data.message)
-        }
       console.log(response)
-      // this.$emit('afterHandleSubmit', )
+
+       location.reload()
       } catch (error) {
         console.log('error', error)
         Toast.fire({

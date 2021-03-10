@@ -15,7 +15,7 @@
       >
        編輯個人資料
       </button>
-      <UserEdit 
+      <EditModal 
         :initial-user="user"
       />
     </template>
@@ -101,7 +101,7 @@
 
 
 <script>
-import UserEdit from '../components/UserEdit'
+import EditModal from '../components/EditModal'
 import { mapState } from 'vuex'
 import UserAPI from '../apis/user'
 import { Toast } from '../utils/helpers'
@@ -109,7 +109,7 @@ import { Toast } from '../utils/helpers'
 export default {
   name: 'UserProfileCard',
   components: {
-    UserEdit
+    EditModal
   },
   props: {
     initialUser: {
@@ -206,6 +206,7 @@ export default {
     }
   }  
 }
+
 </script>
 
 
