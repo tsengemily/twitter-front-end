@@ -28,7 +28,7 @@
       >
         <button 
           class="follow-btn following"
-          @click="deleteFollow(following.followingId)"
+          @click.stop.prevent="deleteFollow(following.followingId)"
         > 
           正在跟隨
         </button>
@@ -39,7 +39,7 @@
         <button 
           class="follow-btn follow"
           :class="{disable: follower.followerId === currentUser.id}"
-          @click="addFollow()"
+          @click.stop.prevent="addFollow()"
           :disabled="following.followingId === currentUser.id"
         >
           {{ follower.followerId === currentUser.id ? '無法跟隨自己' : '跟隨' }}

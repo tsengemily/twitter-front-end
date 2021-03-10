@@ -136,7 +136,8 @@ export default {
     return {
       user: {
        ...this.initialUser 
-      }
+      },
+      isInfo: false
     }
   },
   computed: {
