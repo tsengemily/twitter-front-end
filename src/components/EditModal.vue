@@ -27,17 +27,13 @@
               type="submit"
               class="edit-close"
               data-dismiss="modal"
-              @click="handleSubmit"
+              @click.stop.prevent="handleSubmit"
             >
               儲存
             </button>
           </div>
           <div class="modal-body">
-            <form
-              id="edit-user-profile-form"
-              @submit.stop.prevent
-              enctype="multipart/form-data"
-            >
+            <form>
                <div class="edit-cover">
                   <img :src="user.cover" class="cover-img">
                   <label for="cover-input" class="cover-label"></label>
