@@ -1,81 +1,85 @@
 <template>
   <div class="setting-container">
-    <div class="row">
-      <Navbar v-bind:isSetting="isSetting" v-bind:MainPage="MainPage" />
-      <div class="setting-main">
-        <div class="setting-main-header">帳戶設定</div>
-        <form @submit.prevent.stop="handleSubmit($event)">
-          <div class="form-group">
-            <label for="account"></label>
-            <input
-              id="accout"
-              type="text"
-              class="form-control"
-              placeholder="帳號"
-              required
-              v-model="userData.account"
-              name="accout"
-            />
-          </div>
-          <div class="form-group">
-            <label for="name"></label>
-            <input
-              id="name"
-              type="text"
-              class="form-control"
-              placeholder="名稱"
-              required
-              v-model="userData.name"
-              name="name"
-            />
-          </div>
-          <div class="form-group">
-            <label for="email"></label>
-            <input
-              id="email"
-              type="email"
-              class="form-control"
-              placeholder="Email"
-              required
-              v-model="userData.email"
-              name="email"
-            />
-          </div>
-          <div class="form-group">
-            <label for="password"></label>
-            <input
-              id="password"
-              type="password"
-              class="form-control"
-              placeholder="密碼"
-              required
-              v-model="userData.password"
-              name="password"
-              autocomplete="off"
-            />
-          </div>
-          <div class="form-group">
-            <label for="passwordConfirm"></label>
-            <input
-              id="passwordConfirm"
-              type="password"
-              class="form-control"
-              placeholder="密碼確認"
-              required
-              v-model="userData.checkPassword"
-              name="checkPassword"
-              autocomplete="off"
-            />
-          </div>
-          <button type="submit" class="btn btn-primary btn-lg">儲存</button>
-        </form>
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <div class="row">
+        <Navbar v-bind:isSetting="isSetting" v-bind:MainPage="MainPage" />
+        <div class="setting-main">
+          <div class="setting-main-header">帳戶設定</div>
+          <form @submit.prevent.stop="handleSubmit($event)">
+            <div class="form-group">
+              <label for="account"></label>
+              <input
+                id="accout"
+                type="text"
+                class="form-control"
+                placeholder="帳號"
+                required
+                v-model="userData.account"
+                name="accout"
+              />
+            </div>
+            <div class="form-group">
+              <label for="name"></label>
+              <input
+                id="name"
+                type="text"
+                class="form-control"
+                placeholder="名稱"
+                required
+                v-model="userData.name"
+                name="name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="email"></label>
+              <input
+                id="email"
+                type="email"
+                class="form-control"
+                placeholder="Email"
+                required
+                v-model="userData.email"
+                name="email"
+              />
+            </div>
+            <div class="form-group">
+              <label for="password"></label>
+              <input
+                id="password"
+                type="password"
+                class="form-control"
+                placeholder="密碼"
+                required
+                v-model="userData.password"
+                name="password"
+                autocomplete="off"
+              />
+            </div>
+            <div class="form-group">
+              <label for="passwordConfirm"></label>
+              <input
+                id="passwordConfirm"
+                type="password"
+                class="form-control"
+                placeholder="密碼確認"
+                required
+                v-model="userData.checkPassword"
+                name="checkPassword"
+                autocomplete="off"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg">儲存</button>
+          </form>
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script>
 import Navbar from "./../components/Navbar";
+import Spinner from "./../components/Spinner";
 
 import SettingAPI from "./../apis/user";
 import { Toast } from "./../utils/helpers";
@@ -87,6 +91,7 @@ export default {
   name: "Setting",
   components: {
     Navbar,
+    Spinner,
   },
   data() {
     return {
@@ -99,6 +104,7 @@ export default {
         password: "",
         checkPassword: "",
       },
+      isLoading: true,
     };
   },
   created() {
@@ -113,9 +119,12 @@ export default {
   methods: {
     async getUserId({ userId }) {
       try {
+        this.isLoading = true;
         const response = await SettingAPI.get({ userId });
         this.userData = { ...response.data };
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           icon: "error",
           title: "無法取得資料，請稍後再試",
@@ -124,6 +133,7 @@ export default {
     },
     async handleSubmit(event) {
       try {
+        this.isLoading = true;
         // 確認帳號與密碼是否一樣
         if (this.userData.account === this.userData.email) {
           Toast.fire({
@@ -157,11 +167,13 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
+        this.isLoading = false;
         this.$router.push({
           name: "MainPage",
           params: { id: this.currentUser.id },
         });
       } catch (error) {
+        this.isLoading = false;
         console.log(error);
         Toast.fire({
           icon: "error",

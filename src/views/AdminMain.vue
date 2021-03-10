@@ -1,47 +1,51 @@
 <template>
   <div class="AdminMain-container">
-    <div class="row">
-      <!-- Navbar -->
-      <AdminNavbar v-bind:TweetList="TweetList" v-bind:UserList="UserList" />
-      <!-- 中間主畫面 -->
-      <div class="AdminMain-main">
-        <div class="AdminMain-header">推文清單</div>
-        <div
-          class="AdminMain-tweet"
-          v-for="tweet in tweetData"
-          v-bind:key="tweet.id"
-        >
-          <img
-            class="AdminMain-tweet-userPhoto"
-            v-bind:src="tweet.User.avatar"
-            alt=""
-          />
-          <div class="AdminMain-tweet-msg">
-            <div class="AdminMain-tweet-msg-name">
-              {{ tweet.User.name
-              }}<span class="AdminMain-tweet-msg-name-app">
-                @apple．{{ tweet.updatedAt | fromNow }}</span
-              >
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <div class="row">
+        <!-- Navbar -->
+        <AdminNavbar v-bind:TweetList="TweetList" v-bind:UserList="UserList" />
+        <!-- 中間主畫面 -->
+        <div class="AdminMain-main">
+          <div class="AdminMain-header">推文清單</div>
+          <div
+            class="AdminMain-tweet"
+            v-for="tweet in tweetData"
+            v-bind:key="tweet.id"
+          >
+            <img
+              class="AdminMain-tweet-userPhoto"
+              v-bind:src="tweet.User.avatar"
+              alt=""
+            />
+            <div class="AdminMain-tweet-msg">
+              <div class="AdminMain-tweet-msg-name">
+                {{ tweet.User.name
+                }}<span class="AdminMain-tweet-msg-name-app">
+                  @apple．{{ tweet.updatedAt | fromNow }}</span
+                >
+              </div>
+              <div class="AdminMain-tweet-msg-name-msg">
+                {{ tweet.description | textCount }}
+              </div>
             </div>
-            <div class="AdminMain-tweet-msg-name-msg">
-              {{ tweet.description | textCount }}
+            <div class="AdminMain-tweet-delete">
+              <i
+                @click.stop.prevent="deleteTweet(tweet.id)"
+                class="far fa-trash-alt AdminMain-tweet-delete-icon"
+                style="font-size: 20px"
+              ></i>
             </div>
-          </div>
-          <div class="AdminMain-tweet-delete">
-            <i
-              @click.stop.prevent="deleteTweet(tweet.id)"
-              class="far fa-trash-alt AdminMain-tweet-delete-icon"
-              style="font-size: 20px"
-            ></i>
           </div>
         </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script>
 import AdminNavbar from "./../components/Admin-Navbar";
+import Spinner from "./../components/Spinner";
 
 import mainPageAPI from "./../apis/user";
 import { Toast } from "./../utils/helpers";
@@ -56,12 +60,14 @@ export default {
   name: "AdminMain",
   components: {
     AdminNavbar,
+    Spinner,
   },
   data() {
     return {
       TweetList: false,
       UserList: false,
       tweetData: [],
+      isLoading: true,
     };
   },
   created() {
@@ -75,10 +81,13 @@ export default {
   methods: {
     async fetchAdminMain() {
       try {
+        this.isLoading = true;
         const response = await mainPageAPI.AdminMain();
         this.tweetData = [...response.data];
         console.log(this.tweetData);
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           icon: "error",
           title: "無法取得資料，請稍後再試",

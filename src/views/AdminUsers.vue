@@ -1,62 +1,66 @@
 <template>
   <div class="AdminUsers-container">
-    <div class="row">
-      <!-- Navbar -->
-      <AdminNavbar v-bind:TweetList="TweetList" v-bind:UserList="UserList" />
-      <!-- 中間主畫面 -->
-      <div class="AdminUsers-main">
-        <div class="AdminUsers-header">使用者列表</div>
-        <div class="AdminUsers-cards">
-          <div
-            class="AdminUsers-card"
-            v-for="user in tweetUsers"
-            v-bind:key="user.id"
-          >
-            <img
-              class="AdminUsers-card-BGphoto"
-              v-bind:src="user.cover"
-              alt=""
-            />
-            <div class="AdminUsers-card-info">
-              <div class="AdminUsers-card-info-name">{{ user.name }}</div>
-              <div class="AdminUsers-card-info-app">@Jackson</div>
-              <div class="AdminUsers-card-info-icon">
-                <i
-                  class="far fa-comment AdminUsers-card-info-icon-msg"
-                  style="font-size: 20px"
-                ></i>
-                {{ user.Tweets.length }}
-                <i
-                  class="far fa-heart AdminUsers-card-info-icon-msg"
-                  style="font-size: 20px"
-                ></i>
-                {{ user.Likes.length }}
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <div class="row">
+        <!-- Navbar -->
+        <AdminNavbar v-bind:TweetList="TweetList" v-bind:UserList="UserList" />
+        <!-- 中間主畫面 -->
+        <div class="AdminUsers-main">
+          <div class="AdminUsers-header">使用者列表</div>
+          <div class="AdminUsers-cards">
+            <div
+              class="AdminUsers-card"
+              v-for="user in tweetUsers"
+              v-bind:key="user.id"
+            >
+              <img
+                class="AdminUsers-card-BGphoto"
+                v-bind:src="user.cover"
+                alt=""
+              />
+              <div class="AdminUsers-card-info">
+                <div class="AdminUsers-card-info-name">{{ user.name }}</div>
+                <div class="AdminUsers-card-info-app">@Jackson</div>
+                <div class="AdminUsers-card-info-icon">
+                  <i
+                    class="far fa-comment AdminUsers-card-info-icon-msg"
+                    style="font-size: 20px"
+                  ></i>
+                  {{ user.Tweets.length }}
+                  <i
+                    class="far fa-heart AdminUsers-card-info-icon-msg"
+                    style="font-size: 20px"
+                  ></i>
+                  {{ user.Likes.length }}
+                </div>
+                <div class="AdminUsers-card-info-follow">
+                  {{ user.Followers.length }} 個<span
+                    class="AdminUsers-card-info-follow-style"
+                    >跟隨中</span
+                  >
+                  {{ user.Followings.length }} 位<span
+                    class="AdminUsers-card-info-follow-style"
+                    >跟隨者</span
+                  >
+                </div>
               </div>
-              <div class="AdminUsers-card-info-follow">
-                {{ user.Followers.length }} 個<span
-                  class="AdminUsers-card-info-follow-style"
-                  >跟隨中</span
-                >
-                {{ user.Followings.length }} 位<span
-                  class="AdminUsers-card-info-follow-style"
-                  >跟隨者</span
-                >
-              </div>
+              <img
+                class="AdminUsers-card-userPhote"
+                v-bind:src="user.avatar"
+                alt=""
+              />
             </div>
-            <img
-              class="AdminUsers-card-userPhote"
-              v-bind:src="user.avatar"
-              alt=""
-            />
           </div>
         </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script>
 import AdminNavbar from "./../components/Admin-Navbar";
+import Spinner from "./../components/Spinner";
 
 import mainPageAPI from "./../apis/user";
 import { Toast } from "./../utils/helpers";
@@ -68,12 +72,14 @@ export default {
   name: "AdminUsers",
   components: {
     AdminNavbar,
+    Spinner,
   },
   data() {
     return {
       TweetList: false,
       UserList: false,
       tweetUsers: [],
+      isLoading: true,
     };
   },
   created() {
@@ -86,10 +92,13 @@ export default {
   methods: {
     async fetchAdminUsers() {
       try {
+        this.isLoading = true;
         const response = await mainPageAPI.AdminUsers();
         this.tweetUsers = [...response.data];
         console.log("tweetData", this.tweetUsers);
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           icon: "error",
           title: "無法取得資料，請稍後再試",
