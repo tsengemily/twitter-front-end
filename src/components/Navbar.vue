@@ -64,12 +64,12 @@
           推文
         </button>
       </li>
-      <li class="nav-item log-out">
-        <router-link class="log-out-style" to="/login">
-          <i class="fas fa-sign-out-alt" style="font-size: 25px"
-            ><span>登出</span></i
-          >
-        </router-link>
+      <li class="nav-item log-out log-out-style">
+        <!-- <router-link class="log-out-style" to="/login"> -->
+        <i class="fas fa-sign-out-alt" style="font-size: 25px" @click="logout"
+          ><span>登出</span></i
+        >
+        <!-- </router-link> -->
       </li>
     </ul>
 
@@ -99,6 +99,9 @@
             class="tweet-textarea"
             @submit.prevent.stop="handleSubmit($event)"
           >
+            <div class="modal-counter">
+              推文剩餘字數:{{ 140 - this.description.length }}字
+            </div>
             <div class="modal-body">
               <img class="user-photo" v-bind:src="userData.avatar" alt="" />
               <textarea
@@ -139,6 +142,11 @@ export default {
       default: false,
       required: true,
     },
+    // userData: {
+    //   type: Object,
+    //   default: () => {},
+    //   required: true,
+    // },
   },
   data() {
     return {
@@ -147,15 +155,21 @@ export default {
     };
   },
   created() {
-    // console.log(this.$route);
-    const { userId } = { userId: this.currentUser.id };
-    this.fetchMainPage({ userId });
+    // 本來想要用API撈資料，但是會跟MainPage重複，系統會抱錯
+    const localUserId = localStorage.getItem("userId");
+    const { userId } = { userId: localUserId };
+    this.getUserId({ userId });
   },
   methods: {
-    async fetchMainPage({ userId }) {
+    logout() {
+      this.$store.commit("revokeAuthentication");
+      this.$router.push("/login");
+    },
+    // 本來想要用API撈資料，但是會跟MainPage重複，系統會抱錯
+    async getUserId({ userId }) {
       try {
-        const response = await mainPageAPI.mainPage({ userId });
-        this.tweetData = [...response.data];
+        const response = await mainPageAPI.get({ userId });
+        this.userData = { ...response.data };
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -170,6 +184,22 @@ export default {
         // for (let [name, value] of formData.entries()) {
         //   console.log(name + ": " + value);
         // }
+        // 檢測推文字數不能為0
+        if (this.description.length === 0) {
+          Toast.fire({
+            icon: "error",
+            title: "請輸入文字",
+          });
+          return;
+        }
+        // 檢測推文字數不能>140
+        if (this.description.length > 140) {
+          Toast.fire({
+            icon: "error",
+            title: "輸入文字不能超過140字",
+          });
+          return;
+        }
         console.log(formData);
         console.log("description", this.description);
         // const { data } = await SettingAPI.userSetUp({ formData });
@@ -252,6 +282,7 @@ span {
 }
 .log-out-style:hover {
   color: rgb(2, 117, 216);
+  cursor: pointer;
 }
 .modal-btn-size {
   width: 64px;
@@ -259,6 +290,12 @@ span {
   font-size: 18px;
   line-height: 18px;
   font-weight: 500;
+}
+.modal-counter {
+  margin: 0 15px;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: end;
 }
 .modal-body {
   display: flex;

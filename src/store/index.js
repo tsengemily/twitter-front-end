@@ -29,6 +29,12 @@ export default new Vuex.Store({
       // 將使用者的登入狀態改為 true
       state.isAuthenticated = true
     },
+    revokeAuthentication(state) {
+      state.currentUser = {}
+      state.isAuthenticated = false
+      localStorage.removeItem('token')
+      localStorage.removeItem('userId')
+    },
   },
   // 透過API請求資料
   // dispatch 發動 actions
@@ -47,9 +53,11 @@ export default new Vuex.Store({
           role,
           avatar,
         })
+
+        return true
       } catch (error) {
-        console.log('error', error)
-        console.error('can not fetch user information')
+        console.error(error.message)
+        return false
       }
     },
   },
