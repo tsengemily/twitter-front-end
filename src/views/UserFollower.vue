@@ -1,55 +1,58 @@
 <template>
  <div class="page-container">
-    <div class="row">
-      <!-- 導覽列 -->
-      <div class="left">
-         <Navbar />
-      </div>
-
-      <!-- 主要內容 -->
-      <div class="main">
-        <UserHeader
-          :user-id="user.id" 
-          :user-name="user.name"
-          :user-tweets-count="user.tweetCount"
-        />
-        <ul class="nav">
-          <li
-            class="nav-item active"
-          >
-            跟隨者
-          </li>
-          <li
-            class="nav-item"
-          >
-            <router-link 
-              :to="{name: 'user-following', params: {id: user.id}}" 
-              class="link-btn"
-            ></router-link>
-            正在跟隨
-          </li>
-        </ul>
-        <UserFollowerCard 
-          v-for="follower in followers"
-          :key="follower.followerId"
-          :initial-follower="follower"
-        />
-      </div>
-      <!-- 跟隨誰 -->
-      <div class="right">
-        <div class="top-users-container">
-          <h1 class="top-users-title">跟隨誰</h1>
-            <Top10User 
-              v-for="topUser in topUsers"
-              :key="topUser.id"
-              :initial-top-user="topUser"
-            />
-          <div class="top-users-more">
-            顯示更多
-          </div> 
+   <Spinner v-if="isLoading"/>
+    <template v-else>
+      <div class="row">
+        <!-- 導覽列 -->
+        <div class="left">
+          <Navbar />
         </div>
-      </div>   
-    </div>  
+
+        <!-- 主要內容 -->
+        <div class="main">
+          <UserHeader
+            :user-id="user.id" 
+            :user-name="user.name"
+            :user-tweets-count="user.tweetCount"
+          />
+          <ul class="nav">
+            <li
+              class="nav-item active"
+            >
+              跟隨者
+            </li>
+            <li
+              class="nav-item"
+            >
+              <router-link 
+                :to="{name: 'user-following', params: {id: user.id}}" 
+                class="link-btn"
+              ></router-link>
+              正在跟隨
+            </li>
+          </ul>
+          <UserFollowerCard 
+            v-for="follower in followers"
+            :key="follower.followerId"
+            :initial-follower="follower"
+          />
+        </div>
+        <!-- 跟隨誰 -->
+        <div class="right">
+          <div class="top-users-container">
+            <h1 class="top-users-title">跟隨誰</h1>
+              <Top10User 
+                v-for="topUser in topUsers"
+                :key="topUser.id"
+                :initial-top-user="topUser"
+              />
+            <div class="top-users-more">
+              顯示更多
+            </div> 
+          </div>
+        </div>   
+      </div>
+    </template>    
   </div>
 </template>
 
@@ -58,6 +61,7 @@ import Navbar from '../components/Navbar'
 import UserHeader from '../components/UserHeader'
 import UserFollowerCard from '../components/UserFollowerCard'
 import Top10User from '../components/Top10User'
+import Spinner from '../components/Spinner'
 import { mapState } from 'vuex'
 import UserAPI from '../apis/user'
 import { Toast } from '../utils/helpers'
@@ -70,7 +74,8 @@ export default {
     Navbar,
     UserHeader,
     UserFollowerCard,
-    Top10User
+    Top10User,
+    Spinner
   },
   data() {
     return {
@@ -81,10 +86,11 @@ export default {
       },
       followers: [],
       topUsers: [],
-      currentUser: false
+      currentUser: false,
+      isLoading: true
     }
   },
-   computed: {
+  computed: {
     ...mapState(['currentUser'])
   },
   created () {
@@ -97,9 +103,11 @@ export default {
     //取得使用者名稱
     async fetchUser ({ userId }) {
       try {
+        this.isLoading = true
         const { data } = await UserAPI.get({ userId })
 
         const { id, name, isSelf, tweetCount } = data
+
         this.user = {
           ...this.user,
           id,
@@ -107,7 +115,10 @@ export default {
           tweetCount
         }
         this.currentUser = isSelf
+
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         console.log('error', error)
         Toast.fire({
           icon: 'error',
@@ -118,10 +129,15 @@ export default {
     //取得跟隨者
     async fetchFollower ({ userId }) {
       try {
+        this.isLoading = true
+
         const { data } = await UserAPI.getFollowers({ userId })
         
         this.followers = data
+
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         console.log('error', error)
         Toast.fire({
           icon: 'error',
@@ -132,10 +148,15 @@ export default {
     //取得topUsers
     async fetchTopUsers () {
       try {
+        this.isLoading = true
+
         const { data } = await UserAPI.getUsersTop()
 
         this.topUsers = data
+
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         console.log('error', error)
         Toast.fire({
           icon: 'error',
@@ -144,9 +165,11 @@ export default {
       }
     }
   },
-  beforeRouteUpdate (to, next) {
+  beforeRouteUpdate (to, from, next) {
     const { id: userId } = to.params
-    this.fetchUser(userId)
+    this.fetchUser({ userId })
+    this.fetchFollower({ userId })
+    this.fetchTopUsers()
     next()
   }
 }

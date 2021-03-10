@@ -1,69 +1,64 @@
 <template>
   <div class="page-container">
-    <div class="row">
-      <!-- 導覽列 -->
-      <div class="left">
-        <Navbar />
-      </div>
+    <Spinner v-if="isLoading"/>
+    <template v-else>
+      <div class="row">
+        <!-- 導覽列 -->
+        <div class="left">
+          <Navbar />
+        </div>
 
-      <!-- 主要內容 -->
-      <div class="main">
-        <UserHeader 
-          :user-id="user.id"
-          :user-name="user.name"
-          :user-tweets-count="user.tweetCount"
-        />
-        <UserProfileCard 
-          :initial-user="user"
-          :isCurrentUser="currentUser"
-        />
-        <div class="nav">
-          <router-link
-            class="nav-item"
-            :class="{active: isPostActive}"
-            @click="postActive"
-            :to="{name: 'user', params: {id: user.id}}"
-          >
-            推文
-          </router-link>
-          <router-link
-            class="nav-item"
-            :class="{active: isPostAndRecommentActive}"
-            @click="postAndRecommentActive"
-            :to="{name: 'user-with-replies', params: {id: user.id}}"
-          >
-            推文與回覆
-          </router-link>
-          <router-link
-            class="nav-item"
-            :class="{active: isLikeActive}"
-            @click="likeActive"
-            :to="{name: 'user-likes', params: {id: user.id}}"
-          >
-            喜歡的內容
-          </router-link>
-        </div>
-        <PostCard 
-          v-if="$route.name === 'user'"
-          :initialTweets="tweets"
-        />
-        <router-view />
-      </div>
-      <!-- 跟隨誰 -->
-      <div class="right">
-        <div class="top-users-container">
-          <h1 class="top-users-title">跟隨誰</h1>
-            <Top10User 
-              v-for="topUser in topUsers"
-              :key="topUser.id"
-              :initial-top-user="topUser"
+        <!-- 主要內容 -->
+        <div class="main">
+          <UserHeader 
+            :user-id="user.id"
+            :user-name="user.name"
+            :user-tweets-count="user.tweetCount"
+          />
+          <UserProfileCard 
+            :initial-user="user"
+            :isCurrentUser="currentUser"
+          />
+          <div class="nav">
+            <router-link
+              class="nav-item active"
+              :to="{name: 'user', params: {id: user.id}}"
+            >
+              推文
+            </router-link>
+            <router-link
+              class="nav-item"
+              :to="{name: 'user-with-replies', params: {id: user.id}}"
+            >
+              推文與回覆
+            </router-link>
+            <router-link
+              class="nav-item"
+              :to="{name: 'user-likes', params: {id: user.id}}"
+            >
+              喜歡的內容
+            </router-link>
+          </div>
+            <PostCard
+              :initialTweets="tweets"
             />
-          <div class="top-users-more">
-            顯示更多
-          </div> 
         </div>
-      </div>  
-    </div>  
+        <!-- 跟隨誰 -->
+        <div class="right">
+          <div class="top-users-container">
+            <h1 class="top-users-title">跟隨誰</h1>
+              <Top10User 
+                v-for="topUser in topUsers"
+                :key="topUser.id"
+                :initial-top-user="topUser"
+              />
+            <div class="top-users-more">
+              顯示更多
+            </div> 
+          </div>
+        </div>  
+      </div>
+    </template>   
   </div>
 </template>
 
@@ -75,6 +70,7 @@ import UserHeader from '../components/UserHeader'
 import UserProfileCard from '../components/UserProfileCard'
 import PostCard from '../components/PostCard'
 import Top10User from '../components/Top10User'
+import Spinner from '../components/Spinner'
 import { mapState } from 'vuex'
 import UserAPI from '../apis/user'
 import { Toast } from '../utils/helpers'
@@ -87,7 +83,8 @@ export default {
     UserHeader,
     UserProfileCard,
     PostCard,
-    Top10User
+    Top10User,
+    Spinner
   },
   data() {
     return {
@@ -107,28 +104,28 @@ export default {
       currentUser: false,
       tweets: [],
       topUsers: [],
-      isPostActive: true,
-      isPostAndRecommentActive: false,
-      isLikeActive: false
+      isLoading: true
     }
   },
   computed: {
     ...mapState(['currentUser'])
   },
   created () {
-    this.fetchTopUsers()
     const { id: userId } = this.$route.params
+    this.fetchTopUsers()
     this.fetchUser({ userId })
     this.fetchTweets({ userId })
-    this.fetchFollowingCount({ userId })
   },
   methods: {
     //取得使用者資料
     async fetchUser ({ userId }) {
       try {
+        this.isLoading = true
         const { data } = await UserAPI.get({ userId })
+        console.log({ data })
 
         const { id, name, email, account, cover, avatar, introduction, isSelf, isFollowed, followerCount, followingCount, tweetCount } = data
+
         this.user = {
           ...this.user,
           id,
@@ -144,7 +141,10 @@ export default {
           tweetCount
         }
         this.currentUser = isSelf
+
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         console.log('error', error)
         Toast.fire({
           icon: 'error',
@@ -155,10 +155,14 @@ export default {
     //取得推文
     async fetchTweets ({ userId }) {
       try {
+        this.isLoading = true
         const { data } = await UserAPI.getTweets({ userId })
-        
+
         this.tweets = data
+
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         console.log('error', error)
         Toast.fire({
           icon: 'error',
@@ -169,10 +173,14 @@ export default {
     //取得topUsers
     async fetchTopUsers () {
       try {
+        this.isLoading = true
         const { data } = await UserAPI.getUsersTop()
 
         this.topUsers = data
+
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         console.log('error', error)
         Toast.fire({
           icon: 'error',
@@ -180,30 +188,16 @@ export default {
         })
       }
     },
-    postActive () {
-      this.isPostActive = true
-      this.isPostAndRecommentActive = false
-      this.isLikeActive = false
-      //向api發送請求 推文
-      //get:/api/users/{id}/tweets
-    },
-     postAndRecommentActive () {
-      this.isPostActive = false
-      this.isPostAndRecommentActive = true
-      this.isLikeActive = false
-      //向api發送請求 推文與回覆
-      //get:/api/users/{id}/replied_tweets
-    },
-    likeActive () {
-      this.isPostActive = false
-      this.isPostAndRecommentActive = false
-      this.isLikeActive = true
-    }
-  
+      // afterFollow (newFollowingCount) {
+      //   this.user.followingCount = newFollowingCount
+      //   console.log(newFollowingCount) 
+      // }
   },
-  beforeRouteUpdate (to, next) {
+  beforeRouteUpdate (to, from, next) {
     const { id: userId } = to.params
-    this.fetchUser(userId)
+    this.fetchTopUsers()
+    this.fetchUser({ userId })
+    this.fetchTweets({ userId })
     next()
   }
 }
