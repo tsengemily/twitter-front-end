@@ -60,6 +60,8 @@
 
 <script>
 import moment from 'moment'
+import UserAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
 
 export default {
   name: 'PostCard',
@@ -77,21 +79,49 @@ export default {
     }
   },
   methods: {
-    addLike () {
-      //post:api/tweets/{tweetId}/like
-      this.tweet = {
-        ...this.tweet,
-        isLikedbyMe: true
+    async addLike (tweetId) {
+      try {
+        const { data } = await UserAPI.addLike({ tweetId })
+
+         if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.tweet = {
+          ...this.tweet,
+          isLikedbyMe: true
+        }
+        this.likeCount = this.likeCount + 1 
+        console.log('成功')
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法加入喜歡，請稍後再試'
+        })
+        console.log(error)
       }
-      this.likeCount = this.likeCount + 1 
     },
-    deleteLike() {
-      //post:api/tweets/{tweetId}/unlike
-      this.tweet = {
-        ...this.tweet,
-        isLikedbyMe: false
+    async deleteLike(tweetId) {
+      try {
+         const { data } = await UserAPI.deleteLike({ tweetId })
+
+         if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.tweet = {
+          ...this.tweet,
+          isLikedbyMe: false
+       }
+        this.likeCount = this.likeCount - 1 
+        console.log('成功')
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法移除喜歡，請稍後再試'
+        })
+        console.log(error)
       }
-      this.likeCount = this.likeCount - 1 
     }
   },
   filters: {
@@ -107,8 +137,8 @@ export default {
 
 <style scoped>
   .card-container {
-    outline: 1px solid gray;
-    padding: 15px 15px 0 15px;
+    /* outline: 1px solid gray; */
+    padding: 15px;
     border-top: 1px solid #e6ecf0;
     position: relative;
     overflow: hidden;
