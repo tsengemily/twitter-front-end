@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import usersAPI from "./../apis/user"
+import usersAPI from './../apis/user'
 
 Vue.use(Vuex)
 
@@ -12,9 +12,10 @@ export default new Vuex.Store({
       name: '',
       email: '',
       role: '',
+      avatar: '',
       // isAdmin: false
     },
-    isAuthenticated: false
+    isAuthenticated: false,
   },
   // 用來修改 state 的方法，methods
   // commit 來發動 mutations
@@ -23,7 +24,7 @@ export default new Vuex.Store({
       state.currentUser = {
         ...state.currentUser,
         // 將 API 取得的 currentUser 覆蓋掉 Vuex state 中的 currentUser
-        ...currentUser
+        ...currentUser,
       }
       // 將使用者的登入狀態改為 true
       state.isAuthenticated = true
@@ -33,7 +34,7 @@ export default new Vuex.Store({
       state.isAuthenticated = false
       localStorage.removeItem('token')
       localStorage.removeItem('userId')
-    }
+    },
   },
   // 透過API請求資料
   // dispatch 發動 actions
@@ -44,12 +45,13 @@ export default new Vuex.Store({
         const { userId } = { userId: Id } /* TODO:解構付值 */
         // 呼叫 usersAPI.getCurrentUser() 方法，並將 response 顯示出來
         const { data } = await usersAPI.get({ userId })
-        let { id, name, email, role } = data
+        let { id, name, email, role, avatar } = data
         commit('setCurrentUser', {
           id,
           name,
           email,
-          role
+          role,
+          avatar,
         })
 
         return true
@@ -57,8 +59,7 @@ export default new Vuex.Store({
         console.error(error.message)
         return false
       }
-    }
+    },
   },
-  modules: {
-  }
+  modules: {},
 })

@@ -6,7 +6,7 @@ import Swal from 'sweetalert2'
 // const baseURL = 'https://salty-headland-68177.herokuapp.com/api'
 
 export const apiHelper = axios.create({
-  baseURL: 'http://localhost:3000/api',
+  baseURL,
 })
 
 export const Toast = Swal.mixin({

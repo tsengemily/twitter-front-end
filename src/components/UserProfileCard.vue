@@ -41,16 +41,22 @@
       
       <div class="follow">
         <template
-          v-if="isFollow"
+          v-if="user.isFollowed"
         >
-          <button class="follow-btn following"> 
+          <button 
+            class="follow-btn following"
+            @click="deleteFollow(user.id)"
+          > 
             正在跟隨
           </button>
         </template>
         <template
           v-else
         >
-          <button class="follow-btn follow">
+          <button 
+            class="follow-btn follow"
+            @click="addFollow()"
+          >
             跟隨
           </button>
         </template>
@@ -80,13 +86,13 @@
           :to="{name: 'user-following', params: {id: user.id}}" 
           class="user-following"
         >
-          <strong>{{followingCount}}個</strong>跟隨中
+          <strong>{{user.followingCount}}個</strong>跟隨中
         </router-link>
         <router-link 
           :to="{name: 'user-follower', params: {id: user.id}}" 
           class="user-follower"
         >
-          <strong>{{followerCount}}位</strong>跟隨者
+          <strong>{{user.followerCount}}位</strong>跟隨者
         </router-link>
       </div>
     </div>
@@ -96,6 +102,9 @@
 
 <script>
 import UserEdit from '../components/UserEdit'
+import { mapState } from 'vuex'
+import UserAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
 
 export default {
   name: 'UserProfileCard',
@@ -112,16 +121,11 @@ export default {
         account: '',
         cover: '',
         avatar: '',
-        introduction: ''
+        introduction: '',
+        isFollowed: false,
+        followerCount: 0,
+        followingCount: 0
       })
-    },
-    followingCount: {
-      type: Number,
-      required: true
-    },
-    followerCount: {
-      type: Number,
-      required: true
     },
     isCurrentUser: {
       type: Boolean,
@@ -132,11 +136,75 @@ export default {
     return {
       user: {
        ...this.initialUser 
-      },
-      isInfo: false,
-      isFollow: this.initialIsFollow
+      }
     }
-  }
+  },
+  computed: {
+    ...mapState(['currentUser'])
+  },
+  watch: {
+    initialUser (newValue) {
+      this.user = {
+        ...this.user,
+        ...newValue
+      }
+    }
+  },
+  methods: {
+    async addFollow () {
+      try {
+        const { data } = await UserAPI.addFollow({ id: this.user.id })
+
+         if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.user = {
+          ...this.user,
+          isFollowed: true
+        }
+        this.user.followerCount = this.user.followerCount + 1
+
+        Toast.fire({
+          icon: 'success',
+          title: '新增跟隨成功'
+        })
+      }  catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法新增跟隨，請稍後再試'
+        })
+        console.log(error)
+      }
+    },
+     async deleteFollow (userId) {
+      try {
+        const { data } = await UserAPI.deleteFollow({ userId })
+
+         if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.user = {
+          ...this.user,
+          isFollowed: false
+        }
+        this.user.followerCount = this.user.followerCount - 1
+    
+
+        Toast.fire({
+          icon: 'success',
+          title: '取消跟隨成功'
+        })
+      }  catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取消跟隨，請稍後再試'
+        })
+        console.log(error)
+      }
+    }
+  }  
 }
 </script>
 

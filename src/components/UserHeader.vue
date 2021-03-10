@@ -6,7 +6,11 @@
       <img src="../assets/arrow.png" class="back-arrow">
     </div>
     <div>
-      <h1 class="header-name">{{userName}}</h1>
+      <router-link 
+        :to="{name: 'user', params: {id: userId}}"
+      >
+        <h1 class="header-name">{{userName}}</h1>
+      </router-link>
       <p class="header-post-counts">{{userTweetsCount}}推文</p>
     </div>
   </div>
@@ -16,6 +20,10 @@
 <script>
 export default {
   props: {
+    userId: {
+      type: Number,
+      required: true
+    },
     userName: {
       type: String,
       required: true

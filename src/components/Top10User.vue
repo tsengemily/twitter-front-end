@@ -1,20 +1,23 @@
 <template>
   <div class="card-container d-flex">
-    <img 
-      class="user-avatar"
-      :src="topUser.avatar"
+    <router-link 
+      :to="{name: 'user', params: {id: topUser.id}}" 
     >
+      <img 
+        class="user-avatar"
+        :src="topUser.avatar"
+      >
+    </router-link>
 
     <div>
       <h2 class="user-name">
         {{topUser.name}}
       </h2>
-      <router-link 
+      <p
         class="user-account ml-2"
-        :to="{name: 'user', params: {id: topUser.id}}" 
       >
         @{{topUser.account}}
-      </router-link>
+      </p>
 
       <template
         v-if="topUser.isFollowed"
@@ -31,7 +34,7 @@
       >
         <button 
           class="follow-btn follow"
-          @click.stop.prevent="addFollow(topUser.id)"
+          @click.stop.prevent="addFollow()"
         >
           跟隨
         </button>
@@ -42,6 +45,9 @@
 
 
 <script>
+import UserAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
+
 export default {
   props: {
     initialTopUser: {
@@ -55,20 +61,54 @@ export default {
     }
   },
   methods: {
-    deleteFollow () {
-      //delete/api/followships/{followingId}
-      //api:followshipsAPI.deleteFollow({followingId})
-      this.topUser = {
-        ...this.topUser,
-        isFollowed: false
+    async addFollow () {
+      try {
+        const { data } = await UserAPI.addFollow({ id: this.topUser.id })
+
+         if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.topUser = {
+          ...this.topUser,
+          isFollowed: true
+        }
+
+        Toast.fire({
+          icon: 'success',
+          title: '新增跟隨成功'
+        })
+      }  catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法新增跟隨，請稍後再試'
+        })
+        console.log(error)
       }
     },
-    addFollow () {
-      //post/api/followships
-      //api:followshipsAPI.addFollow
-      this.topUser = {
-        ...this.topUser,
-        isFollowed: true
+     async deleteFollow (userId) {
+      try {
+        const { data } = await UserAPI.deleteFollow({ userId })
+
+         if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.topUser = {
+          ...this.topUser,
+          isFollowed: false
+        }
+
+        Toast.fire({
+          icon: 'success',
+          title: '取消跟隨成功'
+        })
+      }  catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取消跟隨，請稍後再試'
+        })
+        console.log(error)
       }
     }
   }
@@ -78,7 +118,6 @@ export default {
 
 <style scoped>
   .card-container {
-    /* outline: 1px solid #808080; */
     position: relative;
     padding: 5px;
     border-bottom: 1px solid #e6ecf0;
@@ -100,11 +139,14 @@ export default {
   }
 
   .user-account {
+    /* outline: 1px solid #808080; */
     position: relative;
     left: -10px;
     font-weight: 500;
     font-size: 12px;
     color: #657786;
+    width: 55%;
+    white-space: pre-wrap;
   }
 
   .follow-btn {

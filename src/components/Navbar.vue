@@ -29,7 +29,7 @@
         </router-link>
       </li>
       <li class="nav-item-userData">
-        <router-link class="nav-item-userData-font-color" to="#">
+        <router-link class="nav-item-userData-font-color" :to="{name: 'user', params: {id: currentUser.id}}">
           <i class="far fa-user link-style" style="font-size: 25px"
             ><span>個人資料</span></i
           >

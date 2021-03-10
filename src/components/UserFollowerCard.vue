@@ -38,9 +38,11 @@
       >
         <button 
           class="follow-btn follow"
-          @click.stop.prevent="addFollow(follower.followerId)"
+          :class="{disable: follower.followerId === currentUser.id}"
+          @click.stop.prevent="addFollow()"
+          :disabled="follower.followerId === currentUser.id"
         >
-          跟隨
+          {{ follower.followerId === currentUser.id ? '無法跟隨自己' : '跟隨' }}
         </button>
       </template>
 
@@ -53,6 +55,10 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import UserAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
+
 export default {
   props: {
     initialFollower: {
@@ -65,21 +71,58 @@ export default {
       follower: this.initialFollower
     }
   },
+  computed: {
+    ...mapState(['currentUser'])
+  },
   methods: {
-    deleteFollow () {
-      //delete/api/followships/{followingId}
-      //api:followshipsAPI.deleteFollow({followingId})
-      this.follower = {
-        ...this.follower,
-        isFollowed: false
+    async addFollow () {
+      try {
+        const { data } = await UserAPI.addFollow({ id: this.follower.followerId })
+
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.follower = {
+          ...this.follower,
+          isFollowed: true
+        }
+
+        Toast.fire({
+          icon: 'success',
+          title: '新增跟隨成功'
+        })
+      }  catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法新增跟隨，請稍後再試'
+        })
+        console.log(error)
       }
     },
-    addFollow () {
-      //post/api/followships
-      //api:followshipsAPI.addFollow
-      this.follower = {
-        ...this.follower,
-        isFollowed: true
+     async deleteFollow (userId) {
+      try {
+        const { data } = await UserAPI.deleteFollow({ userId })
+
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.follower = {
+          ...this.follower,
+          isFollowed: false
+        }
+
+        Toast.fire({
+          icon: 'success',
+          title: '取消跟隨成功'
+        })
+      }  catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取消跟隨，請稍後再試'
+        })
+        console.log(error)
       }
     }
   }
@@ -88,7 +131,7 @@ export default {
 
 <style scoped>
   .card-container {
-    outline: 1px solid gray;
+    /* outline: 1px solid gray; */
     position: relative;
     padding: 15px;
     border-top: 1px solid #e6ecf0;
@@ -148,4 +191,10 @@ export default {
     background: #ff6600;
     color: #fff;
   }
+
+  .disable {
+    border: 1px solid #657786;
+    background: #657786;
+    color: #fff;
+   }
 </style>

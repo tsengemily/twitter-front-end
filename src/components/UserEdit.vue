@@ -1,17 +1,39 @@
 <template>
-  <div class="modal fade" id="user-edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div 
+    class="modal fade" 
+    id="user-edit" 
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel" 
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <form @submit.stop.prevent="handleSubmit">
-            <button type="button" class="close-btn" data-dismiss="modal" aria-label="Close">
+            <button 
+              type="button" 
+              class="close-btn" 
+              data-dismiss="modal" 
+              aria-label="Close"
+            >
               <span aria-hidden="true">
                 <img src="../assets/close.png" class="close-icon">
               </span>
             </button>
             <h5 class="edit-title">編輯個人資料</h5>
-            <button type="submit" class="edit-close">儲存</button>
+            <button 
+              type="submit" 
+              class="edit-close"
+              data-dismiss="modal"
+              @click="handleSubmit"
+            >
+              儲存
+            </button>
             <div class="modal-body">
+            <form
+              id="edit-user-profile-form"
+              @submit.stop.prevent
+              enctype="multipart/form-data"
+            >
               <div class="edit-cover">
                 <img :src="user.cover" class="cover-img">
                 <label for="cover-input" class="cover-label"></label>
@@ -42,9 +64,9 @@
               <div class="edit-introduction">
                 <textarea name="" id="" rows="10" class="introduction-input" placeholder="自我介紹" v-model="user.introduction"></textarea>
                 <div class="word-count">{{introductionCount}}/160</div> 
-              </div>
+              </div>    
+            </form>
             </div>
-          </form>
         </div>
       </div>
     </div>
@@ -53,6 +75,9 @@
 
 
 <script>
+import UserAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
+
 export default {
   props: {
     initialUser: {
@@ -100,15 +125,26 @@ export default {
       this.user.avatar = imgURL
       console.log(imgURL)
     },
-    handleSubmit (e) {
-      console.log('e', e)
-      const form = e.target
-      console.log('form', form)
-      const formData = new FormData(form)
-
-      for (let [name, value] of formData.entries()) {
-        console.log(name + ': ' + value)
-      } 
+    async handleSubmit () {
+     let formData = new FormData(document.getElementById('edit-user-profile-form'))
+    console.log(formData)
+    try {
+      const response = await UserAPI.editProfile({
+        userId: this.user.id,
+        formData
+      })
+      if (response.status !== 200) {
+          throw new Error(response.data.message)
+        }
+      console.log(response)
+      // this.$emit('afterHandleSubmit', )
+      } catch (error) {
+        console.log('error', error)
+        Toast.fire({
+          icon: "error",
+          title: "無法更新資料，請稍後再試",
+        })
+      }
     }
   }
 }
@@ -134,6 +170,7 @@ export default {
 
   .modal-body {
     position: relative;
+    top: 50px
   }
   
   .edit-title {
@@ -206,14 +243,6 @@ export default {
     height: 120px;
 
   }
-
-
-
-
-
-
-
-
 
 
   .edit-name,
