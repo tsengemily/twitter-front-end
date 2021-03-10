@@ -86,6 +86,11 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` },
     })
   },
+  getLikes({ userId }) {
+    return apiHelper.get(`/users/${userId}/likes`, {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    })
+  },
   getFollowers({ userId }) {
     return apiHelper.get(`/users/${userId}/followers`, {
       headers: { Authorization: `Bearer ${getToken()}` },
@@ -112,6 +117,11 @@ export default {
   },
   deleteFollow({ userId }) {
     return apiHelper.delete(`/followships/${userId}`, {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    })
+  },
+  editProfile({ userId, formData }) {
+    return apiHelper.put(`/users/${userId}`, formData, {
       headers: { Authorization: `Bearer ${getToken()}` },
     })
   },

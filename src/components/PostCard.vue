@@ -1,7 +1,12 @@
 <template>
-  <div class="card-container d-flex">
+  <div class="card-container">
+    <div 
+      class="tweet d-flex"
+      v-for="tweet in tweets"
+      :key="tweet.id"
+    >
     <router-link 
-        to="/user/self/follower"
+        :to="{name: 'ReplyList', params: {id: tweet.id}}"
         class="post-link"
     ></router-link>
     <router-link 
@@ -32,7 +37,7 @@
       <div class="d-flex mt-2">
         <div class="comment">
           <img src="../assets/comment.png">
-            {{replyCount}}
+            {{tweet.Replies.length}}
         </div>
         <div class="like">
           <template 
@@ -51,11 +56,12 @@
               @click="addLike(tweet.id)"
             >
           </template>
-            {{likeCount}}
+            {{tweet.Likes.length}}
         </div>
       </div>
     </div>
   </div>
+ </div> 
 </template>
 
 <script>
@@ -66,16 +72,19 @@ import { Toast } from '../utils/helpers'
 export default {
   name: 'PostCard',
   props: {
-    initialTweet: {
-      type: Object,
+    initialTweets: {
+      type: Array,
       require: true
     }
   },
   data () {
     return {
-      tweet: this.initialTweet,
-      replyCount: this.initialTweet.Replies.length,
-      likeCount: this.initialTweet.Likes.length,
+      tweets: this.initialTweets
+    }
+  },
+  watch: {
+    initialTweets(newValue) {
+      this.tweets = newValue
     }
   },
   methods: {
@@ -87,11 +96,17 @@ export default {
           throw new Error(data.message)
         }
 
-        this.tweet = {
-          ...this.tweet,
-          isLikedbyMe: true
-        }
-        this.likeCount = this.likeCount + 1 
+        this.tweets = this.tweets.map((tweet) => {
+          if (tweet.id === tweetId) {
+            // const newLikesCount = tweet.Likes.length + 1
+            return {
+              ...tweet,
+              isLikedbyMe: true
+            }
+          } else {
+            return tweet
+          }
+        })
         console.log('成功')
       } catch (error) {
         Toast.fire({
@@ -109,11 +124,17 @@ export default {
           throw new Error(data.message)
         }
 
-        this.tweet = {
-          ...this.tweet,
-          isLikedbyMe: false
-       }
-        this.likeCount = this.likeCount - 1 
+        this.tweets = this.tweets.map((tweet) => {
+          if (tweet.id === tweetId) {
+            // const newLikesCount = tweet.Likes.length + 1
+            return {
+              ...tweet,
+              isLikedbyMe: false
+            }
+          } else {
+            return tweet
+          }
+        })
         console.log('成功')
       } catch (error) {
         Toast.fire({
@@ -136,8 +157,8 @@ export default {
 </script>
 
 <style scoped>
-  .card-container {
-    /* outline: 1px solid gray; */
+  .tweet {
+    /* outline: 1px solid red; */
     padding: 15px;
     border-top: 1px solid #e6ecf0;
     position: relative;

@@ -11,6 +11,18 @@ const routes = [
     path: '/users/:id',
     name: 'user',
     component: () => import('../views/User'),
+    children: [
+      {
+        path: 'with_replies',
+        name: 'user-with-replies',
+        component: () => import('../views/UserWithReplies'),
+      },
+      {
+        path: 'likes',
+        name: 'user-likes',
+        component: () => import('../views/UserLikes'),
+      },
+    ],
   },
   {
     path: '/users/:id/follower',

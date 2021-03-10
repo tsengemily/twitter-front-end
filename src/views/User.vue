@@ -17,34 +17,37 @@
           :initial-user="user"
           :isCurrentUser="currentUser"
         />
-        <ul class="nav">
-          <li
+        <div class="nav">
+          <router-link
             class="nav-item"
             :class="{active: isPostActive}"
             @click="postActive"
+            :to="{name: 'user', params: {id: user.id}}"
           >
             推文
-          </li>
-          <li
+          </router-link>
+          <router-link
             class="nav-item"
             :class="{active: isPostAndRecommentActive}"
             @click="postAndRecommentActive"
+            :to="{name: 'user-with-replies', params: {id: user.id}}"
           >
             推文與回覆
-          </li>
-          <li
+          </router-link>
+          <router-link
             class="nav-item"
             :class="{active: isLikeActive}"
             @click="likeActive"
+            :to="{name: 'user-likes', params: {id: user.id}}"
           >
             喜歡的內容
-          </li>
-        </ul>
+          </router-link>
+        </div>
         <PostCard 
-          v-for="tweet in tweets"
-          :key="tweet.id"
-          :initial-tweet="tweet"
+          v-if="$route.name === 'user'"
+          :initialTweets="tweets"
         />
+        <router-view />
       </div>
       <!-- 跟隨誰 -->
       <div class="right">
