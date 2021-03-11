@@ -275,6 +275,10 @@ export default {
     cursor: pointer;
   }
 
+  .nav-item:hover {
+    color: #ff6600;
+  }
+
   .active {
     border-bottom: 2px solid #ff6600;
     color: #ff6600;

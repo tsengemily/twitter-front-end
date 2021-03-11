@@ -112,14 +112,13 @@ export default {
 
         const { data } = await UserAPI.get({ userId })
 
-        const { id, name, isSelf, tweetCount } = data
+        const { id, name, tweetCount } = data
         this.user = {
           ...this.user,
           id,
           name,
           tweetCount
         }
-        this.currentUser = isSelf
 
         this.isLoading = false
       } catch (error) {
@@ -252,6 +251,10 @@ export default {
     color: #657786;
     text-decoration: none;
     cursor: pointer;
+  }
+
+  .nav-item:hover {
+    color: #ff6600;
   }
 
   .link-btn {

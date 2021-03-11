@@ -160,7 +160,7 @@ export default {
         this.isLoading = true
 
         const { data } = await UserAPI.getTweetsReplies({ userId })
-        
+        console.log({ data })
         this.tweetsReplies = data
 
         this.isLoading = false
@@ -272,6 +272,10 @@ export default {
     color: #657786;
     text-decoration: none;
     cursor: pointer;
+  }
+
+  .nav-item:hover {
+    color: #ff6600;
   }
 
   .active {
