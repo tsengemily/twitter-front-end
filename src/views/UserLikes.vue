@@ -17,7 +17,6 @@
           />
           <UserProfileCard 
             :initial-user="user"
-            :isCurrentUser="currentUser"
           />
           <div class="nav">
             <router-link
@@ -107,7 +106,6 @@ export default {
         followingCount: 0,
         tweetCount: 0
       },
-      currentUser: false,
       tweetsLikes: [],
       topUsers: [],
       isLoading: true
@@ -130,7 +128,7 @@ export default {
 
         const { data } = await UserAPI.get({ userId })
 
-        const { id, name, email, account, cover, avatar, introduction, isSelf, isFollowed, followerCount, followingCount, tweetCount } = data
+        const { id, name, email, account, cover, avatar, introduction, isFollowed, followerCount, followingCount, tweetCount } = data
         this.user = {
           ...this.user,
           id,
@@ -145,7 +143,6 @@ export default {
           followingCount,
           tweetCount,
         }
-        this.currentUser = isSelf
 
         this.isLoading = false
       } catch (error) {

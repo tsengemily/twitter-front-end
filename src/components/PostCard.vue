@@ -37,15 +37,16 @@
       <div class="d-flex mt-2">
         <div class="comment">
           <img src="../assets/comment.png">
-            {{tweet.Replies.length}}
+            {{tweet.replyCount}}
         </div>
         <div class="like">
           <template 
-            v-if="tweet.isLikedbyMe"
+            v-if="tweet.isLikedByMe"
           >
             <img 
               src="../assets/addlike.png"
-              @click="deleteLike(tweet.id)" 
+              @click="deleteLike(tweet.id)"
+              :disabled="isProcessing" 
             >
           </template>
           <template
@@ -54,9 +55,10 @@
             <img 
               src="../assets/like.png"
               @click="addLike(tweet.id)"
+              :disabled="isProcessing"
             >
           </template>
-            {{tweet.Likes.length}}
+            {{tweet.likeCount}}
         </div>
       </div>
     </div>
@@ -79,7 +81,8 @@ export default {
   },
   data () {
     return {
-      tweets: this.initialTweets
+      tweets: this.initialTweets,
+      isProcessing: false
     }
   },
   watch: {
@@ -90,6 +93,8 @@ export default {
   methods: {
     async addLike (tweetId) {
       try {
+        this.isProcessing = true
+
         const { data } = await UserAPI.addLike({ tweetId })
 
          if (data.status !== 'success') {
@@ -98,10 +103,11 @@ export default {
 
         this.tweets = this.tweets.map((tweet) => {
           if (tweet.id === tweetId) {
-            // const newLikesCount = tweet.Likes.length + 1
+            const newLikeCount = tweet.likeCount + 1
             return {
               ...tweet,
-              isLikedbyMe: true
+              isLikedByMe: true,
+              likeCount: newLikeCount
             }
           } else {
             return tweet
@@ -114,10 +120,13 @@ export default {
           title: '無法加入喜歡，請稍後再試'
         })
         console.log(error)
+        this.isProcessing = false
       }
     },
     async deleteLike(tweetId) {
       try {
+        this.isProcessing = true
+
          const { data } = await UserAPI.deleteLike({ tweetId })
 
          if (data.status !== 'success') {
@@ -126,10 +135,11 @@ export default {
 
         this.tweets = this.tweets.map((tweet) => {
           if (tweet.id === tweetId) {
-            // const newLikesCount = tweet.Likes.length + 1
+            const newLikeCount = tweet.likeCount - 1
             return {
               ...tweet,
-              isLikedbyMe: false
+              isLikedByMe: false,
+              likeCount: newLikeCount
             }
           } else {
             return tweet
@@ -142,6 +152,7 @@ export default {
           title: '無法移除喜歡，請稍後再試'
         })
         console.log(error)
+        this.isProcessing = false
       }
     }
   },

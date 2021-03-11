@@ -47,6 +47,7 @@
 <script>
 import UserAPI from '../apis/user'
 import { Toast } from '../utils/helpers'
+import { mapState } from 'vuex'
 
 export default {
   props: {
@@ -57,8 +58,12 @@ export default {
   },
   data () {
     return {
-      topUser: this.initialTopUser
+      topUser: this.initialTopUser,
+      followingCount: 0
     }
+  },
+  computed: {
+    ...mapState(['currentUser'])
   },
   methods: {
     async addFollow () {
@@ -77,6 +82,10 @@ export default {
         Toast.fire({
           icon: 'success',
           title: '新增跟隨成功'
+        })
+
+        this.$emit('after-follow', {
+          currentUserId: this.currentUser.id
         })
       }  catch (error) {
         Toast.fire({

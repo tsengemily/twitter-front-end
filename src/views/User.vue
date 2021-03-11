@@ -17,7 +17,6 @@
           />
           <UserProfileCard 
             :initial-user="user"
-            :isCurrentUser="currentUser"
           />
           <div class="nav">
             <router-link
@@ -57,6 +56,7 @@
                 v-for="topUser in topUsers"
                 :key="topUser.id"
                 :initial-top-user="topUser"
+                @after-follow="afterFollow"
               />
             <div class="top-users-more">
               顯示更多
@@ -107,7 +107,6 @@ export default {
         followingCount: 0,
         tweetCount: 0
       },
-      currentUser: false,
       tweets: [],
       topUsers: [],
       isLoading: true
@@ -130,7 +129,7 @@ export default {
         const { data } = await UserAPI.get({ userId })
         console.log({ data })
 
-        const { id, name, email, account, cover, avatar, introduction, isSelf, isFollowed, followerCount, followingCount, tweetCount } = data
+        const { id, name, email, account, cover, avatar, introduction, isFollowed, followerCount, followingCount, tweetCount } = data
 
         this.user = {
           ...this.user,
@@ -146,7 +145,6 @@ export default {
           followingCount,
           tweetCount
         }
-        this.currentUser = isSelf
 
         this.isLoading = false
       } catch (error) {
@@ -194,10 +192,24 @@ export default {
         })
       }
     },
-      // afterFollow (newFollowingCount) {
-      //   this.user.followingCount = newFollowingCount
-      //   console.log(newFollowingCount) 
-      // }
+    async afterFollow ({ currentUserId }) {
+      try {
+        this.isLoading = true
+        const { data } = await UserAPI.get({ currentUserId })
+
+        this.user.followingCount = data.followingCount
+        console.log(this.user.followingCount)
+
+        this.isLoading = false
+      } catch (error) {
+        this.isLoading = false
+        console.log('error', error)
+        Toast.fire({
+          icon: 'error',
+          title: '載入資料失敗，請稍後再試'
+        })
+      }
+    }
   },
   beforeRouteUpdate (to, from, next) {
     const { id: userId } = to.params

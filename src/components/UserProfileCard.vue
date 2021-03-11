@@ -5,7 +5,7 @@
     </div>
 
     <template
-      v-if="isCurrentUser"
+      v-if="user.id === currentUser.id "
     >
       <button
        class="edit-btn"
@@ -126,10 +126,6 @@ export default {
         followerCount: 0,
         followingCount: 0
       })
-    },
-    isCurrentUser: {
-      type: Boolean,
-      required: true
     }
   },
   data () {
