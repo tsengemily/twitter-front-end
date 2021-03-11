@@ -35,7 +35,7 @@
           <div class="modal-body">
             <form>
                <div class="edit-cover">
-                  <img :src="user.cover" class="cover-img">
+                  <img :src="user.cover | emptyCover" class="cover-img">
                   <label for="cover-input" class="cover-label"></label>
                   <input
                     id="cover-input" 
@@ -47,7 +47,7 @@
                 </div>
                 <div class="edit-avatar">
                   <img 
-                    :src="user.avatar" 
+                    :src="user.avatar | emptyImage" 
                     class="avatar-img"
                   >
                   <label 
@@ -100,6 +100,8 @@
 <script>
 import UserAPI from '../apis/user'
 import { Toast } from '../utils/helpers'
+import { emptyImageFilter } from "../utils/mixins"
+import { emptyCoverFilter } from "../utils/mixins"
 
 export default {
   props: {
@@ -193,7 +195,8 @@ export default {
         })
       }
     }
-  }
+  },
+  mixins: [emptyImageFilter, emptyCoverFilter]
 }
 </script>
 
