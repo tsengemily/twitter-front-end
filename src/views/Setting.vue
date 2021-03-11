@@ -3,7 +3,11 @@
     <Spinner v-if="isLoading" />
     <template v-else>
       <div class="row">
-        <Navbar v-bind:isSetting="isSetting" v-bind:MainPage="MainPage" />
+        <Navbar
+          v-bind:isSetting="isSetting"
+          v-bind:MainPage="MainPage"
+          v-bind:PersonalInfo="PersonalInfo"
+        />
         <div class="setting-main">
           <div class="setting-main-header">帳戶設定</div>
           <form @submit.prevent.stop="handleSubmit($event)">
@@ -97,6 +101,7 @@ export default {
     return {
       MainPage: false,
       isSetting: false,
+      PersonalInfo: false,
       userData: {
         account: "",
         name: "",
@@ -111,8 +116,9 @@ export default {
   created() {
     const currentPath = this.$router.history.current.name;
     if (currentPath === "Setting") {
-      this.isSetting = true;
       this.MainPage = false;
+      this.isSetting = true;
+      this.PersonalInfo = false;
     }
 
     this.localId = localStorage.getItem("userId");

@@ -7,6 +7,7 @@
         <Navbar
           v-bind:isSetting="isSetting"
           v-bind:MainPage="MainPage"
+          v-bind:PersonalInfo="PersonalInfo"
           v-bind:userData="userData"
           v-on:afterModalTweet="handleTweet"
         />
@@ -125,6 +126,7 @@ export default {
     return {
       MainPage: false,
       isSetting: false,
+      PersonalInfo: false,
       tweetData: [],
       tweetShowData: [],
       userData: {},
@@ -140,6 +142,7 @@ export default {
     if (currentPath === "MainPage") {
       this.MainPage = true;
       this.isSetting = false;
+      this.PersonalInfo = false;
     }
     // const localUserId = localStorage.getItem("userId");
     // const { userId } = { userId: this.currentUser.id };

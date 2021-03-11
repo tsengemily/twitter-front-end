@@ -3,7 +3,11 @@
     <Spinner v-if="isLoading" />
     <template v-else>
       <div class="row">
-        <Navbar v-bind:isSetting="isSetting" v-bind:MainPage="MainPage" />
+        <Navbar
+          v-bind:isSetting="isSetting"
+          v-bind:MainPage="MainPage"
+          v-bind:PersonalInfo="PersonalInfo"
+        />
         <div class="replylist-main">
           <router-link
             class="replylist-main-header"
@@ -222,6 +226,7 @@ export default {
     return {
       MainPage: false,
       isSetting: false,
+      PersonalInfo: false,
       tweetData: {
         description: "",
         updatedAt: "",
@@ -246,6 +251,7 @@ export default {
     if (currentPath === "ReplyList") {
       this.MainPage = true;
       this.isSetting = false;
+      this.PersonalInfo = false;
     }
     const { id: tweetId } = this.$route.params; /* TODO: 解構付值問 */
     this.fetchReplyList({ tweetId });
