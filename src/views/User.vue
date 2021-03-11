@@ -1,52 +1,47 @@
 <template>
   <div class="page-container">
-    <Spinner v-if="isLoading"/>
+    <Spinner v-if="isLoading" />
     <template v-else>
       <div class="row">
         <!-- 導覽列 -->
         <div class="left">
-          <Navbar />
+          <Navbar
+            v-bind:isSetting="isSetting"
+            v-bind:MainPage="MainPage"
+            v-bind:PersonalInfo="PersonalInfo"
+          />
         </div>
 
         <!-- 主要內容 -->
         <div class="main">
-          <UserHeader 
+          <UserHeader
             :user-id="user.id"
             :user-name="user.name"
             :user-tweets-count="user.tweetCount"
           />
-          <UserProfileCard 
-            :initial-user="user"
-          />
+          <UserProfileCard :initial-user="user" />
           <div class="nav">
             <router-link
               class="nav-item active"
-              :to="{name: 'user', params: {id: user.id}}"
+              :to="{ name: 'user', params: { id: user.id } }"
             >
               推文
             </router-link>
             <router-link
               class="nav-item"
-              :to="{name: 'user-with-replies', params: {id: user.id}}"
+              :to="{ name: 'user-with-replies', params: { id: user.id } }"
             >
               推文與回覆
             </router-link>
             <router-link
               class="nav-item"
-              :to="{name: 'user-likes', params: {id: user.id}}"
+              :to="{ name: 'user-likes', params: { id: user.id } }"
             >
               喜歡的內容
             </router-link>
           </div>
-            <PostCard
-              :initialTweets="tweets"
-            />
-            <div 
-              v-if="tweets.length < 1"
-              class="no-data"
-            >
-              沒有推文
-            </div>
+          <PostCard :initialTweets="tweets" />
+          <div v-if="tweets.length < 1" class="no-data">沒有推文</div>
         </div>
         <!-- 跟隨誰 -->
         <div class="right">
@@ -62,74 +57,95 @@
               顯示更多
             </div> 
           </div>
-        </div>  
+        </div>
       </div>
-    </template>   
+    </template>
   </div>
 </template>
 
 
 
 <script>
-import Navbar from '../components/Navbar'
-import UserHeader from '../components/UserHeader'
-import UserProfileCard from '../components/UserProfileCard'
-import PostCard from '../components/PostCard'
-import Top10User from '../components/Top10User'
-import Spinner from '../components/Spinner'
-import { mapState } from 'vuex'
-import UserAPI from '../apis/user'
-import { Toast } from '../utils/helpers'
-
+import Navbar from "../components/Navbar";
+import UserHeader from "../components/UserHeader";
+import UserProfileCard from "../components/UserProfileCard";
+import PostCard from "../components/PostCard";
+import Top10User from "../components/Top10User";
+import Spinner from "../components/Spinner";
+import { mapState } from "vuex";
+import UserAPI from "../apis/user";
+import { Toast } from "../utils/helpers";
 
 export default {
-  name: 'User',
+  name: "User",
   components: {
     Navbar,
     UserHeader,
     UserProfileCard,
     PostCard,
     Top10User,
-    Spinner
+    Spinner,
   },
   data() {
     return {
+      MainPage: false,
+      isSetting: false,
+      PersonalInfo: false,
       user: {
         id: -1,
-        name: '',
-        email: '',
-        account: '',
-        cover: '',
-        avatar: '',
-        introduction: '',
+        name: "",
+        email: "",
+        account: "",
+        cover: "",
+        avatar: "",
+        introduction: "",
         isFollowed: false,
         followerCount: 0,
         followingCount: 0,
-        tweetCount: 0
+        tweetCount: 0,
       },
       tweets: [],
       topUsers: [],
-      isLoading: true
-    }
+      isLoading: true,
+    };
   },
   computed: {
-    ...mapState(['currentUser'])
+    ...mapState(["currentUser"]),
   },
-  created () {
-    const { id: userId } = this.$route.params
-    this.fetchTopUsers()
-    this.fetchUser({ userId })
-    this.fetchTweets({ userId })
+  created() {
+    const { id: userId } = this.$route.params;
+    this.fetchTopUsers();
+    this.fetchUser({ userId });
+    this.fetchTweets({ userId });
+    const currentPath = this.$router.history.current.name;
+    console.log(currentPath);
+    if (currentPath === "user") {
+      this.MainPage = false;
+      this.isSetting = false;
+      this.PersonalInfo = true;
+    }
   },
   methods: {
     //取得使用者資料
-    async fetchUser ({ userId }) {
+    async fetchUser({ userId }) {
       try {
-        this.isLoading = true
-        const { data } = await UserAPI.get({ userId })
-        console.log({ data })
+        this.isLoading = true;
+        const { data } = await UserAPI.get({ userId });
+        console.log({ data });
 
-        const { id, name, email, account, cover, avatar, introduction, isFollowed, followerCount, followingCount, tweetCount } = data
+        const {
+          id,
+          name,
+          email,
+          account,
+          cover,
+          avatar,
+          introduction,
+          isFollowed,
+          followerCount,
+          followingCount,
+          tweetCount,
+        } = data;
 
         this.user = {
           ...this.user,
@@ -143,53 +159,53 @@ export default {
           isFollowed,
           followerCount,
           followingCount,
-          tweetCount
-        }
+          tweetCount,
+        };
 
-        this.isLoading = false
+        this.isLoading = false;
       } catch (error) {
-        this.isLoading = false
-        console.log('error', error)
+        this.isLoading = false;
+        console.log("error", error);
         Toast.fire({
-          icon: 'error',
-          title: '載入資料失敗，請稍後再試'
-        })
+          icon: "error",
+          title: "載入資料失敗，請稍後再試",
+        });
       }
     },
     //取得推文
-    async fetchTweets ({ userId }) {
+    async fetchTweets({ userId }) {
       try {
-        this.isLoading = true
-        const { data } = await UserAPI.getTweets({ userId })
+        this.isLoading = true;
+        const { data } = await UserAPI.getTweets({ userId });
 
-        this.tweets = data
+        this.tweets = data;
 
-        this.isLoading = false
+        this.isLoading = false;
       } catch (error) {
-        this.isLoading = false
-        console.log('error', error)
+        this.isLoading = false;
+        console.log("error", error);
         Toast.fire({
-          icon: 'error',
-          title: '載入資料失敗，請稍後再試'
-        })
+          icon: "error",
+          title: "載入資料失敗，請稍後再試",
+        });
       }
     },
     //取得topUsers
-    async fetchTopUsers () {
+    async fetchTopUsers() {
       try {
-        this.isLoading = true
-        const { data } = await UserAPI.getUsersTop()
+        this.isLoading = true;
+        const { data } = await UserAPI.getUsersTop();
 
-        this.topUsers = data
+        this.topUsers = data;
 
-        this.isLoading = false
+        this.isLoading = false;
       } catch (error) {
-        this.isLoading = false
-        console.log('error', error)
+        this.isLoading = false;
+        console.log("error", error);
         Toast.fire({
-          icon: 'error',
-          title: '載入資料失敗，請稍後再試'
-        })
+          icon: "error",
+          title: "載入資料失敗，請稍後再試",
+        });
       }
     },
     //新增follow
@@ -202,88 +218,87 @@ export default {
         this.user.followingCount += 1
         console.log(this.user.followingCount)
       }
-    }
+    },
   },
-  beforeRouteUpdate (to, from, next) {
-    const { id: userId } = to.params
-    this.fetchTopUsers()
-    this.fetchUser({ userId })
-    this.fetchTweets({ userId })
-    next()
-  }
-}
+  beforeRouteUpdate(to, from, next) {
+    const { id: userId } = to.params;
+    this.fetchTopUsers();
+    this.fetchUser({ userId });
+    this.fetchTweets({ userId });
+    next();
+  },
+};
 </script>
 
 
 <style scoped>
 /* page共用 */
-  .page-container {
-    /* outline: 1px solid red; */
-    width: 960px;
-    margin: 20px auto 0;
-  }
+.page-container {
+  /* outline: 1px solid red; */
+  width: 960px;
+  margin: 20px auto 0;
+}
 
-  .row { 
-    margin: 0;
-  } 
+.row {
+  margin: 0;
+}
 
-  .left {
-    /* outline: 5px solid green; */
-    width: 25%;
-  }
+.left {
+  /* outline: 5px solid green; */
+  width: 25%;
+}
 
-  .main {
-    width: 50%;
-    /* outline: 5px solid red; */
-  }
+.main {
+  width: 50%;
+  /* outline: 5px solid red; */
+}
 
-  .right {
-    /* outline: 5px solid blue; */
-    position: relative;
-    width: 25%;
-  }
+.right {
+  /* outline: 5px solid blue; */
+  position: relative;
+  width: 25%;
+}
 
-  .top-users-container {
-    position: absolute;
-    top: 15px;
-    left: 20px;
-    background-color: #f5f8fa;
-    border-radius: 14px;
-    width: 220px;
-  }
+.top-users-container {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  background-color: #f5f8fa;
+  border-radius: 14px;
+  width: 220px;
+}
 
-  .top-users-title {
-    padding: 5px 15px;
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 35px;
-    border-bottom: 1px solid #e6ecf0;
-  }
+.top-users-title {
+  padding: 5px 15px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 35px;
+  border-bottom: 1px solid #e6ecf0;
+}
 
-  .top-users-more {
-    padding: 5px 15px;
-    font-size: 13px;
-    line-height: 30px;
-    color: #ff6600;
-  }
-
+.top-users-more {
+  padding: 5px 15px;
+  font-size: 13px;
+  line-height: 30px;
+  color: #ff6600;
+}
 
 /* 當頁 */
-  .nav {
-    border-bottom: 1px solid #e6ecf0;
-  }
+.nav {
+  border-bottom: 1px solid #e6ecf0;
+}
 
-  .nav-item {
-    width: 110px;
-    padding: 16px 0;
-    text-align: center;
-    font-weight: 700;
-    font-size: 15px;
-    line-height: 22px;
-    color: #657786;
-    text-decoration: none;
-    cursor: pointer;
-  }
+.nav-item {
+  width: 110px;
+  padding: 16px 0;
+  text-align: center;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 22px;
+  color: #657786;
+  text-decoration: none;
+  cursor: pointer;
+}
 
   .nav-item:hover {
     color: #ff6600;
@@ -294,9 +309,9 @@ export default {
     color: #ff6600;
   }
 
-  .no-data {
-    margin: 20px;
-    font-size: 18px;
-    color: #657786;
-  }
+.no-data {
+  margin: 20px;
+  font-size: 18px;
+  color: #657786;
+}
 </style>

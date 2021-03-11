@@ -3,7 +3,11 @@
     <Spinner v-if="isLoading" />
     <template v-else>
       <div class="row">
-        <Navbar v-bind:isSetting="isSetting" v-bind:MainPage="MainPage" />
+        <Navbar
+          v-bind:isSetting="isSetting"
+          v-bind:MainPage="MainPage"
+          v-bind:PersonalInfo="PersonalInfo"
+        />
         <div class="replylist-main">
           <router-link
             class="replylist-main-header"
@@ -91,6 +95,18 @@
                 {{ reply.comment }}
               </div>
             </div>
+          </div>
+        </div>
+        <!-- 跟隨誰 -->
+        <div class="right">
+          <div class="top-users-container">
+            <h1 class="top-users-title">跟隨誰</h1>
+            <Top10User
+              v-for="topUser in topUsers"
+              :key="topUser.id"
+              :initial-top-user="topUser"
+            />
+            <div class="top-users-more">顯示更多</div>
           </div>
         </div>
       </div>
@@ -188,6 +204,7 @@
 import Navbar from "./../components/Navbar";
 import $ from "jquery";
 import Spinner from "./../components/Spinner";
+import Top10User from "./../components/Top10User";
 
 import mainPageAPI from "./../apis/user";
 import { Toast } from "./../utils/helpers";
@@ -203,11 +220,13 @@ export default {
   components: {
     Navbar,
     Spinner,
+    Top10User,
   },
   data() {
     return {
       MainPage: false,
       isSetting: false,
+      PersonalInfo: false,
       tweetData: {
         description: "",
         updatedAt: "",
@@ -224,6 +243,7 @@ export default {
       isLoading: true,
       likeＣount: 0,
       isProcessing: false,
+      topUsers: [],
     };
   },
   created() {
@@ -231,11 +251,30 @@ export default {
     if (currentPath === "ReplyList") {
       this.MainPage = true;
       this.isSetting = false;
+      this.PersonalInfo = false;
     }
     const { id: tweetId } = this.$route.params; /* TODO: 解構付值問 */
     this.fetchReplyList({ tweetId });
+    this.fetchTopUsers();
   },
   methods: {
+    async fetchTopUsers() {
+      try {
+        this.isLoading = true;
+        const { data } = await mainPageAPI.getUsersTop();
+
+        this.topUsers = data;
+
+        this.isLoading = false;
+      } catch (error) {
+        this.isLoading = false;
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "載入資料失敗，請稍後再試",
+        });
+      }
+    },
     async fetchReplyList({ tweetId }) {
       try {
         this.isLoading = true;
@@ -575,5 +614,30 @@ export default {
   background-color: rgb(255, 145, 0) !important;
   border-color: rgb(255, 145, 0) !important;
   box-shadow: 2px 2px 2px 0px rgb(255, 145, 0) !important;
+}
+.top-users-container {
+  /* position: absolute;
+  top: 15px;
+  left: 20px; */
+  background-color: #f5f8fa;
+  border-radius: 14px;
+  width: 210px;
+  margin-top: 15px;
+  margin-left: 30px;
+}
+
+.top-users-title {
+  padding: 5px 15px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 35px;
+  border-bottom: 1px solid #e6ecf0;
+}
+
+.top-users-more {
+  padding: 5px 15px;
+  font-size: 13px;
+  line-height: 30px;
+  color: #ff6600;
 }
 </style>

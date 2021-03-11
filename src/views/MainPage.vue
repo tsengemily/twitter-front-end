@@ -7,6 +7,7 @@
         <Navbar
           v-bind:isSetting="isSetting"
           v-bind:MainPage="MainPage"
+          v-bind:PersonalInfo="PersonalInfo"
           v-bind:userData="userData"
           v-on:afterModalTweet="handleTweet"
         />
@@ -60,9 +61,11 @@
               />
               <div class="main-following-tweet">
                 <div class="main-following-name">
-                  {{ tweet.name
+                  {{ tweet.User.name
                   }}<span class="main-following-namename-app">
-                    @apple．{{ tweet.updatedAt | fromNow }}</span
+                    @{{ tweet.User.account }}．{{
+                      tweet.updatedAt | fromNow
+                    }}</span
                   >
                 </div>
                 <div class="main-following-msg">
@@ -81,6 +84,18 @@
             </div>
           </router-link>
         </div>
+        <!-- 跟隨誰 -->
+        <div class="right">
+          <div class="top-users-container">
+            <h1 class="top-users-title">跟隨誰</h1>
+            <Top10User
+              v-for="topUser in topUsers"
+              :key="topUser.id"
+              :initial-top-user="topUser"
+            />
+            <div class="top-users-more">顯示更多</div>
+          </div>
+        </div>
       </div>
     </template>
   </div>
@@ -89,6 +104,7 @@
 <script>
 import Navbar from "./../components/Navbar";
 import Spinner from "./../components/Spinner";
+import Top10User from "./../components/Top10User";
 
 import mainPageAPI from "./../apis/user";
 import { Toast } from "./../utils/helpers";
@@ -104,11 +120,13 @@ export default {
   components: {
     Navbar,
     Spinner,
+    Top10User,
   },
   data() {
     return {
       MainPage: false,
       isSetting: false,
+      PersonalInfo: false,
       tweetData: [],
       tweetShowData: [],
       userData: {},
@@ -116,6 +134,7 @@ export default {
       isLoading: true,
       isProcessing: false,
       avatar: "",
+      topUsers: [],
     };
   },
   created() {
@@ -123,20 +142,40 @@ export default {
     if (currentPath === "MainPage") {
       this.MainPage = true;
       this.isSetting = false;
+      this.PersonalInfo = false;
     }
     // const localUserId = localStorage.getItem("userId");
     // const { userId } = { userId: this.currentUser.id };
     // const { userId } = { userId: localUserId };
     this.fetchMainPage();
     this.showAvatar();
+    this.fetchTopUsers();
     // this.getUserId({ userId });
   },
   methods: {
+    async fetchTopUsers() {
+      try {
+        this.isLoading = true;
+        const { data } = await mainPageAPI.getUsersTop();
+
+        this.topUsers = data;
+
+        this.isLoading = false;
+      } catch (error) {
+        this.isLoading = false;
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "載入資料失敗，請稍後再試",
+        });
+      }
+    },
     async fetchMainPage() {
       try {
         this.isLoading = true;
         const response = await mainPageAPI.mainPage();
         this.tweetData = [...response.data];
+        console.log(this.tweetData);
         // this.tweetData.forEach((tweet) => {
         //   this.tweetShowData.push({
         //     id: tweet.id,
@@ -292,7 +331,7 @@ export default {
   display: flex;
 }
 .main-tweet-msg-board {
-  width: calc(960px / 2 - 64px - 50px);
+  width: calc(960px / 2 - 64px - 65px);
   border-style: none;
   resize: none;
   box-shadow: none;
@@ -369,5 +408,30 @@ export default {
 .main-following-remind-style {
   margin-right: 50px;
   font-size: 13px;
+}
+.top-users-container {
+  /* position: absolute;
+  top: 15px;
+  left: 20px; */
+  background-color: #f5f8fa;
+  border-radius: 14px;
+  width: 210px;
+  margin-top: 15px;
+  margin-left: 30px;
+}
+
+.top-users-title {
+  padding: 5px 15px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 35px;
+  border-bottom: 1px solid #e6ecf0;
+}
+
+.top-users-more {
+  padding: 5px 15px;
+  font-size: 13px;
+  line-height: 30px;
+  color: #ff6600;
 }
 </style>
