@@ -128,8 +128,13 @@ export default {
       return this.user.name.length
     },
     introductionCount () {
-      return this.user.introduction.length
+      if (this.user.introduction) {
+        return this.user.introduction.length
+      } else {
+        return 0
+      }
     }
+      
   },
   methods: {
     handleCoverFileChange (event) {
@@ -248,11 +253,15 @@ export default {
 
   .cover-label,
   .avatar-label {
-    width: 30px;
-    height: 30px;
+    /* outline: 1px solid red; */
+    width: 35px;
+    height: 35px;
     background-image: url('../assets/update.png');
-    background-size: contain;
-    /* background-color: gray; */
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: #657786;
+    border-radius: 50%;
     cursor: pointer;
   }
 
