@@ -2,51 +2,50 @@
   <div class="card-container">
     <div 
       class="tweet d-flex"
-      v-for="tweet in tweets"
-      :key="tweet.id"
+      v-for="tweetsReply in tweetsReplies"
+      :key="tweetsReply.id"
     >
     <router-link 
-        :to="{name: 'ReplyList', params: {id: tweet.id}}"
+        :to="{name: 'ReplyList', params: {id: tweetsReply.TweetId}}"
         class="post-link"
     ></router-link>
     <router-link 
-      :to="{name: 'user', params: {id: tweet.UserId}}"
+      :to="{name: 'user', params: {id: tweetsReply.UserId}}"
       class="user-link"
     >
       <img 
         class="user-avatar"
-        :src="tweet.User.avatar"
+        :src="tweetsReply.User.avatar"
       >
     </router-link>
 
     <div>
       <div class="d-flex">
         <h1 class="user-name">
-          {{tweet.User.name}}
+          {{tweetsReply.User.name}}
         </h1>
         <span class="user-account ml-2">
-          @{{tweet.User.account}}
+          @{{tweetsReply.User.account}}
         </span> ．
         <span class="post-time">
-          {{tweet.createdAt | fromNow}}
+          {{tweetsReply.createdAt | fromNow}}
         </span>
       </div>
       <p class="post-txt">
-        {{tweet.description}}
+        {{tweetsReply.Tweet.description}}
       </p>
       <div class="d-flex mt-2">
         <div class="comment">
           <img src="../assets/comment.png">
-            {{tweet.replyCount}}
+            {{tweetsReply.Tweet.replyCount}}
         </div>
         <div class="like">
           <template 
-            v-if="tweet.isLikedByMe"
+            v-if="tweetsReply.Tweet.isLikedByMe"
           >
             <img 
               src="../assets/addlike.png"
-              @click="deleteLike(tweet.id)"
-              :disabled="isProcessing" 
+              @click="deleteLike(tweetsReply.id)" 
             >
           </template>
           <template
@@ -54,11 +53,10 @@
           >
             <img 
               src="../assets/like.png"
-              @click="addLike(tweet.id)"
-              :disabled="isProcessing"
+              @click="addLike(tweetsReply.id)"
             >
           </template>
-            {{tweet.likeCount}}
+            {{tweetsReply.Tweet.likeCount}}
         </div>
       </div>
     </div>
@@ -72,42 +70,43 @@ import UserAPI from '../apis/user'
 import { Toast } from '../utils/helpers'
 
 export default {
-  name: 'PostCard',
+  name: 'TweetReplyCard',
   props: {
-    initialTweets: {
+    initialTweetsReplies: {
       type: Array,
       require: true
     }
   },
-  data () {
-    return {
-      tweets: this.initialTweets,
-      isProcessing: false
+  watch: {
+    initialTweetsReplies(newValue) {
+      this.tweetsReplies = newValue
     }
   },
-  watch: {
-    initialTweets(newValue) {
-      this.tweets = newValue
+  data () {
+    return {
+      tweetsReplies: this.initialTweetsReplies
     }
   },
   methods: {
     async addLike (tweetId) {
       try {
-        this.isProcessing = true
-
         const { data } = await UserAPI.addLike({ tweetId })
 
          if (data.status !== 'success') {
           throw new Error(data.message)
         }
 
-        this.tweets = this.tweets.map((tweet) => {
+        this.tweetsLikes = this.tweetsLikes.map((tweet) => {
           if (tweet.id === tweetId) {
-            const newLikeCount = tweet.likeCount + 1
+            const newLikeCount = tweet.Tweet.likeCount + 1
             return {
               ...tweet,
-              isLikedByMe: true,
-              likeCount: newLikeCount
+              tweet: {
+                Tweet: {
+                  isLikedByMe: true,
+                  likeCount: newLikeCount
+                }
+              }
             }
           } else {
             return tweet
@@ -120,26 +119,27 @@ export default {
           title: '無法加入喜歡，請稍後再試'
         })
         console.log(error)
-        this.isProcessing = false
       }
     },
     async deleteLike(tweetId) {
       try {
-        this.isProcessing = true
-
          const { data } = await UserAPI.deleteLike({ tweetId })
 
          if (data.status !== 'success') {
           throw new Error(data.message)
         }
 
-        this.tweets = this.tweets.map((tweet) => {
+        this.tweetsLikes = this.tweetsLikes.map((tweet) => {
           if (tweet.id === tweetId) {
-            const newLikeCount = tweet.likeCount - 1
+            const newLikeCount = tweet.Tweet.likeCount - 1
             return {
               ...tweet,
-              isLikedByMe: false,
-              likeCount: newLikeCount
+              tweet: {
+                Tweet: {
+                  isLikedByMe: false,
+                  likeCount: newLikeCount
+                }
+              } 
             }
           } else {
             return tweet
@@ -152,7 +152,6 @@ export default {
           title: '無法移除喜歡，請稍後再試'
         })
         console.log(error)
-        this.isProcessing = false
       }
     }
   },
@@ -166,6 +165,7 @@ export default {
   }, 
 }
 </script>
+
 
 <style scoped>
   .tweet {

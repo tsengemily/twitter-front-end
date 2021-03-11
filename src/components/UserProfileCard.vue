@@ -5,7 +5,7 @@
     </div>
 
     <template
-      v-if="isCurrentUser"
+      v-if="user.id === currentUser.id "
     >
       <button
        class="edit-btn"
@@ -15,7 +15,7 @@
       >
        編輯個人資料
       </button>
-      <UserEdit 
+      <EditModal 
         :initial-user="user"
       />
     </template>
@@ -101,7 +101,7 @@
 
 
 <script>
-import UserEdit from '../components/UserEdit'
+import EditModal from '../components/EditModal'
 import { mapState } from 'vuex'
 import UserAPI from '../apis/user'
 import { Toast } from '../utils/helpers'
@@ -109,7 +109,7 @@ import { Toast } from '../utils/helpers'
 export default {
   name: 'UserProfileCard',
   components: {
-    UserEdit
+    EditModal
   },
   props: {
     initialUser: {
@@ -126,17 +126,14 @@ export default {
         followerCount: 0,
         followingCount: 0
       })
-    },
-    isCurrentUser: {
-      type: Boolean,
-      required: true
     }
   },
   data () {
     return {
       user: {
        ...this.initialUser 
-      }
+      },
+      isInfo: false
     }
   },
   computed: {
@@ -206,6 +203,7 @@ export default {
     }
   }  
 }
+
 </script>
 
 
