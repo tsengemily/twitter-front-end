@@ -47,13 +47,15 @@
         <div class="right">
           <div class="top-users-container">
             <h1 class="top-users-title">跟隨誰</h1>
-            <Top10User
-              v-for="topUser in topUsers"
-              :key="topUser.id"
-              :initial-top-user="topUser"
-              @after-follow="afterFollow"
-            />
-            <div class="top-users-more">顯示更多</div>
+              <Top10User 
+                v-for="topUser in topUsers"
+                :key="topUser.id"
+                :initial-top-user="topUser"
+                @after-add-follow="afterAddFollow"
+              />
+            <div class="top-users-more">
+              顯示更多
+            </div> 
           </div>
         </div>
       </div>
@@ -206,22 +208,15 @@ export default {
         });
       }
     },
-    async afterFollow({ currentUserId }) {
-      try {
-        this.isLoading = true;
-        const { data } = await UserAPI.get({ currentUserId });
-
-        this.user.followingCount = data.followingCount;
-        console.log(this.user.followingCount);
-
-        this.isLoading = false;
-      } catch (error) {
-        this.isLoading = false;
-        console.log("error", error);
-        Toast.fire({
-          icon: "error",
-          title: "載入資料失敗，請稍後再試",
-        });
+    //新增follow
+    afterAddFollow (userId) {
+      //當頁是新加追蹤的本人
+      if (this.user.id === userId) {
+        this.user.followerCount += 1
+        console.log(this.user.followerCount)
+      } else if (this.currentUser.id === userId) {
+        this.user.followingCount += 1
+        console.log(this.user.followingCount)
       }
     },
   },
@@ -305,10 +300,14 @@ export default {
   cursor: pointer;
 }
 
-.active {
-  border-bottom: 2px solid #ff6600;
-  color: #ff6600;
-}
+  .nav-item:hover {
+    color: #ff6600;
+  }
+
+  .active {
+    border-bottom: 2px solid #ff6600;
+    color: #ff6600;
+  }
 
 .no-data {
   margin: 20px;

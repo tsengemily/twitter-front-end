@@ -34,7 +34,7 @@
       >
         <button 
           class="follow-btn follow"
-          @click.stop.prevent="addFollow()"
+          @click.stop.prevent="addFollow(topUser.id)"
         >
           跟隨
         </button>
@@ -84,8 +84,8 @@ export default {
           title: '新增跟隨成功'
         })
 
-        this.$emit('after-follow', {
-          currentUserId: this.currentUser.id
+        this.$emit('after-add-follow', {
+          userId: this.topUser.id
         })
       }  catch (error) {
         Toast.fire({
@@ -111,6 +111,10 @@ export default {
         Toast.fire({
           icon: 'success',
           title: '取消跟隨成功'
+        })
+
+        this.$emit('after-follow', {
+          userId: this.topUser.id
         })
       }  catch (error) {
         Toast.fire({

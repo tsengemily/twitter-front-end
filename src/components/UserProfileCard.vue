@@ -1,7 +1,7 @@
 <template>
   <div class="card-container">
     <div class="cover-pic">
-      <img :src="user.cover">
+      <img :src="user.cover | emptyCover">
     </div>
 
     <template
@@ -69,7 +69,7 @@
 
     <img 
       class="user-avatar" 
-      :src="user.avatar"
+      :src="user.avatar | emptyImage"
     >  
     <div class="profile-txt">
       <h1 class="user-name">
@@ -105,6 +105,8 @@ import EditModal from '../components/EditModal'
 import { mapState } from 'vuex'
 import UserAPI from '../apis/user'
 import { Toast } from '../utils/helpers'
+import { emptyImageFilter } from "../utils/mixins"
+import { emptyCoverFilter } from "../utils/mixins"
 
 export default {
   name: 'UserProfileCard',
@@ -201,7 +203,8 @@ export default {
         console.log(error)
       }
     }
-  }  
+  },
+  mixins: [emptyImageFilter, emptyCoverFilter]
 }
 
 </script>

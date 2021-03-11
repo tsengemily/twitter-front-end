@@ -10,22 +10,22 @@
         class="post-link"
     ></router-link>
     <router-link 
-      :to="{name: 'user', params: {id: tweetsLike.UserId}}"
+      :to="{name: 'user', params: {id: tweetsLike.Tweet.User.id}}"
       class="user-link"
     >
       <img 
         class="user-avatar"
-        :src="tweetsLike.User.avatar"
+        :src="tweetsLike.Tweet.User.avatar"
       >
     </router-link>
 
     <div>
       <div class="d-flex">
         <h1 class="user-name">
-          {{tweetsLike.User.name}}
+          {{tweetsLike.Tweet.User.name}}
         </h1>
         <span class="user-account ml-2">
-          @{{tweetsLike.User.account}}
+          @{{tweetsLike.Tweet.User.account}}
         </span> ．
         <span class="post-time">
           {{tweetsLike.createdAt | fromNow}}
@@ -45,7 +45,7 @@
           >
             <img 
               src="../assets/addlike.png"
-              @click="deleteLike(tweetsLike.id)" 
+              @click="deleteLike(tweetsLike.Tweet.id)" 
             >
           </template>
           <template
@@ -53,7 +53,7 @@
           >
             <img 
               src="../assets/like.png"
-              @click="addLike(tweetsLike.id)"
+              @click="addLike(tweetsLike.Tweet.id)"
             >
           </template>
             {{tweetsLike.Tweet.likeCount}}
@@ -95,24 +95,24 @@ export default {
          if (data.status !== 'success') {
           throw new Error(data.message)
         }
-
-        this.tweetsLikes = this.tweetsLikes.map((tweet) => {
-          if (tweet.id === tweetId) {
-            const newLikeCount = tweet.Tweet.likeCount + 1
+        console.log(tweetId)
+        this.tweetsLikes = this.tweetsLikes.map((like) => {
+          if (like.Tweet.id === tweetId) {
+            const newLikeCount = like.Tweet.likeCount + 1
             return {
-              ...tweet,
-              tweet: {
+              ...like,
                 Tweet: {
+                  ...like.Tweet,
                   isLikedByMe: true,
                   likeCount: newLikeCount
                 }
               }
-            }
+            
           } else {
-            return tweet
+            return like
           }
         })
-        console.log('成功')
+        console.log('加入喜歡成功')
       } catch (error) {
         Toast.fire({
           icon: 'error',
@@ -128,24 +128,23 @@ export default {
          if (data.status !== 'success') {
           throw new Error(data.message)
         }
-
-        this.tweetsLikes = this.tweetsLikes.map((tweet) => {
-          if (tweet.id === tweetId) {
-            const newLikeCount = tweet.Tweet.likeCount - 1
+        console.log(tweetId)
+        this.tweetsLikes = this.tweetsLikes.map((like) => {
+          if (like.Tweet.id === tweetId) {
+            const newLikeCount = like.Tweet.likeCount - 1
             return {
-              ...tweet,
-              tweet: {
+              ...like,
                 Tweet: {
+                  ...like.Tweet,
                   isLikedByMe: false,
                   likeCount: newLikeCount
                 }
               } 
-            }
           } else {
-            return tweet
+            return like
           }
         })
-        console.log('成功')
+        console.log('移除喜歡成功')
       } catch (error) {
         Toast.fire({
           icon: 'error',

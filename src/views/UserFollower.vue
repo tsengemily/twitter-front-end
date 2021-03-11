@@ -254,6 +254,10 @@ export default {
     cursor: pointer;
   }
 
+  .nav-item:hover {
+    color: #ff6600;
+  }
+
   .link-btn {
     position: absolute;
     top: 0;
