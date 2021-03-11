@@ -29,7 +29,10 @@
         </router-link>
       </li>
       <li class="nav-item-userData">
-        <router-link class="nav-item-userData-font-color" :to="{name: 'user', params: {id: currentUser.id}}">
+        <router-link
+          class="nav-item-userData-font-color"
+          :to="{ name: 'user', params: { id: currentUser.id } }"
+        >
           <i class="far fa-user link-style" style="font-size: 25px"
             ><span>個人資料</span></i
           >
@@ -103,7 +106,7 @@
               推文剩餘字數:{{ 140 - this.description.length }}字
             </div>
             <div class="modal-body">
-              <img class="user-photo" v-bind:src="userData.avatar" alt="" />
+              <img class="user-photo" v-bind:src="avatar" alt="" />
               <textarea
                 class="form-control msg-board"
                 placeholder="有什麼新鮮事?"
@@ -111,7 +114,19 @@
               ></textarea>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary modal-btn-size">
+              <button
+                v-if="isProcessing"
+                type="submit"
+                class="btn btn-primary modal-btn-size"
+                disabled
+              >
+                推文中!
+              </button>
+              <button
+                v-if="!isProcessing"
+                type="submit"
+                class="btn btn-primary modal-btn-size"
+              >
                 推文
               </button>
             </div>
@@ -123,6 +138,8 @@
 </template>
 
 <script>
+import $ from "jquery";
+
 // 從 Vuex 抓取使用者資料
 import { mapState } from "vuex";
 
@@ -152,33 +169,40 @@ export default {
     return {
       description: "",
       userData: {},
+      ModalTweetData: [],
+      isProcessing: false,
+      avatar: "",
     };
   },
   created() {
     // 本來想要用API撈資料，但是會跟MainPage重複，系統會抱錯
-    const localUserId = localStorage.getItem("userId");
-    const { userId } = { userId: localUserId };
-    this.getUserId({ userId });
+    // const localUserId = localStorage.getItem("userId");
+    // const { userId } = { userId: localUserId };
+    // this.getUserId({ userId });
+    this.showAvatar();
   },
   methods: {
     logout() {
       this.$store.commit("revokeAuthentication");
       this.$router.push("/login");
     },
-    // 本來想要用API撈資料，但是會跟MainPage重複，系統會抱錯
-    async getUserId({ userId }) {
-      try {
-        const response = await mainPageAPI.get({ userId });
-        this.userData = { ...response.data };
-      } catch (error) {
-        Toast.fire({
-          icon: "error",
-          title: "無法取得資料，請稍後再試",
-        });
-      }
+    // async getUserId({ userId }) {
+    //   try {
+    //     const response = await mainPageAPI.get({ userId });
+    //     this.userData = { ...response.data };
+    //   } catch (error) {
+    //     Toast.fire({
+    //       icon: "error",
+    //       title: "無法取得資料，請稍後再試",
+    //     });
+    //   }
+    // },
+    showAvatar() {
+      this.avatar = localStorage.getItem("avatar");
     },
     async handleSubmit(event) {
       try {
+        this.isProcessing = true;
         const form = event.target;
         const formData = new FormData(form);
         // for (let [name, value] of formData.entries()) {
@@ -190,6 +214,7 @@ export default {
             icon: "error",
             title: "請輸入文字",
           });
+          this.isProcessing = false;
           return;
         }
         // 檢測推文字數不能>140
@@ -198,6 +223,7 @@ export default {
             icon: "error",
             title: "輸入文字不能超過140字",
           });
+          this.isProcessing = false;
           return;
         }
         console.log(formData);
@@ -209,7 +235,14 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        location.reload();
+        const response = await mainPageAPI.mainPage();
+        this.ModalTweetData = [...response.data];
+        // 要傳送到父層修改資料
+        this.$emit("afterModalTweet", this.ModalTweetData);
+        $("#tweetModal").modal("hide");
+        this.description = "";
+        this.isProcessing = false;
+        // location.reload();
         // this.$router.push({ path: `/mainpage/${this.currentUser.id}` });
       } catch (error) {
         console.log(error);
@@ -217,6 +250,7 @@ export default {
           icon: "error",
           title: "無法建立推文，請稍後再試",
         });
+        this.isProcessing = false;
       }
     },
   },
@@ -285,7 +319,7 @@ span {
   cursor: pointer;
 }
 .modal-btn-size {
-  width: 64px;
+  width: 120px !important;
   height: 40px;
   font-size: 18px;
   line-height: 18px;

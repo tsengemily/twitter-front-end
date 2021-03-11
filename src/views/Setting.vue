@@ -105,6 +105,7 @@ export default {
         checkPassword: "",
       },
       isLoading: true,
+      localId: 0,
     };
   },
   created() {
@@ -113,7 +114,10 @@ export default {
       this.isSetting = true;
       this.MainPage = false;
     }
-    const { userId } = { userId: this.currentUser.id };
+
+    this.localId = localStorage.getItem("userId");
+    // const { userId } = { userId: this.currentUser.id };
+    const { userId } = { userId: this.localId };
     this.getUserId({ userId });
   },
   methods: {

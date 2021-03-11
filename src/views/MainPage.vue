@@ -8,6 +8,7 @@
           v-bind:isSetting="isSetting"
           v-bind:MainPage="MainPage"
           v-bind:userData="userData"
+          v-on:afterModalTweet="handleTweet"
         />
         <!-- 中間主畫面 -->
         <div class="main-main">
@@ -16,11 +17,7 @@
             推文剩餘字數:{{ 140 - this.description.length }}字
           </div>
           <div class="main-tweet">
-            <img
-              class="main-tweet-userPhoto"
-              v-bind:src="userData.avatar"
-              alt=""
-            />
+            <img class="main-tweet-userPhoto" v-bind:src="avatar" alt="" />
             <form
               class="main-tweet-textarea"
               @submit.prevent.stop="handleSubmit($event)"
@@ -30,7 +27,21 @@
                 placeholder="有什麼新鮮事?"
                 v-model="description"
               ></textarea>
-              <button type="submit" class="btn btn-primary">推文</button>
+              <button
+                v-if="isProcessing"
+                type="submit"
+                class="btn btn-primary btn-pushing"
+                disabled
+              >
+                推文中!
+              </button>
+              <button
+                v-if="!isProcessing"
+                type="submit"
+                class="btn btn-primary"
+              >
+                推文
+              </button>
             </form>
           </div>
 
@@ -49,7 +60,7 @@
               />
               <div class="main-following-tweet">
                 <div class="main-following-name">
-                  {{ tweet.User.name
+                  {{ tweet.name
                   }}<span class="main-following-namename-app">
                     @apple．{{ tweet.updatedAt | fromNow }}</span
                   >
@@ -99,9 +110,12 @@ export default {
       MainPage: false,
       isSetting: false,
       tweetData: [],
+      tweetShowData: [],
       userData: {},
       description: "",
       isLoading: true,
+      isProcessing: false,
+      avatar: "",
     };
   },
   created() {
@@ -110,11 +124,12 @@ export default {
       this.MainPage = true;
       this.isSetting = false;
     }
-    const localUserId = localStorage.getItem("userId");
+    // const localUserId = localStorage.getItem("userId");
     // const { userId } = { userId: this.currentUser.id };
-    const { userId } = { userId: localUserId };
+    // const { userId } = { userId: localUserId };
     this.fetchMainPage();
-    this.getUserId({ userId });
+    this.showAvatar();
+    // this.getUserId({ userId });
   },
   methods: {
     async fetchMainPage() {
@@ -122,8 +137,21 @@ export default {
         this.isLoading = true;
         const response = await mainPageAPI.mainPage();
         this.tweetData = [...response.data];
+        // this.tweetData.forEach((tweet) => {
+        //   this.tweetShowData.push({
+        //     id: tweet.id,
+        //     likes: tweet.Likes.length,
+        //     replies: tweet.Replies.length,
+        //     name: tweet.User.name,
+        //     updatedAt: tweet.User.updatedAt,
+        //     description: tweet.description,
+        //     avatar: tweet.User.avatar,
+        //   });
+        // });
+        // console.log("tweetShowData", this.tweetData);
         this.isLoading = false;
       } catch (error) {
+        console.log(error);
         this.isLoading = false;
         Toast.fire({
           icon: "error",
@@ -131,20 +159,25 @@ export default {
         });
       }
     },
-    async getUserId({ userId }) {
-      try {
-        const response = await mainPageAPI.get({ userId });
-        this.userData = { ...response.data };
-      } catch (error) {
-        Toast.fire({
-          icon: "error",
-          title: "無法取得資料，請稍後再試",
-        });
-      }
+    // async getUserId({ userId }) {
+    //   try {
+    //     const response = await mainPageAPI.get({ userId });
+    //     this.userData = { ...response.data };
+    //   } catch (error) {
+    //     Toast.fire({
+    //       icon: "error",
+    //       title: "無法取得資料，請稍後再試",
+    //     });
+    //   }
+    // },
+    showAvatar() {
+      this.avatar = localStorage.getItem("avatar");
     },
     async handleSubmit(event) {
       try {
-        this.isLoading = true;
+        // 防止多次點擊送出
+        this.isProcessing = true;
+        // this.isLoading = true;
         const form = event.target;
         const formData = new FormData(form);
         console.log("formData", formData);
@@ -157,6 +190,7 @@ export default {
             icon: "error",
             title: "請輸入文字",
           });
+          this.isProcessing = false;
           return;
         }
         // 檢測推文字數不能>140
@@ -165,26 +199,48 @@ export default {
             icon: "error",
             title: "輸入文字不能超過140字",
           });
+          this.isProcessing = false;
           return;
         }
+        // this.tweetShowData.unshift({
+        //   id: moment().format(),
+        //   likes: 0,
+        //   replies: 0,
+        //   name: this.currentUser.name,
+        //   updatedAt: moment().format(),
+        //   description: this.description,
+        //   avatar: this.currentUser.avatar,
+        // });
         // const { data } = await SettingAPI.userSetUp({ formData });
         const { data } = await mainPageAPI.tweet({
           description: this.description,
         });
+        this.description = "";
+        // 重新呼叫mainPageAPI.mainPage();
+        const response = await mainPageAPI.mainPage();
+        this.tweetData = [...response.data];
+        this.isProcessing = false;
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        location.reload();
-        this.isLoading = false;
+        // 因為登入失敗，所以要把按鈕狀態還原
+        this.isProcessing = false;
+
+        // location.reload();
+        // this.isLoading = false;
         // this.$router.push({ path: `/mainpage/${this.currentUser.id}` });
       } catch (error) {
-        this.isLoading = false;
+        // this.isLoading = false;
         console.log(error);
         Toast.fire({
           icon: "error",
           title: "無法建立推文，請稍後再試",
         });
+        this.isProcessing = false;
       }
+    },
+    async handleTweet(ModalTweetData) {
+      this.tweetData = [...ModalTweetData];
     },
   },
   computed: {
@@ -247,7 +303,7 @@ export default {
   background-color: rgba(255, 102, 0, 1);
   font-weight: 700;
   font-size: 18px;
-  width: 64px; /* TODO:寬度不到 */
+  width: 80px; /* TODO:寬度不到 */
   height: 40px;
   line-height: 40px;
   margin-top: 70px;
