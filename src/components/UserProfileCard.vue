@@ -81,20 +81,6 @@
       <p class="user-introduction">
         {{user.introduction}}
       </p>
-      <div class="d-flex">
-        <router-link
-          :to="{name: 'user-following', params: {id: user.id}}" 
-          class="user-following"
-        >
-          <strong>{{user.followingCount}}個</strong>跟隨中
-        </router-link>
-        <router-link 
-          :to="{name: 'user-follower', params: {id: user.id}}" 
-          class="user-follower"
-        >
-          <strong>{{user.followerCount}}位</strong>跟隨者
-        </router-link>
-      </div>
     </div>
   </div>
 </template>
@@ -125,8 +111,6 @@ export default {
         avatar: '',
         introduction: '',
         isFollowed: false,
-        followerCount: 0,
-        followingCount: 0
       })
     }
   },
@@ -168,6 +152,8 @@ export default {
           icon: 'success',
           title: '新增跟隨成功'
         })
+
+        this.$emit('after-add-follow-profile')
       }  catch (error) {
         Toast.fire({
           icon: 'error',
@@ -195,6 +181,8 @@ export default {
           icon: 'success',
           title: '取消跟隨成功'
         })
+
+        this.$emit('after-delete-follow-profile')
       }  catch (error) {
         Toast.fire({
           icon: 'error',
@@ -259,23 +247,6 @@ export default {
   margin: 10px 0 ;
   font-size: 14px;
   line-height: 20px;
-}
-
-.user-following,
-.user-follower {
-  font-size: 14px;
-  line-height: 20px;
-  color: #657786;
-}
-
-.user-following {
-  margin-right: 20px;
-}
-
-.user-following strong,
-.user-follower strong {
-  font-weight: 500;
-  color: #000000;
 }
 
 .edit-btn,

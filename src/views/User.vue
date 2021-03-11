@@ -19,7 +19,25 @@
             :user-name="user.name"
             :user-tweets-count="user.tweetCount"
           />
-          <UserProfileCard :initial-user="user" />
+          <UserProfileCard 
+            :initial-user="user" 
+            @after-add-follow-profile="afterAddFollowProfile"
+            @after-delete-follow-profile="afterDeleteFollowProfile"
+          />
+          <div class="d-flex">
+            <router-link
+              :to="{name: 'user-following', params: {id: user.id}}" 
+              class="user-following"
+            >
+              <strong>{{user.followingCount}}個</strong>跟隨中
+            </router-link>
+            <router-link 
+              :to="{name: 'user-follower', params: {id: user.id}}" 
+              class="user-follower"
+            >
+              <strong>{{user.followerCount}}位</strong>跟隨者
+            </router-link>
+          </div>
           <div class="nav">
             <router-link
               class="nav-item active"
@@ -52,6 +70,7 @@
                 :key="topUser.id"
                 :initial-top-user="topUser"
                 @after-add-follow="afterAddFollow"
+                @after-delete-follow="afterDeleteFollow"
               />
             <div class="top-users-more">
               顯示更多
@@ -210,15 +229,32 @@ export default {
     },
     //新增follow
     afterAddFollow (userId) {
-      //當頁是新加追蹤的本人
       if (this.user.id === userId) {
         this.user.followerCount += 1
-        console.log(this.user.followerCount)
-      } else if (this.currentUser.id === userId) {
+        console.log("跟隨者", this.user.followerCount)
+      } 
+      if (this.currentUser.id !== userId && this.user.id !== userId) {
         this.user.followingCount += 1
-        console.log(this.user.followingCount)
+        console.log("跟隨中", this.user.followingCount)
       }
     },
+    //刪除follow
+    afterDeleteFollow (userId) {
+      if (this.user.id === userId) {
+        this.user.followerCount -= 1
+        console.log("跟隨者", this.user.followerCount)
+      }
+      if (this.currentUser.id !== userId && this.user.id !== userId) {
+        this.user.followingCount -= 1
+        console.log("跟隨中", this.user.followingCount)
+      }
+    },
+    afterAddFollowProfile () {
+      this.user.followerCount +=1
+    },
+    afterDeleteFollowProfile () {
+      this.user.followerCount -=1
+    }
   },
   beforeRouteUpdate(to, from, next) {
     const { id: userId } = to.params;
@@ -313,5 +349,23 @@ export default {
   margin: 20px;
   font-size: 18px;
   color: #657786;
+}
+
+.user-following,
+.user-follower {
+  font-size: 14px;
+  line-height: 20px;
+  color: #657786;
+}
+
+.user-following {
+  margin-right: 20px;
+  margin-left: 15px;
+}
+
+.user-following strong,
+.user-follower strong {
+  font-weight: 500;
+  color: #000000;
 }
 </style>

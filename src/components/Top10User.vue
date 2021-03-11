@@ -113,7 +113,7 @@ export default {
           title: '取消跟隨成功'
         })
 
-        this.$emit('after-follow', {
+        this.$emit('after-delete-follow', {
           userId: this.topUser.id
         })
       }  catch (error) {

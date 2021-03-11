@@ -92,7 +92,6 @@ export default {
       },
       followers: [],
       topUsers: [],
-      currentUser: false,
       isLoading: true
     }
   },
