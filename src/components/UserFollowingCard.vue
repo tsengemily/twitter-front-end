@@ -1,10 +1,5 @@
 <template>
   <div class="card-container d-flex">
-    <template>
-      <div>
-        
-      </div>
-    </template>
     <router-link 
       :to="{name: 'user', params: {id: following.followingId}}"
     >
@@ -22,30 +17,30 @@
       <p class="user-account ml-2">
         @{{following.following.account}}
       </p>
-
-      <template
-        v-if="following.isFollowed"
-      >
-        <button 
-          class="follow-btn following"
-          @click.stop.prevent="deleteFollow(following.followingId)"
-        > 
-          正在跟隨
-        </button>
-      </template>
-      <template
-        v-else
-      >
-        <button 
-          class="follow-btn follow"
-          :class="{disable: follower.followerId === currentUser.id}"
-          @click.stop.prevent="addFollow()"
-          :disabled="following.followingId === currentUser.id"
+      <template v-if="following.followerId === currentUser.id">
+        <template
+          v-if="following.isFollowed"
         >
-          {{ follower.followerId === currentUser.id ? '無法跟隨自己' : '跟隨' }}
-        </button>
+          <button 
+            class="follow-btn following"
+            @click.stop.prevent="deleteFollow(following.followingId)"
+          > 
+            正在跟隨
+          </button>
+        </template>
+        <template
+          v-else
+        >
+          <button 
+            class="follow-btn follow"
+            :class="{disable: follower.followerId === currentUser.id}"
+            @click.stop.prevent="addFollow()"
+            :disabled="following.followingId === currentUser.id"
+          >
+            {{ follower.followerId === currentUser.id ? '無法跟隨自己' : '跟隨' }}
+          </button>
+        </template>
       </template>
-
       <p class="post-txt">
         {{following.following.introduction}}
       </p>
@@ -117,6 +112,8 @@ export default {
           icon: 'success',
           title: '取消跟隨成功'
         })
+        
+        location.reload()
       }  catch (error) {
         Toast.fire({
           icon: 'error',

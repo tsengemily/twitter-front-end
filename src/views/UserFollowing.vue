@@ -31,9 +31,9 @@
               正在跟隨
             </li>
           </ul>
-          <UserFollowingCard 
+          <UserFollowingCard
             v-for="following in followings"
-            :key="following.followingId"
+            :key="following.followingId" 
             :initial-following="following"
           />
           <div 
@@ -91,7 +91,6 @@ export default {
       },
       followings: [],
       topUsers: [],
-      currentUser: false,
       isLoading: true
     }
   },
