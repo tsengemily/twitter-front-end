@@ -109,9 +109,6 @@ export default {
   },
   data() {
     return {
-      MainPage: false,
-      isSetting: false,
-      PersonalInfo: false,
       user: {
         id: -1,
         name: "",
@@ -275,6 +272,12 @@ export default {
     this.fetchTopUsers();
     this.fetchUser({ userId });
     this.fetchTweetsReplies({ userId });
+    const currentPath = this.$router.history.current.name;
+    if (currentPath === "user-follower" && userId === this.currentUser.id) {
+      this.MainPage = false;
+      this.isSetting = false;
+      this.PersonalInfo = true;
+    }
     next();
   },
 };

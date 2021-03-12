@@ -97,7 +97,7 @@ export default {
     this.fetchFollowing({ userId });
     this.fetchTopUsers();
     const currentPath = this.$router.history.current.name;
-    if (currentPath === "user-following") {
+    if (currentPath === "user-following" && userId === this.currentUser.id ) {
       this.MainPage = false;
       this.isSetting = false;
       this.PersonalInfo = true;
@@ -173,6 +173,12 @@ export default {
     this.fetchUser({ userId });
     this.fetchFollowing({ userId });
     this.fetchTopUsers();
+    const currentPath = this.$router.history.current.name;
+    if (currentPath === "user-follower" && userId === this.currentUser.id) {
+      this.MainPage = false;
+      this.isSetting = false;
+      this.PersonalInfo = true;
+    }
     next();
   },
 };

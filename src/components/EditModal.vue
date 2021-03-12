@@ -27,13 +27,14 @@
               type="submit"
               class="edit-close"
               data-dismiss="modal"
-              @click.stop.prevent="handleSubmit"
+              form="edit"
+              @click="handleSubmit"
             >
               儲存
             </button>
           </div>
           <div class="modal-body">
-            <form>
+            <form id="edit">
                <div class="edit-cover">
                   <img :src="user.cover | emptyCover" class="cover-img">
                   <label for="cover-input" class="cover-label"></label>
@@ -145,7 +146,7 @@ export default {
       if (files.length === 0) return
       const imgURL = window.URL.createObjectURL(files[0])
       this.user.cover = imgURL
-      console.log(imgURL)
+      // console.log(imgURL)
     },
     handleAvatarFileChange (event) {
       const { files } = event.target
@@ -153,9 +154,9 @@ export default {
       if (files.length === 0) return
       const imgURL = window.URL.createObjectURL(files[0])
       this.user.avatar = imgURL
-      console.log(imgURL)
+      // console.log(imgURL)
     },
-    async handleSubmit () {
+    async handleSubmit (e) {
     try {
       if (!this.user.name) {
         Toast.fire({
@@ -176,7 +177,8 @@ export default {
         })
         return
       }  
-
+      //const form = e.target.files 
+      console.log('e', e)
       const response = await UserAPI.editProfile({
         userId: this.user.id,
         name: this.user.name,
@@ -186,7 +188,7 @@ export default {
       })
       console.log(response)
 
-       location.reload()
+      location.reload()
       } catch (error) {
         console.log('error', error)
         Toast.fire({
