@@ -47,15 +47,13 @@
         <div class="right">
           <div class="top-users-container">
             <h1 class="top-users-title">跟隨誰</h1>
-              <Top10User 
-                v-for="topUser in topUsers"
-                :key="topUser.id"
-                :initial-top-user="topUser"
-                @after-add-follow="afterAddFollow"
-              />
-            <div class="top-users-more">
-              顯示更多
-            </div> 
+            <Top10User
+              v-for="topUser in topUsers"
+              :key="topUser.id"
+              :initial-top-user="topUser"
+              @after-add-follow="afterAddFollow"
+            />
+            <div class="top-users-more">顯示更多</div>
           </div>
         </div>
       </div>
@@ -118,7 +116,6 @@ export default {
     this.fetchUser({ userId });
     this.fetchTweets({ userId });
     const currentPath = this.$router.history.current.name;
-    console.log(currentPath);
     if (currentPath === "user") {
       this.MainPage = false;
       this.isSetting = false;
@@ -128,6 +125,7 @@ export default {
   methods: {
     //取得使用者資料
     async fetchUser({ userId }) {
+      console.log("userId", userId);
       try {
         this.isLoading = true;
         const { data } = await UserAPI.get({ userId });
@@ -209,14 +207,14 @@ export default {
       }
     },
     //新增follow
-    afterAddFollow (userId) {
+    afterAddFollow(userId) {
       //當頁是新加追蹤的本人
       if (this.user.id === userId) {
-        this.user.followerCount += 1
-        console.log(this.user.followerCount)
+        this.user.followerCount += 1;
+        console.log(this.user.followerCount);
       } else if (this.currentUser.id === userId) {
-        this.user.followingCount += 1
-        console.log(this.user.followingCount)
+        this.user.followingCount += 1;
+        console.log(this.user.followingCount);
       }
     },
   },
@@ -300,14 +298,14 @@ export default {
   cursor: pointer;
 }
 
-  .nav-item:hover {
-    color: #ff6600;
-  }
+.nav-item:hover {
+  color: #ff6600;
+}
 
-  .active {
-    border-bottom: 2px solid #ff6600;
-    color: #ff6600;
-  }
+.active {
+  border-bottom: 2px solid #ff6600;
+  color: #ff6600;
+}
 
 .no-data {
   margin: 20px;

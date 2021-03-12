@@ -174,9 +174,9 @@ export default {
           checkPassword: this.userData.checkPassword,
         });
         console.log("data.status", data.status);
-        if (data.status !== "success") {
-          throw new Error(data.message);
-        }
+        // if (data.status !== "success") {
+        //   throw new Error(data.message);
+        // }
         this.isLoading = false;
         this.$router.push({
           name: "MainPage",
