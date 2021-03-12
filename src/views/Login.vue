@@ -70,6 +70,7 @@ export default {
           });
           return;
         }
+
         // 防止多次點擊送出
         this.isProcessing = true;
         const response = await authorizationAPI.signIn({
@@ -78,6 +79,7 @@ export default {
         });
         // 取得 API 請求後的資料
         const { data } = response;
+
         // 如果資料狀態不是success也拋出錯誤
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -94,6 +96,7 @@ export default {
         // this.$router.push("/mainpage");
         this.$router.push({ path: `/mainpage/${data.user.id}` });
       } catch (error) {
+        console.log(error.response.data.message);
         // 接收錯誤
         // 將密碼欄位清空
         this.account = "";
@@ -101,7 +104,7 @@ export default {
         // 顯示錯誤提示
         Toast.fire({
           icon: "warning",
-          title: "請確認您輸入了正確的帳號密碼",
+          title: error.response.data.message,
         });
         // 因為登入失敗，所以要把按鈕狀態還原
         this.isProcessing = false;

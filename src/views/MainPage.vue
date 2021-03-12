@@ -187,7 +187,6 @@ export default {
         this.isLoading = true;
         const response = await mainPageAPI.mainPage();
         this.tweetData = [...response.data];
-        console.log(this.tweetData);
         // this.tweetData.forEach((tweet) => {
         //   this.tweetShowData.push({
         //     id: tweet.id,
