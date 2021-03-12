@@ -150,6 +150,7 @@ export default {
   methods: {
     //取得使用者資料
     async fetchUser({ userId }) {
+      console.log("userId", userId);
       try {
         this.isLoading = true;
         const { data } = await UserAPI.get({ userId });
@@ -353,14 +354,14 @@ export default {
   cursor: pointer;
 }
 
-  .nav-item:hover {
-    color: #ff6600;
-  }
+.nav-item:hover {
+  color: #ff6600;
+}
 
-  .active {
-    border-bottom: 2px solid #ff6600;
-    color: #ff6600;
-  }
+.active {
+  border-bottom: 2px solid #ff6600;
+  color: #ff6600;
+}
 
 .no-data {
   margin: 20px;

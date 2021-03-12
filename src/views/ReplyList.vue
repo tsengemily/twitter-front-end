@@ -23,13 +23,23 @@
           </router-link>
           <div class="replylist-main-tweet">
             <div class="replylist-main-tweet-info">
-              <img
-                class="replylist-main-tweet-info-photo"
-                v-bind:src="tweetData.User.avatar"
-                alt=""
-              />
+              <router-link
+                class="replylist-link-style"
+                :to="{ name: 'user', params: { id: this.currentUser.id } }"
+              >
+                <img
+                  class="replylist-main-tweet-info-photo"
+                  v-bind:src="tweetData.User.avatar"
+                  alt=""
+                />
+              </router-link>
               <div class="replylist-main-tweet-info-name">
-                {{ tweetData.User.name }}
+                <router-link
+                  class="replylist-link-style"
+                  :to="{ name: 'user', params: { id: this.currentUser.id } }"
+                >
+                  {{ tweetData.User.name }}
+                </router-link>
                 <div class="replylist-main-tweet-info-name-app">@apple</div>
               </div>
             </div>
@@ -56,16 +66,38 @@
               ></i>
               <i
                 v-if="isLike"
+                v-show="!isLikePorcessing"
                 class="fas fa-heart replylist-main-tweet-icons-icon-favorite"
                 style="font-size: 25px"
                 v-on:click="deleteLike"
               ></i>
               <i
                 v-else
+                v-show="!isLikePorcessing"
                 class="far fa-heart replylist-main-tweet-icons-icon"
                 style="font-size: 25px"
                 v-on:click="addLike"
               ></i>
+              <i
+                v-if="isLike"
+                v-show="isLikePorcessing"
+                class="fas fa-heart replylist-main-tweet-icons-icon-favorite"
+                style="font-size: 25px"
+                disabled
+                ><span class="replylist-main-tweet-icons-icon-font"
+                  >愛心收回中．．．Q.Q</span
+                ></i
+              >
+              <i
+                v-else
+                v-show="isLikePorcessing"
+                class="far fa-heart replylist-main-tweet-icons-icon"
+                style="font-size: 25px"
+                disabled
+                ><span class="replylist-main-tweet-icons-icon-font"
+                  >愛心傳送中．．．啾咪</span
+                ></i
+              >
             </div>
           </div>
 
@@ -74,15 +106,24 @@
             v-for="reply in tweetData.Replies"
             v-bind:key="reply.id"
           >
-            <img
-              class="replylist-main-following-photo"
-              v-bind:src="reply.User.avatar"
-              alt=""
-            />
+            <router-link
+              class="replylist-link-style"
+              :to="{ name: 'user', params: { id: reply.UserId } }"
+            >
+              <img
+                class="replylist-main-following-photo"
+                v-bind:src="reply.User.avatar"
+                alt=""
+              />
+            </router-link>
             <div class="replylist-main-following-msg">
               <div class="replylist-main-following-msg-name">
-                {{ reply.User.name
-                }}<span class="replylist-main-following-msg-name-app">
+                <router-link
+                  class="replylist-link-style"
+                  :to="{ name: 'user', params: { id: reply.UserId } }"
+                >
+                  {{ reply.User.name }} </router-link
+                ><span class="replylist-main-following-msg-name-app">
                   @apple．{{ reply.updatedAt | fromNow }}</span
                 >
               </div>
@@ -241,9 +282,10 @@ export default {
       comment: "",
       isLike: false,
       isLoading: true,
-      likeＣount: 0,
       isProcessing: false,
+      isLikePorcessing: false,
       topUsers: [],
+      likeＣount: 0,
     };
   },
   created() {
@@ -280,6 +322,7 @@ export default {
         this.isLoading = true;
         const response = await mainPageAPI.ReplyList({ tweetId });
         this.tweetData = { ...response.data };
+        console.log("this.tweetData", this.tweetData);
         this.likeＣount = this.tweetData.Likes.length;
         // 檢驗使用者是否有對貼文按讚
         if (this.tweetData.isLikedByMe) {
@@ -351,39 +394,56 @@ export default {
     },
     async addLike() {
       try {
+        this.isLikePorcessing = true;
         const { id: tweetId } = this.$route.params;
         const { data } = await mainPageAPI.addLike({ tweetId });
 
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-
-        this.isLike = true;
+        const response = await mainPageAPI.ReplyList({ tweetId });
+        this.tweetData = { ...response.data };
+        // 檢驗使用者是否有對貼文按讚
+        if (this.tweetData.isLikedByMe) {
+          this.isLike = true;
+        } else {
+          this.isLike = false;
+        }
         this.likeＣount = this.likeＣount + 1;
-        this.tweetData.Likes.push("讓愛心加１");
+        this.isLikePorcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
           title: "無法將推文加入最愛，請稍後再試",
         });
+        this.isLikePorcessing = false;
       }
     },
     async deleteLike() {
       try {
+        this.isLikePorcessing = true;
         const { id: tweetId } = this.$route.params;
         const { data } = await mainPageAPI.deleteLike({ tweetId });
 
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-
-        this.isLike = false;
+        const response = await mainPageAPI.ReplyList({ tweetId });
+        this.tweetData = { ...response.data };
+        // 檢驗使用者是否有對貼文按讚
+        if (this.tweetData.isLikedByMe) {
+          this.isLike = true;
+        } else {
+          this.isLike = false;
+        }
         this.likeＣount = this.likeＣount - 1;
+        this.isLikePorcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
           title: "無法將推文移除最愛，請稍後再試",
         });
+        this.isLikePorcessing = false;
       }
     },
   },
@@ -454,6 +514,12 @@ export default {
   font-weight: 700;
   margin-left: 10px;
 }
+.replylist-link-style {
+  color: black;
+}
+/* .replylist-link-style:link {
+  text-decoration: none;
+} */
 .replylist-main-tweet-info-name-app {
   color: rgba(101, 119, 134, 1);
 }
@@ -491,6 +557,10 @@ export default {
 .replylist-main-tweet-icons-icon,
 .replylist-main-tweet-icons-icon-favorite {
   cursor: pointer;
+}
+.replylist-main-tweet-icons-icon-font {
+  font-size: 10px;
+  font-weight: 700;
 }
 .replylist-main-following {
   width: 100%;

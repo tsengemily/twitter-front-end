@@ -122,7 +122,7 @@ export default {
         console.log(error);
         Toast.fire({
           icon: "error",
-          title: "無法建立帳號，請稍後再試",
+          title: error.response.data.message,
         });
       }
     },
