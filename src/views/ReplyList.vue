@@ -56,16 +56,38 @@
               ></i>
               <i
                 v-if="isLike"
+                v-show="!isLikePorcessing"
                 class="fas fa-heart replylist-main-tweet-icons-icon-favorite"
                 style="font-size: 25px"
                 v-on:click="deleteLike"
               ></i>
               <i
                 v-else
+                v-show="!isLikePorcessing"
                 class="far fa-heart replylist-main-tweet-icons-icon"
                 style="font-size: 25px"
                 v-on:click="addLike"
               ></i>
+              <i
+                v-if="isLike"
+                v-show="isLikePorcessing"
+                class="fas fa-heart replylist-main-tweet-icons-icon-favorite"
+                style="font-size: 25px"
+                disabled
+                ><span class="replylist-main-tweet-icons-icon-font"
+                  >愛心收回中．．．Q.Q</span
+                ></i
+              >
+              <i
+                v-else
+                v-show="isLikePorcessing"
+                class="far fa-heart replylist-main-tweet-icons-icon"
+                style="font-size: 25px"
+                disabled
+                ><span class="replylist-main-tweet-icons-icon-font"
+                  >愛心傳送中．．．啾咪</span
+                ></i
+              >
             </div>
           </div>
 
@@ -241,9 +263,10 @@ export default {
       comment: "",
       isLike: false,
       isLoading: true,
-      likeＣount: 0,
       isProcessing: false,
+      isLikePorcessing: false,
       topUsers: [],
+      likeＣount: 0,
     };
   },
   created() {
@@ -351,39 +374,56 @@ export default {
     },
     async addLike() {
       try {
+        this.isLikePorcessing = true;
         const { id: tweetId } = this.$route.params;
         const { data } = await mainPageAPI.addLike({ tweetId });
 
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-
-        this.isLike = true;
+        const response = await mainPageAPI.ReplyList({ tweetId });
+        this.tweetData = { ...response.data };
+        // 檢驗使用者是否有對貼文按讚
+        if (this.tweetData.isLikedByMe) {
+          this.isLike = true;
+        } else {
+          this.isLike = false;
+        }
         this.likeＣount = this.likeＣount + 1;
-        this.tweetData.Likes.push("讓愛心加１");
+        this.isLikePorcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
           title: "無法將推文加入最愛，請稍後再試",
         });
+        this.isLikePorcessing = false;
       }
     },
     async deleteLike() {
       try {
+        this.isLikePorcessing = true;
         const { id: tweetId } = this.$route.params;
         const { data } = await mainPageAPI.deleteLike({ tweetId });
 
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-
-        this.isLike = false;
+        const response = await mainPageAPI.ReplyList({ tweetId });
+        this.tweetData = { ...response.data };
+        // 檢驗使用者是否有對貼文按讚
+        if (this.tweetData.isLikedByMe) {
+          this.isLike = true;
+        } else {
+          this.isLike = false;
+        }
         this.likeＣount = this.likeＣount - 1;
+        this.isLikePorcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
           title: "無法將推文移除最愛，請稍後再試",
         });
+        this.isLikePorcessing = false;
       }
     },
   },
@@ -491,6 +531,10 @@ export default {
 .replylist-main-tweet-icons-icon,
 .replylist-main-tweet-icons-icon-favorite {
   cursor: pointer;
+}
+.replylist-main-tweet-icons-icon-font {
+  font-size: 10px;
+  font-weight: 700;
 }
 .replylist-main-following {
   width: 100%;

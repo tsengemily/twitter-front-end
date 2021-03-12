@@ -35,11 +35,11 @@
                   {{ user.Likes.length }}
                 </div>
                 <div class="AdminUsers-card-info-follow">
-                  {{ user.Followers.length }} 個<span
+                  {{ user.Followings.length }} 個<span
                     class="AdminUsers-card-info-follow-style"
                     >跟隨中</span
                   >
-                  {{ user.Followings.length }} 位<span
+                  {{ user.Followers.length }} 位<span
                     class="AdminUsers-card-info-follow-style"
                     >跟隨者</span
                   >
@@ -95,7 +95,7 @@ export default {
         this.isLoading = true;
         const response = await mainPageAPI.AdminUsers();
         this.tweetUsers = [...response.data];
-        console.log("tweetData", this.tweetUsers);
+        console.log("tweetUsers", this.tweetUsers);
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
