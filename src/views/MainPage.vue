@@ -18,7 +18,11 @@
             推文剩餘字數:{{ 140 - this.description.length }}字
           </div>
           <div class="main-tweet">
-            <img class="main-tweet-userPhoto" v-bind:src="avatar" alt="" />
+            <router-link
+              :to="{ name: 'user', params: { id: this.currentUser.id } }"
+            >
+              <img class="main-tweet-userPhoto" v-bind:src="avatar" alt="" />
+            </router-link>
             <form
               class="main-tweet-textarea"
               @submit.prevent.stop="handleSubmit($event)"
@@ -54,15 +58,23 @@
             v-bind:to="{ name: 'ReplyList', params: { id: tweet.id } }"
           >
             <div class="main-following">
-              <img
-                class="main-following-photo"
-                :src="tweet.User.avatar"
-                alt=""
-              />
+              <router-link
+                :to="{ name: 'user', params: { id: tweet.User.id } }"
+              >
+                <img
+                  class="main-following-photo"
+                  :src="tweet.User.avatar"
+                  alt=""
+                />
+              </router-link>
               <div class="main-following-tweet">
                 <div class="main-following-name">
-                  {{ tweet.User.name
-                  }}<span class="main-following-namename-app">
+                  <router-link
+                    class="main-link-stlye-text"
+                    :to="{ name: 'user', params: { id: tweet.User.id } }"
+                  >
+                    {{ tweet.User.name }} </router-link
+                  ><span class="main-following-namename-app">
                     @{{ tweet.User.account }}．{{
                       tweet.updatedAt | fromNow
                     }}</span
@@ -369,6 +381,10 @@ export default {
   height: 10px;
   border-radius: 5px;
   margin-bottom: 10px;
+}
+.main-link-stlye,
+.main-link-stlye-text {
+  color: black;
 }
 .main-link-stlye:link {
   text-decoration: none;

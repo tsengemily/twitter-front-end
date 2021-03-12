@@ -23,13 +23,23 @@
           </router-link>
           <div class="replylist-main-tweet">
             <div class="replylist-main-tweet-info">
-              <img
-                class="replylist-main-tweet-info-photo"
-                v-bind:src="tweetData.User.avatar"
-                alt=""
-              />
+              <router-link
+                class="replylist-link-style"
+                :to="{ name: 'user', params: { id: this.currentUser.id } }"
+              >
+                <img
+                  class="replylist-main-tweet-info-photo"
+                  v-bind:src="tweetData.User.avatar"
+                  alt=""
+                />
+              </router-link>
               <div class="replylist-main-tweet-info-name">
-                {{ tweetData.User.name }}
+                <router-link
+                  class="replylist-link-style"
+                  :to="{ name: 'user', params: { id: this.currentUser.id } }"
+                >
+                  {{ tweetData.User.name }}
+                </router-link>
                 <div class="replylist-main-tweet-info-name-app">@apple</div>
               </div>
             </div>
@@ -96,15 +106,24 @@
             v-for="reply in tweetData.Replies"
             v-bind:key="reply.id"
           >
-            <img
-              class="replylist-main-following-photo"
-              v-bind:src="reply.User.avatar"
-              alt=""
-            />
+            <router-link
+              class="replylist-link-style"
+              :to="{ name: 'user', params: { id: reply.UserId } }"
+            >
+              <img
+                class="replylist-main-following-photo"
+                v-bind:src="reply.User.avatar"
+                alt=""
+              />
+            </router-link>
             <div class="replylist-main-following-msg">
               <div class="replylist-main-following-msg-name">
-                {{ reply.User.name
-                }}<span class="replylist-main-following-msg-name-app">
+                <router-link
+                  class="replylist-link-style"
+                  :to="{ name: 'user', params: { id: reply.UserId } }"
+                >
+                  {{ reply.User.name }} </router-link
+                ><span class="replylist-main-following-msg-name-app">
                   @apple．{{ reply.updatedAt | fromNow }}</span
                 >
               </div>
@@ -303,6 +322,7 @@ export default {
         this.isLoading = true;
         const response = await mainPageAPI.ReplyList({ tweetId });
         this.tweetData = { ...response.data };
+        console.log("this.tweetData", this.tweetData);
         this.likeＣount = this.tweetData.Likes.length;
         // 檢驗使用者是否有對貼文按讚
         if (this.tweetData.isLikedByMe) {
@@ -494,6 +514,12 @@ export default {
   font-weight: 700;
   margin-left: 10px;
 }
+.replylist-link-style {
+  color: black;
+}
+/* .replylist-link-style:link {
+  text-decoration: none;
+} */
 .replylist-main-tweet-info-name-app {
   color: rgba(101, 119, 134, 1);
 }
