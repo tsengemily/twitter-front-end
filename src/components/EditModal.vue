@@ -177,7 +177,7 @@ export default {
         })
         return
       }  
-      const form = e.target.files 
+      //const form = e.target.files 
       console.log('e', e)
       const response = await UserAPI.editProfile({
         userId: this.user.id,
