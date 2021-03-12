@@ -133,7 +133,9 @@ export default {
       `/users/${userId}`,
       { name, introduction, avatar, cover },
       {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
       }
     )
   },

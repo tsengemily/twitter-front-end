@@ -81,7 +81,6 @@ export default {
       },
       followers: [],
       topUsers: [],
-      currentUser: false,
       isLoading: true,
       MainPage: false,
       isSetting: false,

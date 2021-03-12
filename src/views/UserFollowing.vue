@@ -31,7 +31,7 @@
           </ul>
           <UserFollowingCard
             v-for="following in followings"
-            :key="following.followingId"
+            :key="following.followingId" 
             :initial-following="following"
           />
           <div v-if="followings.length < 1" class="no-data">沒有正在跟隨</div>
@@ -82,7 +82,6 @@ export default {
       },
       followings: [],
       topUsers: [],
-      currentUser: false,
       isLoading: true,
       MainPage: false,
       isSetting: false,
