@@ -6,9 +6,9 @@
         <!-- 導覽列 -->
         <div class="left">
           <Navbar
-            v-bind:isSetting="isSetting"
-            v-bind:MainPage="MainPage"
-            v-bind:PersonalInfo="PersonalInfo"
+            :isSetting="isSetting"
+            :MainPage="MainPage"
+            :PersonalInfo="PersonalInfo"
           />
         </div>
 
@@ -137,8 +137,11 @@ export default {
     this.fetchUser({ userId });
     this.fetchTweets({ userId });
     const currentPath = this.$router.history.current.name;
-    console.log(currentPath);
-    if (currentPath === "user") {
+    // console.log(currentPath);
+    // console.log(this.user.id)
+    // console.log(this.currentUser.id)
+    // console.log(userId)
+    if (currentPath === "user" && userId === this.currentUser.id) {
       this.MainPage = false;
       this.isSetting = false;
       this.PersonalInfo = true;
@@ -228,25 +231,39 @@ export default {
       }
     },
     //新增follow
-    afterAddFollow (userId) {
+    afterAddFollow (payload) {
+      const { userId } = payload
+      // console.log('來自跟隨誰', userId)
+      // console.log('這一頁是誰',this.user.id)
+      // console.log('我是',this.currentUser.id)
+      if (userId !== this.user.id && userId !== this.currentUser.id && this.user.id !== this.currentUser.id) {
+        return
+      }
       if (this.user.id === userId) {
         this.user.followerCount += 1
-        console.log("跟隨者", this.user.followerCount)
-      } 
-      if (this.currentUser.id !== userId && this.user.id !== userId) {
-        this.user.followingCount += 1
-        console.log("跟隨中", this.user.followingCount)
-      }
+        // console.log("跟隨者", this.user.followerCount)
+       } 
+       if (this.currentUser.id !== userId && this.user.id !== userId) {
+         this.user.followingCount += 1
+        //  console.log("跟隨中", this.user.followingCount)
+       }
     },
     //刪除follow
-    afterDeleteFollow (userId) {
+    afterDeleteFollow (payload) {
+      const { userId } = payload
+      // console.log('來自跟隨誰', userId)
+      // console.log('這一頁是誰',this.user.id)
+      // console.log('我是',this.currentUser.id)
+       if (userId !== this.user.id && userId !== this.currentUser.id && this.user.id !== this.currentUser.id) {
+        return
+      }
       if (this.user.id === userId) {
         this.user.followerCount -= 1
-        console.log("跟隨者", this.user.followerCount)
+        // console.log("跟隨者", this.user.followerCount)
       }
       if (this.currentUser.id !== userId && this.user.id !== userId) {
         this.user.followingCount -= 1
-        console.log("跟隨中", this.user.followingCount)
+        // console.log("跟隨中", this.user.followingCount)
       }
     },
     afterAddFollowProfile () {

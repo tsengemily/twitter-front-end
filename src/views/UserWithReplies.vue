@@ -5,7 +5,11 @@
       <div class="row">
         <!-- 導覽列 -->
         <div class="left">
-          <Navbar />
+          <Navbar 
+            :isSetting="isSetting"
+            :MainPage="MainPage"
+            :PersonalInfo="PersonalInfo"
+          />
         </div>
 
         <!-- 主要內容 -->
@@ -111,6 +115,9 @@ export default {
   },
   data() {
     return {
+      MainPage: false,
+      isSetting: false,
+      PersonalInfo: false,
       user: {
         id: -1,
         name: '',
@@ -137,6 +144,13 @@ export default {
     this.fetchTopUsers()
     this.fetchUser({ userId })
     this.fetchTweetsReplies({ userId })
+    const currentPath = this.$router.history.current.name;
+    console.log(currentPath);
+    if (currentPath === "user-with-replies" && userId === this.currentUser.id) {
+      this.MainPage = false;
+      this.isSetting = false;
+      this.PersonalInfo = true;
+    }
   },
   methods: {
     //取得使用者資料
@@ -211,8 +225,11 @@ export default {
       }
     },
      //新增follow
-    afterAddFollow (userId) {
-      //當頁是新加追蹤的本人
+    afterAddFollow (payload) {
+      const { userId } = payload
+       if (userId !== this.user.id && userId !== this.currentUser.id && this.user.id !== this.currentUser.id) {
+        return
+      }
       if (this.user.id === userId) {
         this.user.followerCount += 1
         console.log("跟隨者", this.user.followerCount)
@@ -223,7 +240,11 @@ export default {
       }
     },
     //刪除follow
-    afterDeleteFollow (userId) {
+    afterDeleteFollow (payload) {
+      const { userId } = payload
+       if (userId !== this.user.id && userId !== this.currentUser.id && this.user.id !== this.currentUser.id) {
+        return
+      }
       if (this.user.id === userId) {
         this.user.followerCount -= 1
         console.log("跟隨者", this.user.followerCount)
