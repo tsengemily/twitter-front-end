@@ -96,7 +96,7 @@ export default {
     this.fetchFollower({ userId });
     this.fetchTopUsers();
     const currentPath = this.$router.history.current.name;
-    if (currentPath === "user-follower") {
+    if (currentPath === "user-follower" && userId === this.currentUser.id) {
       this.MainPage = false;
       this.isSetting = false;
       this.PersonalInfo = true;
@@ -109,7 +109,7 @@ export default {
         this.isLoading = true;
         const { data } = await UserAPI.get({ userId });
 
-        const { id, name, isSelf, tweetCount } = data;
+        const { id, name, tweetCount } = data;
 
         this.user = {
           ...this.user,
@@ -117,7 +117,6 @@ export default {
           name,
           tweetCount,
         };
-        this.currentUser = isSelf;
 
         this.isLoading = false;
       } catch (error) {
@@ -173,6 +172,12 @@ export default {
     this.fetchUser({ userId });
     this.fetchFollower({ userId });
     this.fetchTopUsers();
+    const currentPath = this.$router.history.current.name;
+    if (currentPath === "user-follower" && userId === this.currentUser.id) {
+      this.MainPage = false;
+      this.isSetting = false;
+      this.PersonalInfo = true;
+    }
     next();
   },
 };

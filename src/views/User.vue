@@ -279,6 +279,12 @@ export default {
     this.fetchTopUsers();
     this.fetchUser({ userId });
     this.fetchTweets({ userId });
+    const currentPath = this.$router.history.current.name;
+    if (currentPath === "user-follower" && userId === this.currentUser.id) {
+      this.MainPage = false;
+      this.isSetting = false;
+      this.PersonalInfo = true;
+    }
     next();
   },
 };
