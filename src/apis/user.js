@@ -128,10 +128,21 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` },
     })
   },
-  editProfile({ userId, name, introduction, avatar, cover }) {
+  // editProfile({ userId, name, introduction, avatar, cover }) {
+  //   return apiHelper.put(
+  //     `/users/${userId}`,
+  //     { name, introduction, avatar, cover },
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${getToken()}`,
+  //       },
+  //     }
+  //   )
+  // },
+  editProfile({ userId, formData }) {
     return apiHelper.put(
       `/users/${userId}`,
-      { name, introduction, avatar, cover },
+      formData,
       {
         headers: {
           Authorization: `Bearer ${getToken()}`,
