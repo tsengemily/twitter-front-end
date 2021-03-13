@@ -6,9 +6,10 @@
         <!-- 導覽列 -->
         <div class="left">
           <Navbar
-            v-bind:isSetting="isSetting"
-            v-bind:MainPage="MainPage"
-            v-bind:PersonalInfo="PersonalInfo"
+            :isSetting="isSetting"
+            :MainPage="MainPage"
+            :PersonalInfo="PersonalInfo"
+            :ChatRoom="ChatRoom"
           />
         </div>
 
@@ -86,6 +87,7 @@ export default {
       MainPage: false,
       isSetting: false,
       PersonalInfo: false,
+      ChatRoom: false
     };
   },
   computed: {
@@ -101,6 +103,7 @@ export default {
       this.MainPage = false;
       this.isSetting = false;
       this.PersonalInfo = true;
+      this.ChatRoom = false;
     }
   },
   methods: {
@@ -178,6 +181,7 @@ export default {
       this.MainPage = false;
       this.isSetting = false;
       this.PersonalInfo = true;
+      this.ChatRoom = false;
     }
     next();
   },

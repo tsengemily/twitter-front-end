@@ -7,6 +7,7 @@
           v-bind:isSetting="isSetting"
           v-bind:MainPage="MainPage"
           v-bind:PersonalInfo="PersonalInfo"
+          v-bind:ChatRoom="ChatRoom"
         />
         <div class="setting-main">
           <div class="setting-main-header">帳戶設定</div>
@@ -102,6 +103,7 @@ export default {
       MainPage: false,
       isSetting: false,
       PersonalInfo: false,
+      ChatRoom: false,
       userData: {
         account: "",
         name: "",
@@ -119,6 +121,7 @@ export default {
       this.MainPage = false;
       this.isSetting = true;
       this.PersonalInfo = false;
+      this.ChatRoom = false;
     }
 
     this.localId = localStorage.getItem("userId");

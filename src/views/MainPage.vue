@@ -8,6 +8,7 @@
           v-bind:isSetting="isSetting"
           v-bind:MainPage="MainPage"
           v-bind:PersonalInfo="PersonalInfo"
+          v-bind:ChatRoom="ChatRoom"
           v-bind:userData="userData"
           v-on:afterModalTweet="handleTweet"
         />
@@ -139,6 +140,7 @@ export default {
       MainPage: false,
       isSetting: false,
       PersonalInfo: false,
+      ChatRoom: false,
       tweetData: [],
       tweetShowData: [],
       userData: {},
@@ -155,6 +157,7 @@ export default {
       this.MainPage = true;
       this.isSetting = false;
       this.PersonalInfo = false;
+      this.ChatRoom = false;
     }
     // const localUserId = localStorage.getItem("userId");
     // const { userId } = { userId: this.currentUser.id };
