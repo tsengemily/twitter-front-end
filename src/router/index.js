@@ -78,6 +78,11 @@ const routes = [
     component: () => import('../views/AdminUsers.vue'),
   },
   {
+    path: '/public-chatroom',
+    name: 'PublicChatroom',
+    component: () => import('../views/ChatRoom.vue'),
+  },
+  {
     path: '*',
     name: 'not-found',
     component: NotFound,

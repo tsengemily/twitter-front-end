@@ -1,0 +1,313 @@
+<template>
+  <div class="chat-room-container">
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <div class="row">
+        <!-- 導覽列 -->
+        <div class="left-navbar">
+        <Navbar 
+          :isSetting="isSetting"
+          :MainPage="MainPage"
+          :PersonalInfo="PersonalInfo"
+          :ChatRoom="ChatRoom"
+        />
+        </div>
+
+        <!-- 上線使用者 -->
+        <div class="user-list">
+          <div class="title">上線使用者(2)</div>
+          <!-- 一位使用者 -->
+          <div class="user-container d-flex align-items-center">
+            <router-link
+              to="#"
+              class="user-avatar">
+              <img src="https://picsum.photos/200/300?10">
+            </router-link>
+            <div class="user-name">History</div>
+            <div class="user-account">@history</div>
+          </div>
+        </div>
+
+        <!-- 公開聊天室 -->
+        <div class="chat-room">
+          <div class="title">公開聊天室</div>
+          <!-- 對話框開始 -->
+          <div class="dialogue-container">
+            <!-- 遠端使用者上線提示 -->
+            <div class="user-active">
+              <span class="user-active-txt">
+                使用者上線
+              </span>
+            </div>
+            <!-- 遠端使用者 -->
+            <div class="user remote">
+              <div class="avatar">
+                <img
+                    src="https://picsum.photos/200/300?20"
+                />
+              </div>
+              <div class="message">
+                <div class="txt">
+                  Lorem ipsum dolor.ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.
+                </div>
+                <div class="send-time">
+                  下午5:48
+                </div>
+              </div>
+            </div>
+            <!-- 本地使用者 -->
+            <div class="user local">
+              <div class="message">
+                <div class="txt">
+                  Lorem ipsum.Lorem ipsum dolor.ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.
+                </div>
+                <div class="send-time">
+                  下午6:01
+                </div>
+              </div>
+            </div>
+            <!-- 遠端使用者下線提示 -->
+            <div class="user-active">
+              <span class="user-active-txt">
+                使用者離線
+              </span>
+            </div>
+          </div>
+          <!-- 對話框結束 -->
+          <!-- 輸入欄 -->
+          <div class="send">
+            <form class="form-container">
+              <input 
+                type="text" 
+                name=""
+                placeholder="輸入訊息..."
+                :value="text"
+                class="text-input"
+              >
+              <button class="send-btn"><i class="far fa-paper-plane"></i></button>
+            </form>
+          </div>
+        </div> 
+      </div>
+    </template>     
+  </div>
+</template>
+
+<script>
+import Navbar from '../components/Navbar'
+import Spinner from '../components/Spinner'
+
+
+export default {
+  components: {
+    Navbar,
+    Spinner
+  },
+  data () {
+    return {
+      text: '',
+      MainPage: false,
+      isSetting: false,
+      PersonalInfo: false,
+      ChatRoom: true,
+      isLoading: '',
+    }
+  }
+}
+</script>
+
+
+<style scoped>
+/* 三區塊*/
+.chat-room-container {
+  width: 960px;
+  margin: 0 auto;
+}
+
+.left-navbar {
+  /* outline: 1px solid red; */
+  width: 25%;
+  border-right: 1px solid #e6ecf0;
+}
+
+.user-list {
+  /* outline: 1px solid red; */
+  width: 25%;
+  border-right: 1px solid #e6ecf0;
+}
+
+.user-container {
+  /* outline: 1px solid red; */
+  width: 100%;
+  padding: 15px
+}
+
+
+
+/* 上線使用者 */
+.user-list {
+  /* outline: 1px solid red; */
+  /* background-color: gray; */
+  height: 100vh;
+  overflow: scroll;
+}
+
+.user-avatar > img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  vertical-align: middle;
+  object-fit: cover;
+}
+
+.user-name {
+  color: #000;
+  font-weight: 500;
+  margin-left: 10px
+}
+
+.user-account {
+  color: #657786;
+  margin-left: 7px;
+}
+
+/* 公開聊天室 */
+.chat-room {
+  /* outline: 1px solid red; */
+  /* background-color: pink; */
+  position: relative;
+  width: 50%;
+  height: 100vh;
+  border-right: 1px solid #e6ecf0;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  border-bottom: 1px solid #e6ecf0;
+  padding: 30px 15px 15px 15px;
+}
+
+/* 聊天室對話框 */
+.dialogue-container {
+  height: calc(100vh - 130px);
+  overflow-y: scroll;
+  padding: 10px 0;
+  /* text-align: center; */
+}
+
+.user {
+  /* background-color: pink; */
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.remote {
+  /* outline: 1px solid red; */
+  align-items: flex-end;
+}
+
+.local {
+  justify-content: flex-end;
+}
+
+.remote .avatar {
+  /* outline: 1px solid red; */
+  margin-left: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.remote .avatar img {
+  width: 100%;
+  height: 100%;
+  vertical-align: middle;
+  object-fit: cover;
+}
+
+.user .txt {
+  /* outline: 1px solid red; */
+  background: #d6e4f8;
+  padding: 16px;
+}
+
+.remote .txt {
+  /* outline: 1px solid red; */
+  margin-left: 10px;
+  margin-right: 90px;
+  position: relative;
+  border-radius: 30px 30px 30px 0;
+}
+
+.local .txt {
+  /* outline: 1px solid green; */
+  position: relative;
+  border-radius: 30px 30px 0 30px;
+  margin-right: 20px;
+  margin-left: 90px;
+  background: #ff6600;
+  color: #fff;
+}
+
+.remote .send-time {
+  /* outline: 1px solid red; */
+  display: inline-block;
+  margin-left: 20px;
+  color: #657786;
+  font-size: 13px;
+}
+
+.local .send-time {
+  /* outline: 1px solid red; */
+  text-align: right;
+  margin-right: 25px;
+  color: #657786;
+  font-size: 13px;
+}
+
+.user-active {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.user-active-txt {
+  background-color: #c2c4c7;
+  color: #657786;
+  padding: 5px 15px;
+  border-radius: 20px;
+}
+
+.form-container {
+  /* background-color: green; */
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  padding: 20px;
+}
+
+.text-input {
+  /* outline: 1px solid red; */
+  width: 90%;
+  border-radius: 50px;
+  border: none;
+  padding: 10px 20px;
+  background-color: #d5d7da;
+  color: #657786;
+}
+
+.send-btn {
+  /* outline: 1px solid red; */
+  margin-left: 10px;
+  border: none;
+  font-size: 20px;
+  color: #ff6600;
+  background: none;
+}
+</style>
