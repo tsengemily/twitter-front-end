@@ -28,6 +28,22 @@
           >
         </router-link>
       </li>
+       <li class="nav-item nav-container-mainPage">
+        <router-link
+          class="nav-container-mainPage-fontColor"
+          v-bind:to="{ name: 'PublicChatroom'}"
+          v-bind:class="{ routerLinkActive: ChatRoom }"
+        >
+          <i
+            class="far fa-envelope nav-container-mainPage-fontColor-linkStyle"
+            style="font-size: 25px"
+          >
+            <span class="nav-container-mainPage-fontColor-linkStyle-fontStyle"
+              >公開聊天室</span
+            ></i
+          >
+        </router-link>
+      </li>
       <li class="nav-item-userData">
         <router-link
           class="nav-item-userData-font-color"
@@ -165,6 +181,11 @@ export default {
       default: false,
       required: true,
     },
+    ChatRoom: {
+      type: Boolean,
+      default: false,
+      required: true,
+    }
     // userData: {
     //   type: Object,
     //   default: () => {},

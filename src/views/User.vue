@@ -9,6 +9,7 @@
             :isSetting="isSetting"
             :MainPage="MainPage"
             :PersonalInfo="PersonalInfo"
+            :ChatRoom="ChatRoom"
           />
         </div>
 
@@ -110,6 +111,7 @@ export default {
       MainPage: false,
       isSetting: false,
       PersonalInfo: false,
+      ChatRoom: false,
       user: {
         id: -1,
         name: "",
@@ -145,6 +147,7 @@ export default {
       this.MainPage = false;
       this.isSetting = false;
       this.PersonalInfo = true;
+      this.ChatRoom = false;
     }
   },
   methods: {
@@ -284,6 +287,7 @@ export default {
       this.MainPage = false;
       this.isSetting = false;
       this.PersonalInfo = true;
+      this.ChatRoom = false;
     }
     next();
   },

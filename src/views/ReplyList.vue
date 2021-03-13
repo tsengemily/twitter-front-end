@@ -7,6 +7,7 @@
           v-bind:isSetting="isSetting"
           v-bind:MainPage="MainPage"
           v-bind:PersonalInfo="PersonalInfo"
+          v-bind:ChatRoom="ChatRoom"
         />
         <div class="replylist-main">
           <router-link
@@ -268,6 +269,7 @@ export default {
       MainPage: false,
       isSetting: false,
       PersonalInfo: false,
+      ChatRoom: false,
       tweetData: {
         description: "",
         updatedAt: "",
@@ -294,6 +296,7 @@ export default {
       this.MainPage = true;
       this.isSetting = false;
       this.PersonalInfo = false;
+      this.ChatRoom = false;
     }
     const { id: tweetId } = this.$route.params; /* TODO: 解構付值問 */
     this.fetchReplyList({ tweetId });
