@@ -154,7 +154,7 @@ const localToekn = localStorage.getItem("token");
 const localUserId = localStorage.getItem("userId");
 import { io } from "socket.io-client";
 
-const socket = io("localhost:3000", {
+const socket = io("https://salty-headland-68177.herokuapp.com", {
   reconnectionDelayMax: 10000,
   autoConnect: false,
   auth: {
