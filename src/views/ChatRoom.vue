@@ -5,12 +5,12 @@
       <div class="row">
         <!-- 導覽列 -->
         <div class="left-navbar">
-        <Navbar 
-          :isSetting="isSetting"
-          :MainPage="MainPage"
-          :PersonalInfo="PersonalInfo"
-          :ChatRoom="ChatRoom"
-        />
+          <Navbar
+            :isSetting="isSetting"
+            :MainPage="MainPage"
+            :PersonalInfo="PersonalInfo"
+            :ChatRoom="ChatRoom"
+          />
         </div>
 
         <!-- 上線使用者 -->
@@ -18,10 +18,8 @@
           <div class="title">上線使用者(2)</div>
           <!-- 一位使用者 -->
           <div class="user-container d-flex align-items-center">
-            <router-link
-              to="#"
-              class="user-avatar">
-              <img src="https://picsum.photos/200/300?10">
+            <router-link to="#" class="user-avatar">
+              <img src="https://picsum.photos/200/300?10" />
             </router-link>
             <div class="user-name">History</div>
             <div class="user-account">@history</div>
@@ -33,87 +31,146 @@
           <div class="title">公開聊天室</div>
           <!-- 對話框開始 -->
           <div class="dialogue-container">
+            <ul class="list-group">
+              <li
+                v-for="msg in messageList"
+                v-bind:key="msg.sendTime"
+                class="list-group-item"
+              >
+                {{ msg.fromId }}說: {{ msg.content }}
+              </li>
+            </ul>
             <!-- 遠端使用者上線提示 -->
-            <div class="user-active">
-              <span class="user-active-txt">
-                使用者上線
-              </span>
-            </div>
+            <!-- <div class="user-active">
+              <span class="user-active-txt"> 使用者上線 </span>
+            </div> -->
             <!-- 遠端使用者 -->
-            <div class="user remote">
+            <!-- <div class="user remote">
               <div class="avatar">
-                <img
-                    src="https://picsum.photos/200/300?20"
-                />
+                <img src="https://picsum.photos/200/300?20" />
               </div>
               <div class="message">
                 <div class="txt">
-                  Lorem ipsum dolor.ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.
+                  Lorem ipsum dolor.ipsum.Lorem ipsum.Lorem ipsum.Lorem
+                  ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem
+                  ipsum.
                 </div>
-                <div class="send-time">
-                  下午5:48
-                </div>
+                <div class="send-time">下午5:48</div>
               </div>
-            </div>
+            </div> -->
             <!-- 本地使用者 -->
-            <div class="user local">
+            <!-- <div class="user local">
               <div class="message">
                 <div class="txt">
-                  Lorem ipsum.Lorem ipsum dolor.ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.
+                  Lorem ipsum.Lorem ipsum dolor.ipsum.Lorem ipsum.Lorem
+                  ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem
+                  ipsum.Lorem ipsum.
                 </div>
-                <div class="send-time">
-                  下午6:01
-                </div>
+                <div class="send-time">下午6:01</div>
               </div>
-            </div>
+            </div> -->
             <!-- 遠端使用者下線提示 -->
-            <div class="user-active">
-              <span class="user-active-txt">
-                使用者離線
-              </span>
-            </div>
+            <!-- <div class="user-active">
+              <span class="user-active-txt"> 使用者離線 </span>
+            </div> -->
           </div>
           <!-- 對話框結束 -->
           <!-- 輸入欄 -->
           <div class="send">
-            <form class="form-container">
-              <input 
-                type="text" 
+            <form @submit.prevent.stop="sendMessage" class="form-container">
+              <input
+                type="text"
                 name=""
                 placeholder="輸入訊息..."
-                :value="text"
+                v-model="text"
                 class="text-input"
-              >
-              <button class="send-btn"><i class="far fa-paper-plane"></i></button>
+              />
+              <button type="submit" class="send-btn">
+                <i class="far fa-paper-plane"></i>
+              </button>
             </form>
           </div>
-        </div> 
+        </div>
       </div>
-    </template>     
+    </template>
   </div>
 </template>
 
 <script>
-import Navbar from '../components/Navbar'
-import Spinner from '../components/Spinner'
+import Navbar from "../components/Navbar";
+import Spinner from "../components/Spinner";
 
+// 時間顯示器
+import moment from "moment";
+
+// Soket.io
+const localToekn = localStorage.getItem("token");
+const localUserId = localStorage.getItem("userId");
+import { io } from "socket.io-client";
+
+const socket = io("localhost:3000", {
+  reconnectionDelayMax: 10000,
+  auth: {
+    token: localToekn,
+    userId: localUserId,
+  },
+});
 
 export default {
   components: {
     Navbar,
-    Spinner
+    Spinner,
   },
-  data () {
+  data() {
     return {
-      text: '',
+      text: "",
       MainPage: false,
       isSetting: false,
       PersonalInfo: false,
       ChatRoom: true,
-      isLoading: '',
-    }
-  }
-}
+      isLoading: "",
+      userList: [],
+      messageList: [],
+    };
+  },
+  created() {
+    socket.onAny((event) => {
+      console.log("event", event);
+    });
+    socket.on("connect", () => {
+      console.log("socket.connected!", socket.connected); // true
+    });
+    socket.on("usersInPublicChat", (usersInPublicChat) => {
+      this.userList.push(usersInPublicChat);
+      // console.log("usersInPublicChat", usersInPublicChat);
+    });
+    socket.on("publicMessageRecord", (publicMessageRecord) => {
+      console.log("publicMessageRecord", publicMessageRecord);
+    });
+
+    socket.on("connect_error", (error) => {
+      console.log(error);
+    });
+  },
+  methods: {
+    sendMessage() {
+      socket.emit("publicMessageFromUser", {
+        content: this.text,
+        fromId: localUserId,
+        toId: null,
+        sendTime: moment().format(),
+      });
+      this.text = "";
+    },
+  },
+  mounted() {
+    socket.on("publicMessageFromServer", (publicMessageFromServer) => {
+      console.log("publicMessageFromServer", publicMessageFromServer);
+      this.messageList.push(publicMessageFromServer);
+      console.log(this.messageList);
+    });
+  },
+};
 </script>
 
 
@@ -139,10 +196,8 @@ export default {
 .user-container {
   /* outline: 1px solid red; */
   width: 100%;
-  padding: 15px
+  padding: 15px;
 }
-
-
 
 /* 上線使用者 */
 .user-list {
@@ -163,7 +218,7 @@ export default {
 .user-name {
   color: #000;
   font-weight: 500;
-  margin-left: 10px
+  margin-left: 10px;
 }
 
 .user-account {
