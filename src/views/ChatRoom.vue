@@ -15,14 +15,18 @@
 
         <!-- 上線使用者 -->
         <div class="user-list">
-          <div class="title">上線使用者(2)</div>
+          <div class="title">上線使用者({{onlineCount}})</div>
           <!-- 一位使用者 -->
-          <div class="user-container d-flex align-items-center">
+          <div 
+            class="user-container d-flex align-items-center"
+            v-for="user in userList"
+            :key="user.id"
+          >
             <router-link to="#" class="user-avatar">
               <img src="https://picsum.photos/200/300?10" />
             </router-link>
-            <div class="user-name">History</div>
-            <div class="user-account">@history</div>
+            <div class="user-name">{{user.name}}</div>
+            <div class="user-account">{{user.id}}</div>
           </div>
         </div>
 
@@ -31,46 +35,86 @@
           <div class="title">公開聊天室</div>
           <!-- 對話框開始 -->
           <div class="dialogue-container">
-            <ul class="list-group">
-              <li
-                v-for="msg in messageList"
-                v-bind:key="msg.sendTime"
-                class="list-group-item"
-              >
-                {{ msg.fromId }}說: {{ msg.content }}
-              </li>
-            </ul>
             <!-- 遠端使用者上線提示 -->
             <!-- <div class="user-active">
               <span class="user-active-txt"> 使用者上線 </span>
             </div> -->
-            <!-- 遠端使用者 -->
-            <!-- <div class="user remote">
-              <div class="avatar">
-                <img src="https://picsum.photos/200/300?20" />
-              </div>
-              <div class="message">
-                <div class="txt">
-                  Lorem ipsum dolor.ipsum.Lorem ipsum.Lorem ipsum.Lorem
-                  ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem
-                  ipsum.
-                </div>
-                <div class="send-time">下午5:48</div>
-              </div>
-            </div> -->
+            <!-- 歷史訊息 -->
+            <div 
+              class="message-box"
+              v-for="msg in publicMessageRecord"
+              v-bind:key="msg.id"
+            >
             <!-- 本地使用者 -->
-            <!-- <div class="user local">
-              <div class="message">
-                <div class="txt">
-                  Lorem ipsum.Lorem ipsum dolor.ipsum.Lorem ipsum.Lorem
-                  ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem ipsum.Lorem
-                  ipsum.Lorem ipsum.
+              <div 
+                class="user local"
+                v-if="parseInt(msg.fromId) === currentUser.id"
+              >
+                <div class="message">
+                  <div class="txt">
+                    {{msg.content}}
+                  </div>
+                  <div class="send-time">
+                    {{new Date(msg.sendTime).toLocaleString()}}
+                  </div>
                 </div>
-                <div class="send-time">下午6:01</div>
               </div>
-            </div> -->
+            <!-- 遠端使用者 -->
+              <div 
+                class="user remote"
+                v-else
+              >
+                <div class="avatar">
+                  <img src="https://picsum.photos/200/300?20" />
+                </div>
+                <div class="message">
+                  <div class="txt">
+                    {{msg.content}}
+                  </div>
+                  <div class="send-time">{{new Date(msg.sendTime).toLocaleString()}}</div>
+                </div>
+              </div>
+            </div>
+            <!-- 新訊息 -->
+            <div 
+              class="message-box"
+              v-for="msg in messageList"
+              v-bind:key="msg.sendTime"
+            >
+            <!-- 本地使用者 -->
+              <div 
+                class="user local"
+                v-if="parseInt(msg.fromId) === currentUser.id"
+              >
+                <div class="message">
+                  <div class="txt">
+                    {{msg.content}}
+                  </div>
+                  <div class="send-time">
+                    {{new Date(msg.sendTime).toLocaleString()}}
+                  </div>
+                </div>
+              </div>
+            <!-- 遠端使用者 -->
+              <div 
+                class="user remote"
+                v-else
+              >
+                <div class="avatar">
+                  <img src="https://picsum.photos/200/300?20" />
+                </div>
+                <div class="message">
+                  <div class="txt">
+                    {{msg.content}}
+                  </div>
+                  <div class="send-time">{{new Date(msg.sendTime).toLocaleString()}}</div>
+                </div>
+              </div>
+            </div>
             <!-- 遠端使用者下線提示 -->
-            <!-- <div class="user-active">
+            <!-- <div 
+              class="user-active"
+            >
               <span class="user-active-txt"> 使用者離線 </span>
             </div> -->
           </div>
@@ -99,6 +143,8 @@
 <script>
 import Navbar from "../components/Navbar";
 import Spinner from "../components/Spinner";
+// 從 Vuex 抓取使用者資料
+import { mapState } from "vuex";
 
 // 時間顯示器
 import moment from "moment";
@@ -110,13 +156,16 @@ import { io } from "socket.io-client";
 
 const socket = io("localhost:3000", {
   reconnectionDelayMax: 10000,
+  autoConnect: false,
   auth: {
     token: localToekn,
     userId: localUserId,
   },
+  multiplex: false
 });
 
 export default {
+  name: 'ChatRoom',
   components: {
     Navbar,
     Spinner,
@@ -131,23 +180,34 @@ export default {
       isLoading: "",
       userList: [],
       messageList: [],
+      userConnected: [],
+      userDisconnected: [],
+      publicMessageRecord: []
     };
   },
+  computed: {
+    ...mapState(["currentUser"]),
+    onlineCount () {
+      return this.userList.length
+    }
+  },
   created() {
-    socket.onAny((event) => {
-      console.log("event", event);
-    });
+    socket.connect()
     socket.on("connect", () => {
       console.log("socket.connected!", socket.connected); // true
     });
     socket.on("usersInPublicChat", (usersInPublicChat) => {
-      this.userList.push(usersInPublicChat);
+      this.userList = JSON.parse(JSON.stringify(usersInPublicChat));
+      console.log('上線使用者名單', this.userList)
       // console.log("usersInPublicChat", usersInPublicChat);
     });
-    socket.on("publicMessageRecord", (publicMessageRecord) => {
-      console.log("publicMessageRecord", publicMessageRecord);
+    socket.on("publicMessageRecord", (messageRecord) => {
+      this.publicMessageRecord = messageRecord
+      console.log("歷史訊息", messageRecord);
     });
-
+    socket.onAny((event) => {
+      console.log("event", event);
+    });
     socket.on("connect_error", (error) => {
       console.log(error);
     });
@@ -161,6 +221,7 @@ export default {
         sendTime: moment().format(),
       });
       this.text = "";
+      console.log('使用者的',this.currentUser.id)
     },
   },
   mounted() {
@@ -169,6 +230,14 @@ export default {
       this.messageList.push(publicMessageFromServer);
       console.log(this.messageList);
     });
+    socket.on("userConnected", (userConnected) => {
+      this.userConnected.push(userConnected)
+      console.log('使用者連上線:', userConnected)
+    })
+    socket.on("userDisconnected", (userDisconnected) => {
+      this.userDisconnected.push(userDisconnected)
+      console.log('使用者下線:', userDisconnected)
+    })
   },
 };
 </script>
@@ -250,6 +319,10 @@ export default {
   overflow-y: scroll;
   padding: 10px 0;
   /* text-align: center; */
+}
+
+.message-box {
+  /* outline: 1px solid red; */
 }
 
 .user {

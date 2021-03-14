@@ -28,7 +28,8 @@
           >
         </router-link>
       </li>
-       <li class="nav-item nav-container-mainPage">
+       <li class="nav-item nav-container-mainPage"
+       @click="onSocket">
         <router-link
           class="nav-container-mainPage-fontColor"
           v-bind:to="{ name: 'PublicChatroom'}"
@@ -163,6 +164,20 @@ import { mapState } from "vuex";
 import mainPageAPI from "./../apis/user";
 import { Toast } from "./../utils/helpers";
 
+// Soket.io
+const localToekn = localStorage.getItem("token");
+const localUserId = localStorage.getItem("userId");
+import { io } from "socket.io-client";
+
+const socket = io("localhost:3000", {
+  reconnectionDelayMax: 10000,
+  autoConnect: false,
+  auth: {
+    token: localToekn,
+    userId: localUserId,
+  },
+});
+
 export default {
   name: "Navbar",
   props: {
@@ -280,6 +295,11 @@ export default {
         this.isProcessing = false;
       }
     },
+    async onSocket () {
+      console.log("socket連線")
+      await socket.open()
+      console.log("after-connect")
+    }
   },
   computed: {
     ...mapState([
