@@ -22,11 +22,11 @@
             v-for="user in userList"
             :key="user.id"
           >
-            <router-link to="#" class="user-avatar">
-              <img src="https://picsum.photos/200/300?10" />
+            <router-link :to="{name: 'user', params: { id: user.id }}" class="user-avatar">
+              <img :src="user.avatar" />
             </router-link>
             <div class="user-name">{{user.name}}</div>
-            <div class="user-account">{{user.id}}</div>
+            <div class="user-account">@{{user.account}}</div>
           </div>
         </div>
 
@@ -65,10 +65,11 @@
                 v-else
               >
                 <div class="avatar">
-                  <img src="https://picsum.photos/200/300?20" />
+                  <img :src="msg.sender.avatar" />
                 </div>
                 <div class="message">
                   <div class="txt">
+                    {{msg.sender.name}}: 
                     {{msg.content}}
                   </div>
                   <div class="send-time">{{new Date(msg.sendTime).toLocaleString()}}</div>
@@ -101,10 +102,11 @@
                 v-else
               >
                 <div class="avatar">
-                  <img src="https://picsum.photos/200/300?20" />
+                  <img :src="msg.sender.avatar" />
                 </div>
                 <div class="message">
                   <div class="txt">
+                    {{msg.sender.name}}: 
                     {{msg.content}}
                   </div>
                   <div class="send-time">{{new Date(msg.sendTime).toLocaleString()}}</div>
