@@ -240,19 +240,15 @@ export default {
     },
   },
   mounted() {
-    socket.on("publicMessageFromServer", (publicMessageFromServer) => {
-      console.log("publicMessageFromServer", publicMessageFromServer);
-      this.messageList.push(publicMessageFromServer);
-      console.log(this.messageList);
-    });
-    socket.on("userConnected", (userConnected) => {
-      this.userConnected.push(userConnected)
-      console.log('使用者連上線:', userConnected)
-    })
-    socket.on("userDisconnected", (userDisconnected) => {
-      this.userDisconnected.push(userDisconnected)
-      console.log('使用者下線:', userDisconnected)
-    })
+  },
+  destroyed() {
+    socket.disconnect()
+    socket.off("connect");
+    socket.off("userConnected");
+    socket.off("usersInPublicChat");
+    socket.off("publicMessageRecord");
+    socket.off("connect_error");
+    socket.off("userDisconnected");
   },
 };
 </script>
