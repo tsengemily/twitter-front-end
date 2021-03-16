@@ -42,20 +42,20 @@
             <!-- 歷史訊息 -->
             <div 
               class="message-box"
-              v-for="msg in publicMessageRecord"
-              v-bind:key="msg.id"
+              v-for="publicMsg in publicMessageRecord"
+              v-bind:key="publicMsg.id"
             >
             <!-- 本地使用者 -->
               <div 
                 class="user local"
-                v-if="parseInt(msg.fromId) === currentUser.id"
+                v-if="parseInt(publicMsg.fromId) === currentUser.id"
               >
                 <div class="message">
                   <div class="txt">
-                    {{msg.content}}
+                    {{publicMsg.content}}
                   </div>
                   <div class="send-time">
-                    {{new Date(msg.sendTime).toLocaleString()}}
+                    {{new Date(publicMsg.sendTime).toLocaleString()}}
                   </div>
                 </div>
               </div>
@@ -65,14 +65,14 @@
                 v-else
               >
                 <div class="avatar">
-                  <img :src="msg.sender.avatar" />
+                  <img :src="publicMsg.from.avatar" />
                 </div>
                 <div class="message">
                   <div class="txt">
-                    {{msg.sender.name}}: 
-                    {{msg.content}}
+                    {{publicMsg.from.name}}: 
+                    {{publicMsg.content}}
                   </div>
-                  <div class="send-time">{{new Date(msg.sendTime).toLocaleString()}}</div>
+                  <div class="send-time">{{new Date(publicMsg.sendTime).toLocaleString()}}</div>
                 </div>
               </div>
             </div>
@@ -102,11 +102,11 @@
                 v-else
               >
                 <div class="avatar">
-                  <img :src="msg.sender.avatar" />
+                  <img :src="msg.from.avatar" />
                 </div>
                 <div class="message">
                   <div class="txt">
-                    {{msg.sender.name}}: 
+                    {{msg.from.name}}: 
                     {{msg.content}}
                   </div>
                   <div class="send-time">{{new Date(msg.sendTime).toLocaleString()}}</div>
@@ -155,8 +155,8 @@ import moment from "moment";
 const localToekn = localStorage.getItem("token");
 const localUserId = localStorage.getItem("userId");
 import { io } from "socket.io-client";
-
-const socket = io("https://salty-headland-68177.herokuapp.com", {
+// "https://salty-headland-68177.herokuapp.com"
+const socket = io("http://localhost:3000", {
   reconnectionDelayMax: 10000,
   autoConnect: false,
   auth: {
@@ -201,7 +201,7 @@ export default {
     socket.on("usersInPublicChat", (usersInPublicChat) => {
       this.userList = JSON.parse(JSON.stringify(usersInPublicChat));
       console.log('上線使用者名單', this.userList)
-      // console.log("usersInPublicChat", usersInPublicChat);
+      console.log("usersInPublicChat", usersInPublicChat);
     });
     socket.on("publicMessageRecord", (messageRecord) => {
       this.publicMessageRecord = messageRecord
@@ -213,6 +213,19 @@ export default {
     socket.on("connect_error", (error) => {
       console.log(error);
     });
+    socket.on("publicMessageFromServer", (publicMessageFromServer) => {
+      console.log("publicMessageFromServer", publicMessageFromServer);
+      this.messageList.push(publicMessageFromServer);
+      console.log(this.messageList);
+    });
+    socket.on("userConnected", (userConnected) => {
+      this.userConnected.push(userConnected)
+      console.log('使用者連上線:', userConnected)
+    })
+    socket.on("userDisconnected", (userDisconnected) => {
+      this.userDisconnected.push(userDisconnected)
+      console.log('使用者下線:', userDisconnected)
+    })
   },
   methods: {
     sendMessage() {
@@ -227,19 +240,15 @@ export default {
     },
   },
   mounted() {
-    socket.on("publicMessageFromServer", (publicMessageFromServer) => {
-      console.log("publicMessageFromServer", publicMessageFromServer);
-      this.messageList.push(publicMessageFromServer);
-      console.log(this.messageList);
-    });
-    socket.on("userConnected", (userConnected) => {
-      this.userConnected.push(userConnected)
-      console.log('使用者連上線:', userConnected)
-    })
-    socket.on("userDisconnected", (userDisconnected) => {
-      this.userDisconnected.push(userDisconnected)
-      console.log('使用者下線:', userDisconnected)
-    })
+  },
+  destroyed() {
+    socket.disconnect()
+    socket.off("connect");
+    socket.off("userConnected");
+    socket.off("usersInPublicChat");
+    socket.off("publicMessageRecord");
+    socket.off("connect_error");
+    socket.off("userDisconnected");
   },
 };
 </script>
